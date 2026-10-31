@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UEQ Novelty — before / after</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body style="margin: 0; min-height: 100vh; background: #e8e7e2; padding: 24px">
+    <div
+      class="ueq-root"
+      data-ueq-animated
+      role="img"
+      aria-label="UEQ Novelty rose from −0.13 (Bad) to 1.17 (Above Average) after the animations were added."
+    >
+      <div class="ueq-stage">
+        <h1 class="ueq-title ueq-fade ueq-hidden" data-ueq-chrome>UEQ Novelty</h1>
+        <p class="ueq-subtitle ueq-fade ueq-hidden" data-ueq-chrome>
+          scale from −3 to +3
+        </p>
+
+        <svg class="ueq-svg" viewBox="0 0 1600 1200" aria-hidden="true">
+          <line
+            data-ueq-chrome
+            class="ueq-fade ueq-hidden"
+            x1="120"
+            y1="730"
+            x2="1480"
+            y2="730"
+            stroke="var(--hair)"
+            stroke-width="2"
+          />
+          <path data-ueq-left data-ueq-left-bar class="ueq-fade ueq-hidden" fill="var(--bar-before)" />
+          <text
+            data-ueq-left
+            data-ueq-left-label
+            class="ueq-fade ueq-hidden"
+            x="520"
+            y="0"
+            text-anchor="middle"
+            fill="var(--ink)"
+            font-size="100"
+            font-weight="700"
+            font-family="Inter, system-ui, sans-serif"
+          ></text>
+          <path data-ueq-right-bar fill="var(--bar-before)" />
+          <text
+            data-ueq-right-label
+            x="1080"
+            y="0"
+            text-anchor="middle"
+            fill="var(--ink)"
+            font-size="100"
+            font-weight="700"
+            font-family="Inter, system-ui, sans-serif"
+          ></text>
+        </svg>
+
+        <p class="ueq-name ueq-name-left ueq-fade ueq-hidden" data-ueq-left>
+          Before the animations
+        </p>
+        <p class="ueq-name ueq-name-right ueq-fade ueq-hidden" data-ueq-right-name>
+          With the animations
+        </p>
+
+        <div class="ueq-pill-wrap ueq-pill-wrap-left ueq-fade ueq-hidden" data-ueq-left>
+          <span class="ueq-pill ueq-pill-bad">Bad</span>
+        </div>
+        <div class="ueq-pill-wrap ueq-pill-wrap-right">
+          <span class="ueq-pill ueq-pill-bad ueq-fade" data-ueq-right-pill-bad>Bad</span>
+          <span class="ueq-pill ueq-pill-good ueq-fade ueq-hidden" data-ueq-right-pill-good
+            >Above Average</span
+          >
+        </div>
+
+        <p class="ueq-foot ueq-fade ueq-hidden" data-ueq-chrome>
+          UEQ rounds in user sessions · 17.05.2019 and 21.06.2019
+        </p>
+      </div>
+    </div>
+    <p style="max-width: 960px; margin: 16px auto 0; font: 14px/1.4 Inter, system-ui">
+      <button type="button" onclick="playNoveltyChart()">Replay</button>
+      · <a href="./k1.html">Open static k1</a>
+    </p>
+    <script src="./script.js"></script>
+  </body>
+</html>
