@@ -18,6 +18,7 @@ import {
 import {
   getCaseStudy,
   type CaseStudy,
+  type CaseStudyImageSlot,
   type CaseStudyMenuItem,
   type CaseStudySection,
 } from "@/content/caseStudies";
@@ -709,6 +710,82 @@ function PortfolioProblemBody({
   );
 }
 
+/** Muted looping Vimeo for case-study demos (same shell curves as image slots). */
+function vimeoDemoEmbedSrc(src: string) {
+  let url = src.trim();
+  if (!url.includes("player.vimeo.com")) {
+    const match = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+    url = match?.[1]
+      ? `https://player.vimeo.com/video/${match[1]}`
+      : `https://player.vimeo.com/video/${url}`;
+  }
+  const base = url.split("?")[0] ?? url;
+  return `${base}?background=1&autoplay=1&loop=1&muted=1&title=0&byline=0&portrait=0&dnt=1`;
+}
+
+function parseAspectRatio(value: string | number, fallback = 16 / 9) {
+  if (typeof value === "number" && value > 0) return value;
+  const parts = String(value)
+    .split("/")
+    .map((part) => Number(part.trim()));
+  if (parts.length === 2 && parts[0]! > 0 && parts[1]! > 0) {
+    return parts[0]! / parts[1]!;
+  }
+  const asNumber = Number(value);
+  return asNumber > 0 ? asNumber : fallback;
+}
+
+/** object-fit: cover scale for a known video inside a frame of a different aspect. */
+function coverScaleForAspects(frameAspect: number, videoAspect: number) {
+  if (frameAspect <= 0 || videoAspect <= 0) return 1;
+  return Math.max(frameAspect / videoAspect, videoAspect / frameAspect);
+}
+
+function CaseStudyMediaSlot({
+  slot,
+}: {
+  slot: CaseStudyImageSlot;
+}) {
+  if (slot.vimeoSrc) {
+    const frameAspect = parseAspectRatio(slot.aspectRatio);
+    // Intrinsic Vimeo size when known (1010171567 = 1544×1160); else assume frame match.
+    const videoAspect = slot.vimeoAspectRatio
+      ? parseAspectRatio(slot.vimeoAspectRatio, frameAspect)
+      : frameAspect;
+    const coverScale = coverScaleForAspects(frameAspect, videoAspect) * 1.02;
+
+    return (
+      <figure
+        id={slot.id}
+        className="relative w-full overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-[#211B18]/80 [transform:translateZ(0)]"
+        style={{ aspectRatio: slot.aspectRatio }}
+      >
+        <iframe
+          title={slot.alt ?? slot.description}
+          src={vimeoDemoEmbedSrc(slot.vimeoSrc)}
+          className="pointer-events-none absolute inset-0 h-full w-full border-0"
+          style={{
+            transform: `scale(${coverScale})`,
+            transformOrigin: "center center",
+          }}
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+        />
+      </figure>
+    );
+  }
+
+  return (
+    <ImagePlaceholder
+      id={slot.id}
+      description={slot.description}
+      aspectRatio={slot.aspectRatio}
+      src={slot.src}
+      alt={slot.alt}
+    />
+  );
+}
+
 function PortfolioWhatIDidBody({
   content,
 }: {
@@ -748,14 +825,10 @@ function PortfolioWhatIDidBody({
               </p>
             </article>
 
+            {block.image ? <CaseStudyMediaSlot slot={block.image} /> : null}
+
             {block.id === content.imageAfterBlockId ? (
-              <ImagePlaceholder
-                id={content.image.id}
-                description={content.image.description}
-                aspectRatio={content.image.aspectRatio}
-                src={content.image.src}
-                alt={content.image.alt}
-              />
+              <CaseStudyMediaSlot slot={content.image} />
             ) : null}
           </div>
         ))}

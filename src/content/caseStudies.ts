@@ -28,6 +28,10 @@ export type CaseStudyImageSlot = {
   description: string;
   src?: string;
   alt?: string;
+  /** When set, renders a Vimeo embed instead of a still image. */
+  vimeoSrc?: string;
+  /** Intrinsic Vimeo pixel aspect (e.g. "1544/1160") for object-fit: cover math. */
+  vimeoAspectRatio?: string;
 };
 
 export type CaseStudyOverviewBodyLink = {
@@ -107,6 +111,8 @@ export type CaseStudyDecisionBlock = {
   title: string;
   body: string;
   highlighted: boolean;
+  /** Optional media rendered directly under this decision card. */
+  image?: CaseStudyImageSlot;
 };
 
 export type CaseStudyWhatIDidContent = {
@@ -259,9 +265,11 @@ export const caseStudies: Record<string, CaseStudy> = {
           ],
           hero: {
             id: "hero",
-            aspectRatio: "2/1",
+            aspectRatio: "970/1024",
             description:
-              "Hero visual: phone mockup of the Vodafone router app dashboard, with five design-token callouts around it (Font-size 32pt, Color #00697C, Space 20pt, Radius 20pt, Icon size 20pt). Same visual as on the carousel card.",
+              "Design system overview: Phoenix Colors, Spacing and Typography cards from the Vodafone design system.",
+            src: "/media/projects/design-system/overview-specs-v1.png",
+            alt: "Vodafone design system overview showing Phoenix Colors, Spacing, and Typography specification cards.",
           },
           caption: "Three tools became one: Figma.",
           chips: [
@@ -347,14 +355,25 @@ export const caseStudies: Record<string, CaseStudy> = {
               title: "My call: Variables.",
               body: "Six months after delivery I decided to migrate the library to Figma Variables and did it alone in a month. Dark mode became easy and visual changes stopped costing hours.",
               highlighted: true,
+              image: {
+                id: "variables-demo",
+                aspectRatio: "4/3",
+                description:
+                  "Figma Variables demo: alert components switching between dark and light modes as the group is dragged across a theme boundary.",
+                src: "/media/projects/design-system/variables-demo-v1.gif",
+                alt: "Figma Variables demo showing alert cards adapting from dark mode to light mode.",
+              },
             },
           ],
           imageAfterBlockId: "flows-that-branch",
           image: {
             id: "flow",
-            aspectRatio: "16/9",
+            aspectRatio: "840/513",
             description:
-              "One single user flow that branches depending on the extender: add an extender and the whole journey changes. Flow diagram with the branches highlighted.",
+              "One single user flow that branches depending on the extender: add an extender and the whole journey changes.",
+            alt: "Vodafone design system branching user flow video.",
+            vimeoSrc: "https://player.vimeo.com/video/1010171567",
+            vimeoAspectRatio: "1544/1160",
           },
         },
       },

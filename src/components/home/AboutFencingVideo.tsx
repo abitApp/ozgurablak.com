@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { handwriting } from "@/lib/fonts";
 
-const VIDEO_SRC = "/media/about/fencing.mp4";
-const PLAYBACK_VOLUME = 0.28;
+const VIDEO_SRC = "/media/about/fencing.mp4?v=5";
+const POSTER_SRC = "/media/about/fencing-poster.jpg?v=5";
+const PLAYBACK_VOLUME = 1;
 
 const POLAROID_DATE = "31. October 2026";
 
@@ -98,11 +99,12 @@ export function AboutFencingVideo() {
         <div className="group relative aspect-[11/10] overflow-hidden rounded-[4px] bg-[#111]">
           <video
             ref={videoRef}
-            className="h-full w-full object-cover object-center"
+            className="absolute inset-0 h-full w-full object-cover object-center"
             src={VIDEO_SRC}
+            poster={POSTER_SRC}
             playsInline
             loop
-            preload="metadata"
+            preload="auto"
             onPlay={() => setPlaying(true)}
             onPause={() => setPlaying(false)}
             aria-label="Fencing practice video"

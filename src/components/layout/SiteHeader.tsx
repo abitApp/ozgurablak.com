@@ -50,7 +50,7 @@ export function SiteHeader() {
 
   // 2px smaller than previous clamp(0.95rem … 1.125rem)
   const linkClass =
-    "cursor-pointer text-[clamp(calc(0.95rem-2px),1.4vw,calc(1.125rem-2px))] font-medium tracking-[0.04em] text-white/90 uppercase transition-opacity hover:opacity-70";
+    "cursor-pointer text-[clamp(calc(0.95rem-2px),1.4vw,calc(1.125rem-2px))] font-normal tracking-[0.04em] text-white/90 uppercase transition-opacity hover:opacity-70";
 
   const openPopup = (label: string) => {
     setMenuOpen(false);
@@ -140,7 +140,7 @@ export function SiteHeader() {
                   <a
                     key={item.label}
                     href={item.href}
-                    className="inline-flex cursor-pointer items-center gap-3 py-2 text-left text-[calc(1.125rem-2px)] font-medium tracking-[0.04em] text-white/90 uppercase"
+                    className="inline-flex cursor-pointer items-center gap-3 py-2 text-left text-[calc(1.125rem-2px)] font-normal tracking-[0.04em] text-white/90 uppercase"
                     onClick={(event) => {
                       setMenuOpen(false);
                       if (item.href === "#work") {
@@ -161,7 +161,7 @@ export function SiteHeader() {
                   <button
                     key={item.label}
                     type="button"
-                    className="inline-flex cursor-pointer items-center gap-3 py-2 text-left text-[calc(1.125rem-2px)] font-medium tracking-[0.04em] text-white/90 uppercase"
+                    className="inline-flex cursor-pointer items-center gap-3 py-2 text-left text-[calc(1.125rem-2px)] font-normal tracking-[0.04em] text-white/90 uppercase"
                     onClick={() => openPopup(item.label)}
                   >
                     <NavSeparator show={item.separator} />

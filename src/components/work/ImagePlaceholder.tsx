@@ -23,16 +23,19 @@ export function ImagePlaceholder({
     typeof aspectRatio === "number" ? String(aspectRatio) : aspectRatio;
 
   if (src) {
+    const isAnimatedGif = /\.gif($|\?)/i.test(src);
+
     return (
       <figure
         id={id}
-        className="relative w-full overflow-hidden"
+        className="relative w-full overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-[#211B18]/80"
         style={{ aspectRatio: ratio }}
       >
         <Image
           src={src}
           alt={alt ?? description}
           fill
+          unoptimized={isAnimatedGif}
           draggable={false}
           onDragStart={(event) => event.preventDefault()}
           className="select-none object-cover [-webkit-user-drag:none]"
