@@ -25,7 +25,7 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="scroll-mt-24 bg-surface px-5 pt-20 pb-20 text-ink md:scroll-mt-28 md:px-8 md:pt-28 md:pb-28"
+      className="scroll-mt-24 bg-surface px-5 pt-[calc(5rem+32px)] pb-20 text-ink md:scroll-mt-28 md:px-8 md:pt-[calc(7rem+32px)] md:pb-28"
       aria-labelledby="contact-heading"
     >
       <div className="mx-auto flex max-w-[72rem] flex-col gap-10 md:flex-row md:items-center md:justify-between md:gap-10 lg:gap-16">
