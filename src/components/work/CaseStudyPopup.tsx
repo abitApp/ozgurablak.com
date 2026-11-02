@@ -3102,7 +3102,7 @@ export function CaseStudyPopup({
               <button
                 type="button"
                 onClick={copyShareLink}
-                className="inline-flex h-9 cursor-pointer items-center justify-center gap-1.5 rounded-full border border-[#F3EEE8]/40 bg-transparent px-3.5 text-[0.78rem] font-medium tracking-wide text-[#F3EEE8]/90 transition-[border-color,background-color,color] duration-150 ease-out hover:border-accent hover:bg-accent hover:text-[#0c0907]"
+                className="inline-flex h-9 cursor-pointer items-center justify-center rounded-full border border-[#F3EEE8]/40 bg-transparent px-3.5 text-[0.78rem] font-medium tracking-wide text-[#F3EEE8]/90 transition-[border-color,background-color,color] duration-150 ease-out hover:border-accent hover:bg-accent hover:text-[#0c0907]"
                 aria-live="polite"
                 aria-label={
                   shareCopied
@@ -3112,23 +3112,7 @@ export function CaseStudyPopup({
                       : "Copy link to this case study"
                 }
               >
-                <svg
-                  className="size-3.5 shrink-0"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <circle cx="18" cy="5" r="3" />
-                  <circle cx="6" cy="12" r="3" />
-                  <circle cx="18" cy="19" r="3" />
-                  <path d="m8.59 13.51 6.83 3.98" />
-                  <path d="m15.41 6.51-6.82 3.98" />
-                </svg>
-                {shareCopied ? "Copied" : "Share"}
+                {shareCopied ? "Link copied" : "Share"}
               </button>
               <button
                 ref={closeBtnRef}
