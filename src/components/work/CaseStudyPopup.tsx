@@ -38,6 +38,10 @@ import {
   trackModalView,
   type ModalAnalyticsPayload,
 } from "@/lib/analytics";
+import {
+  buildCaseStudyShareUrl,
+  writeCaseStudyLink,
+} from "@/lib/caseStudyShare";
 
 type CaseStudyPopupProps = {
   project: Project;
@@ -2241,6 +2245,8 @@ export function CaseStudyPopup({
   const [navResetKey, setNavResetKey] = useState("");
   const [overflowing, setOverflowing] = useState(false);
   const [thumb, setThumb] = useState({ top: 0, height: 48 });
+  const [shareCopied, setShareCopied] = useState(false);
+  const shareCopiedTimerRef = useRef<number | null>(null);
   const sectionBusyRef = useRef(false);
   const sectionTimerRef = useRef<number | null>(null);
   const pendingAnchorRef = useRef<string | null>(null);
@@ -2697,6 +2703,48 @@ export function CaseStudyPopup({
     project.title,
   ]);
 
+  // Deep-link address bar for portfolio case studies (not Other Works).
+  useEffect(() => {
+    if (isWorkModal || !open) return;
+    const sectionForUrl =
+      displayedId && displayedId !== firstSectionId ? displayedId : undefined;
+    writeCaseStudyLink(studySlug, sectionForUrl);
+  }, [open, isWorkModal, studySlug, displayedId, firstSectionId]);
+
+  useEffect(() => {
+    return () => {
+      if (shareCopiedTimerRef.current !== null) {
+        window.clearTimeout(shareCopiedTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleClose = useCallback(() => {
+    if (!isWorkModal) writeCaseStudyLink(null);
+    onClose();
+  }, [isWorkModal, onClose]);
+
+  const copyShareLink = useCallback(async () => {
+    if (isWorkModal) return;
+    const sectionForUrl =
+      displayedId && displayedId !== firstSectionId ? displayedId : undefined;
+    const href = buildCaseStudyShareUrl(studySlug, sectionForUrl);
+    writeCaseStudyLink(studySlug, sectionForUrl);
+    try {
+      await navigator.clipboard.writeText(href);
+      setShareCopied(true);
+      if (shareCopiedTimerRef.current !== null) {
+        window.clearTimeout(shareCopiedTimerRef.current);
+      }
+      shareCopiedTimerRef.current = window.setTimeout(() => {
+        setShareCopied(false);
+        shareCopiedTimerRef.current = null;
+      }, 1800);
+    } catch {
+      setShareCopied(false);
+    }
+  }, [isWorkModal, displayedId, firstSectionId, studySlug]);
+
   useEffect(() => {
     if (open) {
       openerRef.current = document.activeElement as HTMLElement | null;
@@ -2780,7 +2828,7 @@ export function CaseStudyPopup({
     if (!mounted) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onClose();
+        handleClose();
         return;
       }
 
@@ -2847,7 +2895,7 @@ export function CaseStudyPopup({
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previous;
     };
-  }, [mounted, onClose, syncThumb]);
+  }, [mounted, handleClose, syncThumb]);
 
   useLayoutEffect(() => {
     if (!mounted || !contentVisible) return;
@@ -3022,17 +3070,32 @@ export function CaseStudyPopup({
                 </>
               )}
             </p>
-            <button
-              ref={closeBtnRef}
-              type="button"
-              onClick={onClose}
-              className="case-study-close-btn inline-flex h-9 w-9 origin-center cursor-pointer items-center justify-center rounded-full border border-solid text-[1.15rem] leading-none text-[#F3EEE8] transition-[border-color] duration-150 ease-out"
-              aria-label={isWorkModal ? "Close work" : "Close case study"}
-            >
-              <span aria-hidden="true" className="block leading-none">
-                ×
-              </span>
-            </button>
+            <div className="flex shrink-0 items-center gap-5">
+              {!isWorkModal ? (
+                <button
+                  type="button"
+                  onClick={copyShareLink}
+                  className="inline-flex h-9 cursor-pointer items-center justify-center rounded-full border border-accent bg-accent px-3.5 text-[0.78rem] font-medium tracking-wide text-[#0c0907] transition-opacity duration-150 ease-out hover:opacity-90"
+                  aria-live="polite"
+                  aria-label={
+                    shareCopied ? "Link copied" : "Copy link to this case study"
+                  }
+                >
+                  {shareCopied ? "Copied" : "Share"}
+                </button>
+              ) : null}
+              <button
+                ref={closeBtnRef}
+                type="button"
+                onClick={handleClose}
+                className="case-study-close-btn inline-flex h-9 w-9 origin-center cursor-pointer items-center justify-center rounded-full border border-solid text-[1.15rem] leading-none text-[#F3EEE8] transition-[border-color] duration-150 ease-out"
+                aria-label={isWorkModal ? "Close work" : "Close case study"}
+              >
+                <span aria-hidden="true" className="block leading-none">
+                  ×
+                </span>
+              </button>
+            </div>
           </header>
 
           {/* Mobile section switcher — skipped when nav is hidden */}

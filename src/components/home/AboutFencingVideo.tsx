@@ -232,7 +232,7 @@ export function AboutFencingVideo() {
           <figcaption
             className={`${handwriting.className} min-w-0 flex-1 text-left text-[clamp(1.15rem,3.6vw,1.4rem)] leading-snug text-[#6B4A32]/75`}
           >
-            fencing training with my master, {POLAROID_DATE}
+            Fencing practice with my coach, {POLAROID_DATE}
           </figcaption>
         </div>
       </div>

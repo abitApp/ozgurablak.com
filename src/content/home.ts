@@ -11,9 +11,8 @@ export const contact = {
   /** WhatsApp username (opens app / WhatsApp Web). */
   whatsappUsername: "o.ablak",
   whatsappUrl: "https://wa.me/o.ablak",
-  /** Drop a PDF at this path when ready. */
-  cvUrl:
-    "https://drive.google.com/file/d/1HfKJgRAUOatgpaApfTfh3TLUJqq7_BcI/view?usp=sharing",
+  /** Hosted PDF in /public — opens in a new tab. */
+  cvUrl: "/Ozgur_Ablak_Resume.pdf",
 };
 
 export const navItems: Array<{
@@ -188,7 +187,7 @@ export const projects: Project[] = [
         label: "03 — Impact",
         detail:
           "Three tools became one, and design finally matched what shipped.",
-        more: "No visible flaws left. Developers ask very few questions and start building right away. Three tools became one: Figma.",
+        more: "Three tools became one: Figma. With clearer handoffs and consistent components, developers could start building right away, with fewer questions and less back-and-forth.",
         media: [
           {
             src: "/media/projects/design-system/tools-orbit-v7.webp",

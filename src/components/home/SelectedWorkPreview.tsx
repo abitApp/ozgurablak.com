@@ -6,6 +6,7 @@ import { ImagePlaceholder } from "@/components/work/ImagePlaceholder";
 import { WorkCarousel } from "@/components/work/WorkCarousel";
 import { faldiumProject } from "@/content/home";
 import { otherWorksCategories } from "@/content/otherWorks";
+import { useCaseStudyDeepLink } from "@/hooks/useCaseStudyDeepLink";
 
 const OtherWorksSlider = dynamic(
   () =>
@@ -31,9 +32,11 @@ const FALDIUM_MODAL_FADE_MS = 320;
 export function SelectedWorkPreview() {
   const [faldiumOpen, setFaldiumOpen] = useState(false);
   const [faldiumMounted, setFaldiumMounted] = useState(false);
+  const faldiumDeepLink = useCaseStudyDeepLink(faldiumProject.slug);
+  const faldiumVisible = faldiumOpen || faldiumDeepLink.openFromLink;
 
   useEffect(() => {
-    if (faldiumOpen) {
+    if (faldiumVisible) {
       setFaldiumMounted(true);
       return;
     }
@@ -43,7 +46,7 @@ export function SelectedWorkPreview() {
       FALDIUM_MODAL_FADE_MS,
     );
     return () => window.clearTimeout(timer);
-  }, [faldiumOpen, faldiumMounted]);
+  }, [faldiumVisible, faldiumMounted]);
 
   return (
     <section
@@ -83,24 +86,6 @@ export function SelectedWorkPreview() {
 
       <div className="mx-auto w-full max-w-[calc(72rem+7rem)] px-5 md:px-8">
         <WorkCarousel />
-      </div>
-
-      <div className="mx-auto mt-20 max-w-[72rem] md:mt-28">
-        <div className="mb-10 max-w-2xl md:mb-14">
-          <h2
-            id="other-works-heading"
-            className="text-[clamp(1.5rem,calc(2.5vw+1rem),calc(3.25rem-12pt))] font-semibold tracking-tight text-balance"
-          >
-            Other Works
-          </h2>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:text-lg">
-            Product concepts, UI animations and 3D work that sit outside the case
-            studies. Each card holds a small collection: use the arrows to
-            browse.
-          </p>
-        </div>
-
-        <OtherWorksSlider categories={otherWorksCategories} />
       </div>
 
       <div
@@ -184,11 +169,33 @@ export function SelectedWorkPreview() {
         </article>
       </div>
 
+      <div className="mx-auto mt-20 max-w-[72rem] md:mt-28">
+        <div className="mb-10 max-w-2xl md:mb-14">
+          <h2
+            id="other-works-heading"
+            className="text-[clamp(1.5rem,calc(2.5vw+1rem),calc(3.25rem-12pt))] font-semibold tracking-tight text-balance"
+          >
+            Other Works
+          </h2>
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:text-lg">
+            Product concepts, UI animations and 3D work that sit outside the case
+            studies. Each card holds a small collection: use the arrows to
+            browse.
+          </p>
+        </div>
+
+        <OtherWorksSlider categories={otherWorksCategories} />
+      </div>
+
       {faldiumMounted ? (
         <CaseStudyPopup
           project={faldiumProject}
-          open={faldiumOpen}
-          onClose={() => setFaldiumOpen(false)}
+          open={faldiumVisible}
+          initialSectionId={faldiumDeepLink.initialSectionId}
+          onClose={() => {
+            setFaldiumOpen(false);
+            faldiumDeepLink.clearLink();
+          }}
         />
       ) : null}
     </section>

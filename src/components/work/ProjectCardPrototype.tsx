@@ -30,6 +30,7 @@ import { SahibindenImpactChart } from "@/components/work/SahibindenImpactChart";
 import { SahibindenPhone } from "@/components/work/SahibindenPhone";
 import { UeqNoveltyChart } from "@/components/work/UeqNoveltyChart";
 import { UeqNoveltyStatic } from "@/components/work/UeqNoveltyStatic";
+import { useCaseStudyDeepLink } from "@/hooks/useCaseStudyDeepLink";
 
 const CaseStudyPopup = dynamic(
   () =>
@@ -326,16 +327,18 @@ export function ProjectCardPrototype({
   const [caseStudyOpen, setCaseStudyOpen] = useState(false);
   /** Keep popup mounted through close fade so the chunk can stay deferred until first open. */
   const [caseStudyMounted, setCaseStudyMounted] = useState(false);
+  const deepLink = useCaseStudyDeepLink(project.slug);
+  const caseStudyVisible = caseStudyOpen || deepLink.openFromLink;
 
   useEffect(() => {
-    if (caseStudyOpen) {
+    if (caseStudyVisible) {
       setCaseStudyMounted(true);
       return;
     }
     if (!caseStudyMounted) return;
     const timer = window.setTimeout(() => setCaseStudyMounted(false), 320);
     return () => window.clearTimeout(timer);
-  }, [caseStudyOpen, caseStudyMounted]);
+  }, [caseStudyVisible, caseStudyMounted]);
   const [displayedLayerId, setDisplayedLayerId] =
     useState<LayerId>(defaultLayerId);
 
@@ -797,8 +800,12 @@ export function ProjectCardPrototype({
       {caseStudyMounted ? (
         <CaseStudyPopup
           project={project}
-          open={caseStudyOpen}
-          onClose={() => setCaseStudyOpen(false)}
+          open={caseStudyVisible}
+          initialSectionId={deepLink.initialSectionId}
+          onClose={() => {
+            setCaseStudyOpen(false);
+            deepLink.clearLink();
+          }}
         />
       ) : null}
     </article>
