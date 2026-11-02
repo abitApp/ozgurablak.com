@@ -33,6 +33,11 @@ import {
 import Image from "next/image";
 import { AndroidPhoneFrame } from "@/components/work/AndroidPhoneFrame";
 import { ImagePlaceholder } from "@/components/work/ImagePlaceholder";
+import {
+  trackModalClose,
+  trackModalView,
+  type ModalAnalyticsPayload,
+} from "@/lib/analytics";
 
 type CaseStudyPopupProps = {
   project: Project;
@@ -2655,6 +2660,42 @@ export function CaseStudyPopup({
     pendingAnchorRef.current = null;
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
   }, [open, studySlug, clearBlockBlink]);
+
+  // GA: modal open / content switch / close (case studies + Other Works).
+  const modalAnalyticsRef = useRef<ModalAnalyticsPayload | null>(null);
+  useEffect(() => {
+    const payload: ModalAnalyticsPayload = isWorkModal
+      ? {
+          modal_type: "work",
+          modal_id: work?.id ?? project.slug,
+          modal_title: work?.title ?? project.title,
+        }
+      : {
+          modal_type: "case_study",
+          modal_id: studySlug,
+          modal_title: portfolio?.title ?? project.title,
+        };
+
+    if (open) {
+      modalAnalyticsRef.current = payload;
+      trackModalView(payload);
+      return;
+    }
+
+    if (modalAnalyticsRef.current) {
+      trackModalClose(modalAnalyticsRef.current);
+      modalAnalyticsRef.current = null;
+    }
+  }, [
+    open,
+    isWorkModal,
+    work?.id,
+    work?.title,
+    studySlug,
+    portfolio?.title,
+    project.slug,
+    project.title,
+  ]);
 
   useEffect(() => {
     if (open) {
