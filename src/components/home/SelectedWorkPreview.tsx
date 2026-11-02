@@ -177,12 +177,13 @@ export function SelectedWorkPreview() {
                   id="faldium-card"
                   description="Faldium app screens"
                   aspectRatio="819/1024"
-                  src="/media/projects/faldium/faldium-card.jpg"
+                  src="/media/projects/faldium/faldium-card-v7.png?v=20261102c"
                   alt="Faldium app on phone — home screen with coffee reading, dreams and palmistry."
                   unoptimized
                   objectFit="cover"
                   framed={false}
                   roundedClassName="rounded-none"
+                  backgroundClassName="bg-transparent"
                 />
               </div>
             </div>

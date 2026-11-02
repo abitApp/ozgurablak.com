@@ -21,6 +21,8 @@ type ImagePlaceholderProps = {
   framed?: boolean;
   /** Frame outline colour when framed. Default site ink. */
   frameBorder?: "default" | "white";
+  /** Figure background. Default warm brown for placeholders / letterboxing. */
+  backgroundClassName?: string;
 };
 
 /**
@@ -39,6 +41,7 @@ export function ImagePlaceholder({
   roundedClassName = "rounded-[1.1rem]",
   framed = true,
   frameBorder = "default",
+  backgroundClassName = "bg-[#211B18]/80",
 }: ImagePlaceholderProps) {
   const ratio =
     typeof aspectRatio === "number" ? String(aspectRatio) : aspectRatio;
@@ -63,7 +66,7 @@ export function ImagePlaceholder({
     return (
       <figure
         id={id}
-        className={`relative w-full overflow-hidden bg-[#211B18]/80 [transform:translateZ(0)] ${frameBorderClass} ${roundedClassName}`}
+        className={`relative w-full overflow-hidden [transform:translateZ(0)] ${backgroundClassName} ${frameBorderClass} ${roundedClassName}`}
         style={{ aspectRatio: ratio }}
       >
         {/* Native <img> keeps animated GIFs playing; next/image can freeze them. */}
@@ -95,7 +98,7 @@ export function ImagePlaceholder({
   return (
     <figure
       id={id}
-      className={`flex w-full flex-col items-center justify-center gap-1.5 border border-dashed border-[#43362F] bg-[#211B18]/80 px-4 py-8 text-center ${roundedClassName}`}
+      className={`flex w-full flex-col items-center justify-center gap-1.5 border border-dashed border-[#43362F] px-4 py-8 text-center ${backgroundClassName} ${roundedClassName}`}
       style={{ aspectRatio: ratio }}
       aria-label={`Image placeholder: ${description}`}
     >
