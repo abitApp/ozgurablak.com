@@ -570,6 +570,41 @@ export function ProjectCardPrototype({
     </div>
   );
 
+  const renderBrandHeader = () => (
+    <div className="relative z-10 shrink-0">
+      <div className="flex h-7 items-center gap-2 md:h-8 md:gap-3">
+        {project.logo ? (
+          <Image
+            src={project.logo.src}
+            alt={project.logo.alt}
+            width={project.hideTitle ? 157 : 31}
+            height={project.hideTitle ? 34 : 31}
+            unoptimized={project.logo.src.endsWith(".svg")}
+            draggable={false}
+            onDragStart={(event) => event.preventDefault()}
+            className={
+              project.hideTitle
+                ? "h-7 w-auto max-w-[8.4rem] select-none object-contain [-webkit-user-drag:none] md:h-8 md:max-w-[9.8rem]"
+                : "h-7 w-auto shrink-0 select-none object-contain [-webkit-user-drag:none] md:h-8"
+            }
+          />
+        ) : null}
+        {project.hideTitle ? (
+          <h3 className="sr-only">{project.title}</h3>
+        ) : (
+          <h3 className="text-[1.408rem] font-medium leading-none tracking-tight text-white/90 md:text-[1.933rem]">
+            {project.title}
+          </h3>
+        )}
+      </div>
+      {project.subtitle ? (
+        <p className="mt-4 max-w-md whitespace-pre-line text-xs leading-relaxed text-white/65 md:text-[0.8rem]">
+          {project.subtitle}
+        </p>
+      ) : null}
+    </div>
+  );
+
   if (embedded) {
     return (
       <div className="flex h-full min-h-0 w-full flex-col gap-5 px-6 pb-2 pt-6 md:px-8 md:pt-8">
@@ -585,15 +620,15 @@ export function ProjectCardPrototype({
         hideMedia ? "bg-surface" : "bg-surface-elevated"
       }`}
     >
-      {/* Equal carousel height from leftmost card; left fills and scrolls. */}
+      {/* Equal carousel height from leftmost card; left fills and scrolls (md+ only). */}
       <div
-        className={`grid h-full min-h-0 ${
-          hideMedia ? "grid-cols-1" : "md:grid-cols-[1.15fr_0.85fr]"
+        className={`grid h-full min-h-0 grid-cols-1 ${
+          hideMedia ? "" : "md:grid-cols-[1.15fr_0.85fr]"
         }`}
       >
         {hideMedia ? null : (
-        <div className="relative min-h-[18rem] bg-[#1a1612] text-white/90 md:min-h-0">
-          <div className="flex h-[18rem] flex-col overflow-hidden p-6 md:absolute md:inset-0 md:h-auto md:p-8">
+        <div className="relative hidden bg-[#1a1612] text-white/90 md:block md:min-h-0">
+          <div className="absolute inset-0 flex flex-col overflow-hidden p-8">
             <div
               className="pointer-events-none absolute inset-0 opacity-70"
               style={{
@@ -602,42 +637,11 @@ export function ProjectCardPrototype({
               aria-hidden="true"
             />
 
-            <div className="relative z-10 shrink-0">
-              <div className="flex h-7 items-center gap-2 md:h-8 md:gap-3">
-                {project.logo ? (
-                  <Image
-                    src={project.logo.src}
-                    alt={project.logo.alt}
-                    width={project.hideTitle ? 157 : 31}
-                    height={project.hideTitle ? 34 : 31}
-                    unoptimized={project.logo.src.endsWith(".svg")}
-                    draggable={false}
-                    onDragStart={(event) => event.preventDefault()}
-                    className={
-                      project.hideTitle
-                        ? "h-7 w-auto max-w-[8.4rem] select-none object-contain [-webkit-user-drag:none] md:h-8 md:max-w-[9.8rem]"
-                        : "h-7 w-auto shrink-0 select-none object-contain [-webkit-user-drag:none] md:h-8"
-                    }
-                  />
-                ) : null}
-                {project.hideTitle ? (
-                  <h3 className="sr-only">{project.title}</h3>
-                ) : (
-                  <h3 className="text-[1.408rem] font-medium leading-none tracking-tight text-white/90 md:text-[1.933rem]">
-                    {project.title}
-                  </h3>
-                )}
-              </div>
-              {project.subtitle ? (
-                <p className="mt-4 max-w-md whitespace-pre-line text-xs leading-relaxed text-white/65 md:text-[0.8rem]">
-                  {project.subtitle}
-                </p>
-              ) : null}
-            </div>
+            {renderBrandHeader()}
 
             <div
               className={`relative z-10 flex min-h-0 flex-1 gap-[14px] ${
-                project.subtitle ? "mt-4 md:mt-5" : "mt-6"
+                project.subtitle ? "mt-5" : "mt-6"
               }`}
             >
               <div
@@ -763,6 +767,9 @@ export function ProjectCardPrototype({
           ) : null}
 
           <div className="relative z-10 flex min-h-0 flex-1 flex-col gap-5">
+            {hideMedia ? null : (
+              <div className="md:hidden">{renderBrandHeader()}</div>
+            )}
             {thumbnailBlock}
             {stackBlock}
 
