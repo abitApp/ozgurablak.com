@@ -2177,7 +2177,7 @@ export const caseStudies: Record<string, CaseStudy> = {
         content: {
           kind: "result",
           heading: "Growing and improving",
-          body: "I set up and run the Google Ads campaigns. I measure how people use the app with Firebase, Google Analytics and event tracking I wrote myself. It shows me errors and problem areas, and I use that to improve the UX. Next, I'm adding English, aiming for more countries, and exploring turning Faldium into a companion AI app.",
+          body: "I set up and run the Google Ads campaigns. I measure how people use the app with Firebase, Google Analytics and event tracking I wrote myself. It shows me errors and problem areas, and I use that to improve the UX. User surveys and feedback keep shaping the app too. Next, I'm adding English, aiming for more countries, and exploring turning Faldium into a companion AI app.",
           images: [
             {
               id: "faldium-loop",

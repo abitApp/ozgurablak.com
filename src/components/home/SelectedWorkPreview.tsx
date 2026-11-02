@@ -126,14 +126,7 @@ export function SelectedWorkPreview() {
                 Faldium
               </h3>
               <p className="mt-1.5 text-[0.95rem] leading-snug text-ink-muted">
-                AI fortune telling app
-              </p>
-              <p className="mt-5 text-[0.95rem] leading-relaxed text-ink/90">
-                Faldium started as a Turkish coffee reading app: you upload
-                photos of your cup and get an AI reading with voice narration.
-                User surveys, feedback and my own usage tracking (Firebase,
-                Google Analytics, custom events) keep shaping it. Next: English,
-                more countries and a companion AI app.
+                AI companion & fortune telling app
               </p>
 
               <dl className="mt-6 space-y-3 text-[0.88rem] leading-snug">
