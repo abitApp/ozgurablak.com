@@ -12,6 +12,7 @@ import {
   type ReactNode,
   type RefObject,
 } from "react";
+import { createPortal } from "react-dom";
 import {
   dummyCaseStudy,
   type CaseStudySectionId,
@@ -40,7 +41,9 @@ import {
 } from "@/lib/analytics";
 import {
   buildCaseStudyShareUrl,
+  buildWorkShareUrl,
   writeCaseStudyLink,
+  writeWorkLink,
 } from "@/lib/caseStudyShare";
 
 type CaseStudyPopupProps = {
@@ -1521,20 +1524,24 @@ function vimeoEmbedSrc(src: string) {
   return url;
 }
 
-/** Portrait media → compact work-modal shell (Concepts 02 / 04 today). */
+function isCompactWorkModal(_work?: OtherWork): boolean {
+  // All Other Works use the standard modal width; portrait media still
+  // keeps its own aspect ratio inside the panel.
+  return false;
+}
+
 function isPortraitAspectRatio(aspectRatio?: string): boolean {
   if (!aspectRatio) return false;
   const parts = aspectRatio.split("/").map((part) => Number(part.trim()));
-  return parts.length === 2 && parts[0] < parts[1];
-}
-
-function isCompactWorkModal(work?: OtherWork): boolean {
-  return isPortraitAspectRatio(work?.modal?.media?.aspectRatio);
+  return parts.length === 2 && parts[0]! < parts[1]!;
 }
 
 function mediaFrameClass(aspectRatio?: string) {
+  const portrait = isPortraitAspectRatio(aspectRatio);
   return aspectRatio
-    ? "relative w-full max-w-full min-w-0 overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-[#211B18]"
+    ? `relative w-full min-w-0 overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-[#211B18] ${
+        portrait ? "mx-auto max-w-[28rem]" : "max-w-full"
+      }`
     : "relative aspect-video w-full max-w-full min-w-0 overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-[#211B18]";
 }
 
@@ -2703,13 +2710,24 @@ export function CaseStudyPopup({
     project.title,
   ]);
 
-  // Deep-link address bar for portfolio case studies (not Other Works).
+  // Deep-link address bar: case studies (?study=) and Other Works (?work=).
   useEffect(() => {
-    if (isWorkModal || !open) return;
+    if (!open) return;
+    if (isWorkModal) {
+      if (work?.id) writeWorkLink(work.id);
+      return;
+    }
     const sectionForUrl =
       displayedId && displayedId !== firstSectionId ? displayedId : undefined;
     writeCaseStudyLink(studySlug, sectionForUrl);
-  }, [open, isWorkModal, studySlug, displayedId, firstSectionId]);
+  }, [
+    open,
+    isWorkModal,
+    work?.id,
+    studySlug,
+    displayedId,
+    firstSectionId,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -2720,16 +2738,25 @@ export function CaseStudyPopup({
   }, []);
 
   const handleClose = useCallback(() => {
-    if (!isWorkModal) writeCaseStudyLink(null);
+    if (isWorkModal) writeWorkLink(null);
+    else writeCaseStudyLink(null);
     onClose();
   }, [isWorkModal, onClose]);
 
   const copyShareLink = useCallback(async () => {
-    if (isWorkModal) return;
-    const sectionForUrl =
-      displayedId && displayedId !== firstSectionId ? displayedId : undefined;
-    const href = buildCaseStudyShareUrl(studySlug, sectionForUrl);
-    writeCaseStudyLink(studySlug, sectionForUrl);
+    let href: string;
+    if (isWorkModal) {
+      if (!work?.id) return;
+      href = buildWorkShareUrl(work.id);
+      writeWorkLink(work.id);
+    } else {
+      const sectionForUrl =
+        displayedId && displayedId !== firstSectionId
+          ? displayedId
+          : undefined;
+      href = buildCaseStudyShareUrl(studySlug, sectionForUrl);
+      writeCaseStudyLink(studySlug, sectionForUrl);
+    }
     try {
       await navigator.clipboard.writeText(href);
       setShareCopied(true);
@@ -2743,7 +2770,7 @@ export function CaseStudyPopup({
     } catch {
       setShareCopied(false);
     }
-  }, [isWorkModal, displayedId, firstSectionId, studySlug]);
+  }, [isWorkModal, work?.id, displayedId, firstSectionId, studySlug]);
 
   useEffect(() => {
     if (open) {
@@ -2966,7 +2993,8 @@ export function CaseStudyPopup({
     eyebrowLabel = section.navLabel;
   }
 
-  return (
+  // Portal to body so parent filters (Other Works hover blur) cannot trap `fixed`.
+  return createPortal(
     <div
       className={`fixed inset-0 z-[70] flex cursor-default items-center justify-center bg-black/75 p-3 transition-opacity duration-300 ease-out sm:p-5 md:bg-black/60 md:p-7 md:backdrop-blur-[2px] ${
         visible ? "opacity-100" : "opacity-0"
@@ -3071,19 +3099,37 @@ export function CaseStudyPopup({
               )}
             </p>
             <div className="flex shrink-0 items-center gap-5">
-              {!isWorkModal ? (
-                <button
-                  type="button"
-                  onClick={copyShareLink}
-                  className="inline-flex h-9 cursor-pointer items-center justify-center rounded-full border border-accent bg-accent px-3.5 text-[0.78rem] font-medium tracking-wide text-[#0c0907] transition-[border-color,background-color,color] duration-150 ease-out hover:border-[#F3EEE8]/45 hover:bg-transparent hover:text-white/90"
-                  aria-live="polite"
-                  aria-label={
-                    shareCopied ? "Link copied" : "Copy link to this case study"
-                  }
+              <button
+                type="button"
+                onClick={copyShareLink}
+                className="inline-flex h-9 cursor-pointer items-center justify-center gap-1.5 rounded-full border border-[#F3EEE8]/40 bg-transparent px-3.5 text-[0.78rem] font-medium tracking-wide text-[#F3EEE8]/90 transition-[border-color,background-color,color] duration-150 ease-out hover:border-accent hover:bg-accent hover:text-[#0c0907]"
+                aria-live="polite"
+                aria-label={
+                  shareCopied
+                    ? "Link copied"
+                    : isWorkModal
+                      ? "Copy link to this work"
+                      : "Copy link to this case study"
+                }
+              >
+                <svg
+                  className="size-3.5 shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
                 >
-                  {shareCopied ? "Copied" : "Share"}
-                </button>
-              ) : null}
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <path d="m8.59 13.51 6.83 3.98" />
+                  <path d="m15.41 6.51-6.82 3.98" />
+                </svg>
+                {shareCopied ? "Copied" : "Share"}
+              </button>
               <button
                 ref={closeBtnRef}
                 type="button"
@@ -3196,6 +3242,7 @@ export function CaseStudyPopup({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

@@ -138,6 +138,7 @@ const objectDetectionWork: OtherWork = {
   },
   modal: {
     type: "AR concept · video",
+    context: "Personal concept",
     tools: "Unity · Blender · Adobe After Effects",
     status: "Concept, not a working feature",
     media: {
@@ -168,6 +169,7 @@ const setupWithArWork: OtherWork = {
   },
   modal: {
     type: "AR prototype · video",
+    context: "Personal concept",
     tools: "Adobe After Effects",
     status: "Prototype, presented to management",
     media: {
@@ -199,6 +201,7 @@ const roomPlanLocationFinderWork: OtherWork = {
   },
   modal: {
     type: "AR demo · video",
+    context: "Personal concept",
     tools: "Adobe After Effects",
     status: "Demo, not a working feature",
     media: {
@@ -229,7 +232,7 @@ const barcodeScanWork: OtherWork = {
   },
   modal: {
     type: "Prototype · video",
-    context: "METRO app",
+    context: "Personal concept",
     tools: "Framer",
     status: "Implemented in the app",
     media: {
@@ -517,6 +520,7 @@ const tobiWork: OtherWork = {
   },
   modal: {
     type: "3D concept · image",
+    context: "Personal concept",
     tools: "Blender",
     status: "Concept, not in use",
     media: {

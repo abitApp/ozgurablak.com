@@ -8,6 +8,7 @@ import type {
   OtherWork,
   OtherWorksCategoryData,
 } from "@/content/otherWorks";
+import { readWorkLink } from "@/lib/caseStudyShare";
 
 const CaseStudyPopup = dynamic(
   () =>
@@ -141,6 +142,25 @@ function CategoryCardSlider({
   }, []);
 
   useEffect(() => () => clearBridgeTimer(), [clearBridgeTimer]);
+
+  // Open this category's work when `?work=` matches.
+  useEffect(() => {
+    const apply = () => {
+      const workId = readWorkLink();
+      if (!workId) return;
+      const matchIndex = works.findIndex((item) => item.id === workId);
+      if (matchIndex < 0) return;
+      const match = works[matchIndex];
+      if (!match) return;
+      clearBridgeTimer();
+      setIndex(matchIndex);
+      setModalWork(match);
+      setCaseStudyOpen(true);
+    };
+    apply();
+    window.addEventListener("popstate", apply);
+    return () => window.removeEventListener("popstate", apply);
+  }, [works, clearBridgeTimer]);
 
   const stopMomentum = useCallback(() => {
     if (momentumRef.current !== null) {
