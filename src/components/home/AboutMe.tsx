@@ -14,7 +14,7 @@ export function AboutMe() {
           <div className="min-w-0 w-full max-w-2xl">
             <h2
               id="about-heading"
-              className="text-[clamp(calc(2rem-12pt),calc(4vw-12pt),calc(3.25rem-12pt))] font-semibold tracking-tight text-balance"
+              className="text-[clamp(1.5rem,calc(2.5vw+1rem),calc(3.25rem-12pt))] font-semibold tracking-tight text-balance"
             >
               About me
             </h2>

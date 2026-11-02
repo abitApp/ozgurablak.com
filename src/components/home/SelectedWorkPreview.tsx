@@ -57,7 +57,7 @@ export function SelectedWorkPreview() {
         <div className="mb-10 max-w-2xl md:mb-14">
           <h2
             id="work-heading"
-            className="text-[clamp(calc(2rem-12pt),calc(4vw-12pt),calc(3.25rem-12pt))] font-semibold tracking-tight text-balance"
+            className="text-[clamp(1.5rem,calc(2.5vw+1rem),calc(3.25rem-12pt))] font-semibold tracking-tight text-balance"
           >
             Selected Works
           </h2>
@@ -89,7 +89,7 @@ export function SelectedWorkPreview() {
         <div className="mb-10 max-w-2xl md:mb-14">
           <h2
             id="other-works-heading"
-            className="text-[clamp(calc(2rem-12pt),calc(4vw-12pt),calc(3.25rem-12pt))] font-semibold tracking-tight text-balance"
+            className="text-[clamp(1.5rem,calc(2.5vw+1rem),calc(3.25rem-12pt))] font-semibold tracking-tight text-balance"
           >
             Other Works
           </h2>
@@ -110,7 +110,7 @@ export function SelectedWorkPreview() {
         <div className="mb-10 max-w-2xl md:mb-14">
           <h2
             id="my-products-heading"
-            className="text-[clamp(calc(2rem-12pt),calc(4vw-12pt),calc(3.25rem-12pt))] font-semibold tracking-tight text-balance"
+            className="text-[clamp(1.5rem,calc(2.5vw+1rem),calc(3.25rem-12pt))] font-semibold tracking-tight text-balance"
           >
             My Products
           </h2>
@@ -172,7 +172,7 @@ export function SelectedWorkPreview() {
             </div>
 
             <div className="min-w-0 self-end">
-              <div className="ml-auto w-[85%] -translate-x-10 opacity-70">
+              <div className="ml-auto w-[85%] opacity-70 md:-translate-x-10">
                 <ImagePlaceholder
                   id="faldium-card"
                   description="Faldium app screens"

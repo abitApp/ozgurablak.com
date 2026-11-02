@@ -318,11 +318,41 @@ export function WorkCarousel() {
     };
   }, [snapToNearest, startMomentum, stopMomentum]);
 
+  const arrowClass =
+    "h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-line bg-surface-elevated text-ink transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-35";
+
   return (
     <div className="mx-auto w-full max-w-[72rem]">
-      <p className="mb-5 text-sm text-ink-muted md:mb-6">
-        {activeIndex + 1} / {projects.length}
-      </p>
+      <div className="mb-5 flex items-center justify-between gap-3 md:mb-6">
+        <p className="text-sm text-ink-muted">
+          {activeIndex + 1} / {projects.length}
+        </p>
+        {/* Mobile: controls next to counter (side arrows sit outside the card). */}
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            type="button"
+            aria-label="Previous project"
+            disabled={!canPrev}
+            onClick={() => scrollByCard(-1)}
+            className={`inline-flex ${arrowClass}`}
+          >
+            <span aria-hidden="true" className="text-lg leading-none">
+              ←
+            </span>
+          </button>
+          <button
+            type="button"
+            aria-label="Next project"
+            disabled={!canNext}
+            onClick={() => scrollByCard(1)}
+            className={`inline-flex ${arrowClass}`}
+          >
+            <span aria-hidden="true" className="text-lg leading-none">
+              →
+            </span>
+          </button>
+        </div>
+      </div>
 
       <div className="relative">
         <div className="min-w-0 overflow-hidden">
@@ -377,7 +407,7 @@ export function WorkCarousel() {
           aria-label="Previous project"
           disabled={!canPrev}
           onClick={() => scrollByCard(-1)}
-          className="absolute top-1/2 left-0 z-20 inline-flex h-11 w-11 -translate-x-[calc(100%+0.75rem)] -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-line bg-surface-elevated text-ink transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-35 md:-translate-x-[calc(100%+1.25rem)]"
+          className={`absolute top-1/2 left-0 z-20 hidden -translate-x-[calc(100%+0.75rem)] -translate-y-1/2 md:inline-flex md:-translate-x-[calc(100%+1.25rem)] ${arrowClass}`}
         >
           <span aria-hidden="true" className="text-lg leading-none">
             ←
@@ -389,7 +419,7 @@ export function WorkCarousel() {
           aria-label="Next project"
           disabled={!canNext}
           onClick={() => scrollByCard(1)}
-          className="absolute top-1/2 right-0 z-20 inline-flex h-11 w-11 translate-x-[calc(100%+0.75rem)] -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-line bg-surface-elevated text-ink transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-35 md:translate-x-[calc(100%+1.25rem)]"
+          className={`absolute top-1/2 right-0 z-20 hidden translate-x-[calc(100%+0.75rem)] -translate-y-1/2 md:inline-flex md:translate-x-[calc(100%+1.25rem)] ${arrowClass}`}
         >
           <span aria-hidden="true" className="text-lg leading-none">
             →

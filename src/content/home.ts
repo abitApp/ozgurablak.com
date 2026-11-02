@@ -12,7 +12,8 @@ export const contact = {
   whatsappUsername: "o.ablak",
   whatsappUrl: "https://wa.me/o.ablak",
   /** Drop a PDF at this path when ready. */
-  cvUrl: "/media/ozgur-ablak-cv.pdf",
+  cvUrl:
+    "https://drive.google.com/file/d/1HfKJgRAUOatgpaApfTfh3TLUJqq7_BcI/view?usp=sharing",
 };
 
 export const navItems: Array<{
