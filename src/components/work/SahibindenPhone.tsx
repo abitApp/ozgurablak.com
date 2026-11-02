@@ -124,8 +124,20 @@ export function SahibindenPhone({
   const config = VARIANTS[variant];
   const [ripples, setRipples] = useState<Ripple[]>([]);
   const [pressed, setPressed] = useState(false);
+  /** Blur blobs + glass floor — desktop / fine pointer only (mobile CPU). */
+  const [richFx, setRichFx] = useState(false);
   const nextId = useRef(0);
   const reactId = useId();
+
+  useEffect(() => {
+    const media = window.matchMedia(
+      "(min-width: 768px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+    );
+    const sync = () => setRichFx(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     if (!config.showFab && !config.showMicWaves) return;
@@ -160,100 +172,109 @@ export function SahibindenPhone({
       className="relative flex h-full min-h-0 w-full shrink-0 items-center justify-center overflow-hidden"
       aria-label={config.label}
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0"
-        style={{
-          // Longer top melt so blobs don't look hard-clipped at the panel edge
-          maskImage: [
-            "linear-gradient(to bottom, transparent 0%, #000 22%, #000 86%, transparent 100%)",
-            "linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%)",
-          ].join(", "),
-          WebkitMaskImage: [
-            "linear-gradient(to bottom, transparent 0%, #000 22%, #000 86%, transparent 100%)",
-            "linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%)",
-          ].join(", "),
-          maskComposite: "intersect",
-          WebkitMaskComposite: "source-in",
-        }}
-      >
-        {BACKDROP_SHAPES.map((shape) => {
-          const blurPx =
-            Number.parseFloat(shape.blur) *
-            (variant === "approach" ? 1.2 : 1);
+      {richFx ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            // Longer top melt so blobs don't look hard-clipped at the panel edge
+            maskImage: [
+              "linear-gradient(to bottom, transparent 0%, #000 22%, #000 86%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%)",
+            ].join(", "),
+            WebkitMaskImage: [
+              "linear-gradient(to bottom, transparent 0%, #000 22%, #000 86%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%)",
+            ].join(", "),
+            maskComposite: "intersect",
+            WebkitMaskComposite: "source-in",
+          }}
+        >
+          {BACKDROP_SHAPES.map((shape) => {
+            const blurPx =
+              Number.parseFloat(shape.blur) *
+              (variant === "approach" ? 1.2 : 1);
 
-          return (
-            <span
-              key={shape.id}
-              className={
-                shape.drift
-                  ? `sahibinden-shape sahibinden-shape--${shape.drift}`
-                  : "sahibinden-shape"
-              }
-              style={{
-                position: "absolute",
-                left: shape.left,
-                top: shape.top,
-                width: shape.width,
-                height: shape.height,
-                borderRadius: shape.radius,
-                background: shape.color,
-                opacity: shape.opacity,
-                filter: `blur(${blurPx}px)`,
-                transform: `rotate(${shape.rotate})`,
-              }}
-            />
-          );
-        })}
-      </div>
+            return (
+              <span
+                key={shape.id}
+                className={
+                  shape.drift
+                    ? `sahibinden-shape sahibinden-shape--${shape.drift}`
+                    : "sahibinden-shape"
+                }
+                style={{
+                  position: "absolute",
+                  left: shape.left,
+                  top: shape.top,
+                  width: shape.width,
+                  height: shape.height,
+                  borderRadius: shape.radius,
+                  background: shape.color,
+                  opacity: shape.opacity,
+                  filter: `blur(${blurPx}px)`,
+                  transform: `rotate(${shape.rotate})`,
+                }}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(28,95,165,0.22)_0%,transparent_62%)]"
+        />
+      )}
 
-      {/* Glass floor under the phone — sits in the gap below (above phone z), no layout shift */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 z-[15] w-[42%] max-w-[18rem]"
-        style={{
-          bottom: "2%",
-          height: "8%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        <span
+      {/* Glass floor under the phone — desktop only (blur filters are costly on mobile). */}
+      {richFx ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 z-[15] w-[42%] max-w-[18rem]"
           style={{
-            position: "absolute",
-            inset: "18% 2% 0",
-            borderRadius: "50%",
-            background:
-              "radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.22) 48%, transparent 76%)",
-            filter: "blur(8px)",
+            bottom: "2%",
+            height: "8%",
+            transform: "translateX(-50%)",
           }}
-        />
-        <span
-          style={{
-            position: "absolute",
-            left: "6%",
-            right: "6%",
-            top: "8%",
-            height: "55%",
-            borderRadius: "50%",
-            background:
-              "radial-gradient(ellipse at center, rgba(243, 235, 226, 0.42) 0%, rgba(150, 205, 255, 0.18) 40%, transparent 78%)",
-            filter: "blur(5px)",
-          }}
-        />
-        <span
-          style={{
-            position: "absolute",
-            left: "18%",
-            right: "18%",
-            top: "22%",
-            height: "18%",
-            borderRadius: "50%",
-            background:
-              "linear-gradient(to bottom, rgba(255, 255, 255, 0.22), transparent)",
-            filter: "blur(2px)",
-          }}
-        />
-      </div>
+        >
+          <span
+            style={{
+              position: "absolute",
+              inset: "18% 2% 0",
+              borderRadius: "50%",
+              background:
+                "radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.22) 48%, transparent 76%)",
+              filter: "blur(8px)",
+            }}
+          />
+          <span
+            style={{
+              position: "absolute",
+              left: "6%",
+              right: "6%",
+              top: "8%",
+              height: "55%",
+              borderRadius: "50%",
+              background:
+                "radial-gradient(ellipse at center, rgba(243, 235, 226, 0.42) 0%, rgba(150, 205, 255, 0.18) 40%, transparent 78%)",
+              filter: "blur(5px)",
+            }}
+          />
+          <span
+            style={{
+              position: "absolute",
+              left: "18%",
+              right: "18%",
+              top: "22%",
+              height: "18%",
+              borderRadius: "50%",
+              background:
+                "linear-gradient(to bottom, rgba(255, 255, 255, 0.22), transparent)",
+              filter: "blur(2px)",
+            }}
+          />
+        </div>
+      ) : null}
 
       {/* Layout-sized (not transform scale) so it cannot overflow the scroll area */}
       <div

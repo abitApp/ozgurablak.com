@@ -2879,7 +2879,7 @@ export function CaseStudyPopup({
 
   return (
     <div
-      className={`fixed inset-0 z-[70] flex cursor-default items-center justify-center bg-black/60 p-3 backdrop-blur-[2px] transition-opacity duration-300 ease-out sm:p-5 md:p-7 ${
+      className={`fixed inset-0 z-[70] flex cursor-default items-center justify-center bg-black/75 p-3 transition-opacity duration-300 ease-out sm:p-5 md:bg-black/60 md:p-7 md:backdrop-blur-[2px] ${
         visible ? "opacity-100" : "opacity-0"
       }`}
       role="presentation"

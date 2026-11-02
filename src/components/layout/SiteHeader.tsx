@@ -45,9 +45,6 @@ export function SiteHeader() {
     };
   }, [activePopup]);
 
-  // Locked translucent header — does not darken on scroll
-  const backgroundOpacity = 0.1;
-
   // 2px smaller than previous clamp(0.95rem … 1.125rem)
   const linkClass =
     "cursor-pointer text-[clamp(calc(0.95rem-2px),1.4vw,calc(1.125rem-2px))] font-normal tracking-[0.04em] text-white/90 uppercase transition-opacity hover:opacity-70";
@@ -59,15 +56,8 @@ export function SiteHeader() {
 
   return (
     <>
-      <header
-        className="fixed inset-x-0 top-0 z-50"
-        style={{
-          backgroundColor: `rgba(0, 0, 0, ${backgroundOpacity})`,
-          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-          backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
-        }}
-      >
+      {/* Mobile: solid scrim (no backdrop-filter). Desktop: light + blur. */}
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08] bg-black/55 md:bg-black/10 md:backdrop-blur-[8px]">
         <div className="mx-auto flex min-h-16 max-w-[72rem] items-center justify-between gap-6 px-5 py-3 md:min-h-20 md:px-8 md:py-4">
           <a
             href="#top"
@@ -135,7 +125,7 @@ export function SiteHeader() {
         {menuOpen ? (
           <div
             id={menuId}
-            className="border-t border-white/15 bg-black/90 px-5 py-6 text-white/90 backdrop-blur-md md:hidden"
+            className="border-t border-white/15 bg-black/95 px-5 py-6 text-white/90 md:hidden"
           >
             <nav className="flex flex-col gap-1" aria-label="Mobile">
               {navItems.map((item) =>
@@ -182,7 +172,7 @@ export function SiteHeader() {
 
       {activePopup ? (
         <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-5 backdrop-blur-sm"
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-5 md:bg-black/70 md:backdrop-blur-sm"
           role="presentation"
           onClick={() => setActivePopup(null)}
         >

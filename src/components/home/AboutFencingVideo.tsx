@@ -118,7 +118,11 @@ export function AboutFencingVideo() {
     >
       {/* Soft cream Polaroid — muted, not yellow */}
       <div
-        className="relative z-[1] overflow-hidden rounded-[14px] bg-[url('/media/about/polaroid-paper.jpg')] bg-cover bg-center px-3 pt-3 pb-1"
+        className="relative z-[1] overflow-hidden rounded-[14px] bg-cover bg-center px-3 pt-3 pb-1"
+        style={{
+          backgroundImage:
+            "image-set(url('/media/about/polaroid-paper.webp') type('image/webp'), url('/media/about/polaroid-paper.jpg') type('image/jpeg'))",
+        }}
         onMouseEnter={() => {
           if (canHover && !reducedMotion) void play();
         }}
@@ -159,7 +163,7 @@ export function AboutFencingVideo() {
               e.stopPropagation();
               toggleMute();
             }}
-            className="absolute top-2 right-2 z-[4] inline-flex size-7 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/25 text-white/80 backdrop-blur-sm transition-colors hover:border-white/35 hover:bg-black/40"
+            className="absolute top-2 right-2 z-[4] inline-flex size-7 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/40 text-white/80 transition-colors hover:border-white/35 hover:bg-black/50 md:bg-black/25 md:backdrop-blur-sm"
             aria-label={muted ? "Unmute video" : "Mute video"}
             aria-pressed={muted}
           >

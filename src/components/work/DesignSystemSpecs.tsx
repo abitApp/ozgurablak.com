@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Design System — Challenge media.
@@ -145,8 +145,22 @@ export function DesignSystemSpecs() {
   const pillRefs = useRef<(HTMLDivElement | null)[]>([]);
   const lineRefs = useRef<(SVGLineElement | null)[]>([]);
   const arrowRefs = useRef<(SVGPolygonElement | null)[]>([]);
+  /** Blur floor + rAF drift — desktop / fine pointer only. */
+  const [richFx, setRichFx] = useState(false);
 
   useEffect(() => {
+    const media = window.matchMedia(
+      "(min-width: 768px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+    );
+    const sync = () => setRichFx(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    if (!richFx) return;
+
     let frame = 0;
     const start = performance.now();
 
@@ -194,7 +208,7 @@ export function DesignSystemSpecs() {
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, []);
+  }, [richFx]);
 
   return (
     <div
@@ -216,39 +230,41 @@ export function DesignSystemSpecs() {
             transform: "translate(-50%, -50%)",
           }}
         >
-          <div
-            aria-hidden
-            className="pointer-events-none absolute left-1/2 z-[5] w-[70%]"
-            style={{
-              bottom: "1%",
-              height: "7%",
-              transform: "translateX(-50%)",
-            }}
-          >
-            <span
+          {richFx ? (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute left-1/2 z-[5] w-[70%]"
               style={{
-                position: "absolute",
-                inset: "10% 0 0",
-                borderRadius: "50%",
-                background:
-                  "radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.2) 48%, transparent 76%)",
-                filter: "blur(7px)",
+                bottom: "1%",
+                height: "7%",
+                transform: "translateX(-50%)",
               }}
-            />
-            <span
-              style={{
-                position: "absolute",
-                left: "8%",
-                right: "8%",
-                top: "0%",
-                height: "50%",
-                borderRadius: "50%",
-                background:
-                  "radial-gradient(ellipse at center, rgba(243, 235, 226, 0.35) 0%, rgba(150, 205, 255, 0.12) 45%, transparent 78%)",
-                filter: "blur(4px)",
-              }}
-            />
-          </div>
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  inset: "10% 0 0",
+                  borderRadius: "50%",
+                  background:
+                    "radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.2) 48%, transparent 76%)",
+                  filter: "blur(7px)",
+                }}
+              />
+              <span
+                style={{
+                  position: "absolute",
+                  left: "8%",
+                  right: "8%",
+                  top: "0%",
+                  height: "50%",
+                  borderRadius: "50%",
+                  background:
+                    "radial-gradient(ellipse at center, rgba(243, 235, 226, 0.35) 0%, rgba(150, 205, 255, 0.12) 45%, transparent 78%)",
+                  filter: "blur(4px)",
+                }}
+              />
+            </div>
+          ) : null}
 
           <Image
             src={PHONE_SRC}

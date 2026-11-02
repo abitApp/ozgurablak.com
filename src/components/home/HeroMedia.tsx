@@ -133,7 +133,7 @@ export function HeroMedia() {
         <button
           type="button"
           onClick={togglePlayback}
-          className="absolute right-5 bottom-5 z-20 inline-flex size-11 cursor-pointer items-center justify-center rounded-full bg-black/30 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/45 md:right-8 md:bottom-8"
+          className="absolute right-5 bottom-5 z-20 inline-flex size-11 cursor-pointer items-center justify-center rounded-full bg-black/40 text-white/90 transition-colors hover:bg-black/55 md:right-8 md:bottom-8 md:bg-black/30 md:backdrop-blur-sm"
           style={{ width: BTN_SIZE, height: BTN_SIZE }}
           aria-label={
             playing ? "Pause background video" : "Play background video"

@@ -7,6 +7,7 @@ export const sans = Poppins({
   style: ["normal", "italic"],
   variable: "--font-poppins",
   display: "swap",
+  adjustFontFallback: true,
 });
 
 /** Hero motto only uses bold Cormorant. */
@@ -15,6 +16,7 @@ export const motto = Cormorant_Garamond({
   weight: ["700"],
   variable: "--font-cormorant-garamond",
   display: "swap",
+  adjustFontFallback: true,
 });
 
 /** Polaroid caption — below the fold; don't preload on first paint. */
