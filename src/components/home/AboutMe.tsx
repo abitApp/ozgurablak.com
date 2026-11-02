@@ -3,11 +3,13 @@ import { AboutFencingVideo } from "@/components/home/AboutFencingVideo";
 export function AboutMe() {
   return (
     <section
-      id="about"
-      className="scroll-mt-24 bg-surface px-5 pt-20 pb-0 text-ink md:scroll-mt-28 md:px-8 md:pt-28 md:pb-0"
+      className="bg-surface px-5 pt-20 pb-0 text-ink md:px-8 md:pt-28 md:pb-0"
       aria-labelledby="about-heading"
     >
-      <div className="mx-auto max-w-[72rem]">
+      <div
+        id="about"
+        className="mx-auto max-w-[72rem] scroll-mt-24 md:scroll-mt-28"
+      >
         <div className="flex flex-col items-center gap-10 md:flex-row md:items-center md:justify-between md:gap-14 lg:gap-16">
           <div className="min-w-0 w-full max-w-2xl">
             <h2

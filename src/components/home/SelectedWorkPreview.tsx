@@ -47,11 +47,13 @@ export function SelectedWorkPreview() {
 
   return (
     <section
-      id="work"
-      className="scroll-mt-24 bg-surface px-5 pt-20 pb-0 text-ink md:scroll-mt-28 md:px-8 md:pt-28 md:pb-0"
+      className="bg-surface px-5 pt-20 pb-0 text-ink md:px-8 md:pt-28 md:pb-0"
       aria-labelledby="work-heading"
     >
-      <div className="mx-auto max-w-[72rem]">
+      <div
+        id="work"
+        className="mx-auto max-w-[72rem] scroll-mt-24 md:scroll-mt-28"
+      >
         <div className="mb-10 max-w-2xl md:mb-14">
           <h2
             id="work-heading"
@@ -118,7 +120,7 @@ export function SelectedWorkPreview() {
         </div>
 
         <article className="overflow-hidden rounded-[1.25rem] border border-line bg-surface shadow-[0_28px_70px_rgba(0,0,0,0.35)]">
-          <div className="grid grid-cols-1 gap-8 p-6 pb-0 md:grid-cols-2 md:gap-10 md:p-8 md:pb-0 md:pr-0">
+          <div className="grid grid-cols-1 gap-8 p-6 pb-0 md:grid-cols-[1.2fr_0.8fr] md:gap-10 md:p-8 md:pb-0 md:pr-0">
             <div className="flex min-w-0 flex-col pb-6 md:pb-8">
               <h3 className="text-[clamp(1.35rem,2.4vw,1.85rem)] font-semibold tracking-tight text-ink">
                 Faldium
@@ -129,10 +131,9 @@ export function SelectedWorkPreview() {
               <p className="mt-5 text-[0.95rem] leading-relaxed text-ink/90">
                 Faldium started as a Turkish coffee reading app: you upload
                 photos of your cup and get an AI reading with voice narration.
-                The app keeps developing and changing with user surveys and
-                feedback. I track usage with Firebase, Google Analytics and my
-                own event tracking to find problems and improve the UX. Next:
-                English, more countries and a companion AI app.
+                User surveys, feedback and my own usage tracking (Firebase,
+                Google Analytics, custom events) keep shaping it. Next: English,
+                more countries and a companion AI app.
               </p>
 
               <dl className="mt-6 space-y-3 text-[0.88rem] leading-snug">
@@ -171,7 +172,7 @@ export function SelectedWorkPreview() {
             </div>
 
             <div className="min-w-0 self-end">
-              <div className="ml-auto w-[90%] opacity-70">
+              <div className="ml-auto w-[85%] -translate-x-10 opacity-70">
                 <ImagePlaceholder
                   id="faldium-card"
                   description="Faldium app screens"

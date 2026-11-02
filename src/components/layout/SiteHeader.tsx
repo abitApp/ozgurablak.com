@@ -92,14 +92,17 @@ export function SiteHeader() {
                     href={item.href}
                     className={linkClass}
                     onClick={(event) => {
+                      if (!item.href) return;
+                      event.preventDefault();
                       if (item.href === "#work") {
                         window.dispatchEvent(new Event(WORKS_GO_START_EVENT));
                       }
-                      if (window.location.hash === item.href) {
-                        event.preventDefault();
-                        document
-                          .getElementById(item.href.slice(1))
-                          ?.scrollIntoView({ behavior: "smooth" });
+                      const target = document.getElementById(
+                        item.href.slice(1),
+                      );
+                      if (target) {
+                        target.scrollIntoView({ behavior: "smooth" });
+                        window.history.pushState(null, "", item.href);
                       }
                     }}
                   >
@@ -143,14 +146,17 @@ export function SiteHeader() {
                     className="inline-flex cursor-pointer items-center gap-3 py-2 text-left text-[calc(1.125rem-2px)] font-normal tracking-[0.04em] text-white/90 uppercase"
                     onClick={(event) => {
                       setMenuOpen(false);
+                      if (!item.href) return;
+                      event.preventDefault();
                       if (item.href === "#work") {
                         window.dispatchEvent(new Event(WORKS_GO_START_EVENT));
                       }
-                      if (item.href && window.location.hash === item.href) {
-                        event.preventDefault();
-                        document
-                          .getElementById(item.href.slice(1))
-                          ?.scrollIntoView({ behavior: "smooth" });
+                      const target = document.getElementById(
+                        item.href.slice(1),
+                      );
+                      if (target) {
+                        target.scrollIntoView({ behavior: "smooth" });
+                        window.history.pushState(null, "", item.href);
                       }
                     }}
                   >

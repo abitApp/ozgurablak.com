@@ -1,5 +1,8 @@
+"use client";
+
 import { motto } from "@/lib/fonts";
 import { HeroMedia } from "@/components/home/HeroMedia";
+import { WORKS_GO_START_EVENT } from "@/content/home";
 
 export function Hero() {
   return (
@@ -40,6 +43,15 @@ export function Hero() {
           <a
             href="#work"
             className="mt-12 inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full border border-white/40 bg-transparent px-6 text-xs tracking-[0.16em] text-white/85 uppercase transition-colors hover:border-white/70 hover:bg-white/10 hover:text-white/90 md:mt-14"
+            onClick={(event) => {
+              event.preventDefault();
+              window.dispatchEvent(new Event(WORKS_GO_START_EVENT));
+              const target = document.getElementById("work");
+              if (target) {
+                target.scrollIntoView({ behavior: "smooth" });
+                window.history.pushState(null, "", "#work");
+              }
+            }}
           >
             Selected works
             <svg
