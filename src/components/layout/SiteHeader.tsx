@@ -61,10 +61,15 @@ export function SiteHeader() {
         <div className="mx-auto flex min-h-16 max-w-[72rem] items-center justify-between gap-6 px-5 py-3 md:min-h-20 md:px-8 md:py-4">
           <a
             href="#top"
-            className="shrink-0 cursor-pointer text-[clamp(calc(0.95rem+4pt),calc(2vw+4pt),calc(1.5rem+4pt))] font-light leading-none tracking-tight text-[#ffffff]"
+            className="flex min-w-0 shrink-0 cursor-pointer flex-col gap-1"
             onClick={() => setMenuOpen(false)}
           >
-            Özgür Ablak
+            <span className="text-[clamp(calc(0.95rem+4pt),calc(2vw+4pt),calc(1.5rem+4pt))] font-light leading-none tracking-tight text-[#ffffff]">
+              Özgür Ablak
+            </span>
+            <span className="max-w-[16rem] text-[10px] font-normal leading-snug tracking-[0.1px] text-[#BFB7B0] sm:max-w-none">
+              Senior Product Designer · UX, Design Systems & AI Products
+            </span>
           </a>
 
           <nav

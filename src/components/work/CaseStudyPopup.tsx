@@ -3075,7 +3075,7 @@ export function CaseStudyPopup({
                 <button
                   type="button"
                   onClick={copyShareLink}
-                  className="inline-flex h-9 cursor-pointer items-center justify-center rounded-full border border-accent bg-accent px-3.5 text-[0.78rem] font-medium tracking-wide text-[#0c0907] transition-opacity duration-150 ease-out hover:opacity-90"
+                  className="inline-flex h-9 cursor-pointer items-center justify-center rounded-full border border-accent bg-accent px-3.5 text-[0.78rem] font-medium tracking-wide text-[#0c0907] transition-[border-color,background-color,color] duration-150 ease-out hover:border-[#F3EEE8]/45 hover:bg-transparent hover:text-white/90"
                   aria-live="polite"
                   aria-label={
                     shareCopied ? "Link copied" : "Copy link to this case study"
