@@ -36,6 +36,8 @@ export type CaseStudyImageSlot = {
   objectFit?: "cover" | "contain" | "fill";
   /** Frame border + radius. Default true; false when the asset has its own curves. */
   framed?: boolean;
+  /** Frame outline colour. Default site ink border; white for light chrome. */
+  frameBorder?: "default" | "white";
   /** Override frame corner radius (e.g. "rounded-[1.1rem]"). */
   roundedClassName?: string;
   /** Frame fill when framed. Default dark; white = light card matching story boxes. */
@@ -63,6 +65,8 @@ export type CaseStudyImageSlot = {
   vimeoAspectRatio?: string;
   /** Wrap the still in an Android handset chrome (overview phone demos). */
   phoneFrame?: "android";
+  /** Handset chrome colour when `phoneFrame` is set. Default dark. */
+  phoneFrameTone?: "dark" | "white";
 };
 
 export type CaseStudyOverviewBodyLink = {
@@ -1977,6 +1981,7 @@ export const caseStudies: Record<string, CaseStudy> = {
               objectFit: "cover",
               unoptimized: true,
               phoneFrame: "android",
+              phoneFrameTone: "dark",
             },
             {
               id: "faldium-overview-2",
@@ -1988,6 +1993,7 @@ export const caseStudies: Record<string, CaseStudy> = {
               objectFit: "cover",
               unoptimized: true,
               phoneFrame: "android",
+              phoneFrameTone: "dark",
             },
             {
               id: "faldium-overview-3",
@@ -1999,6 +2005,7 @@ export const caseStudies: Record<string, CaseStudy> = {
               objectFit: "cover",
               unoptimized: true,
               phoneFrame: "android",
+              phoneFrameTone: "dark",
             },
           ],
           body: {
@@ -2031,6 +2038,7 @@ export const caseStudies: Record<string, CaseStudy> = {
               objectFit: "cover",
               unoptimized: true,
               phoneFrame: "android",
+              phoneFrameTone: "dark",
               widthClassName: "w-full",
             },
             {
@@ -2043,6 +2051,7 @@ export const caseStudies: Record<string, CaseStudy> = {
               objectFit: "cover",
               unoptimized: true,
               phoneFrame: "android",
+              phoneFrameTone: "dark",
               widthClassName: "w-full",
             },
             {
@@ -2055,6 +2064,7 @@ export const caseStudies: Record<string, CaseStudy> = {
               objectFit: "cover",
               unoptimized: true,
               phoneFrame: "android",
+              phoneFrameTone: "dark",
               widthClassName: "w-full",
             },
           ],
@@ -2080,6 +2090,7 @@ export const caseStudies: Record<string, CaseStudy> = {
               objectFit: "cover",
               unoptimized: true,
               phoneFrame: "android",
+              phoneFrameTone: "dark",
               widthClassName: "w-full",
             },
             {
@@ -2092,6 +2103,7 @@ export const caseStudies: Record<string, CaseStudy> = {
               objectFit: "cover",
               unoptimized: true,
               phoneFrame: "android",
+              phoneFrameTone: "dark",
               widthClassName: "w-full",
             },
             {
@@ -2104,6 +2116,7 @@ export const caseStudies: Record<string, CaseStudy> = {
               objectFit: "cover",
               unoptimized: true,
               phoneFrame: "android",
+              phoneFrameTone: "dark",
               widthClassName: "w-full",
             },
           ],

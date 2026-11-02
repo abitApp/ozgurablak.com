@@ -83,10 +83,13 @@ function CaseStudyScrollRail({
   scrollRef,
   thumb,
   controlsId,
+  overflowing,
 }: {
   scrollRef: RefObject<HTMLDivElement | null>;
   thumb: { top: number; height: number };
   controlsId: string;
+  /** Keep rail width reserved even when hidden — avoids content width thrash. */
+  overflowing: boolean;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -148,17 +151,24 @@ function CaseStudyScrollRail({
       aria-controls={controlsId}
       aria-valuenow={Math.round(thumb.top)}
       aria-valuemin={0}
-      className="relative w-[6px] shrink-0 cursor-pointer rounded-full bg-[#171412]"
-      onPointerDown={onTrackPointerDown}
+      aria-hidden={!overflowing}
+      className={`relative w-[6px] shrink-0 rounded-full bg-[#171412] ${
+        overflowing
+          ? "cursor-pointer opacity-100"
+          : "pointer-events-none opacity-0"
+      }`}
+      onPointerDown={overflowing ? onTrackPointerDown : undefined}
     >
-      <div
-        className="absolute top-0 left-0 w-full cursor-grab rounded-full bg-[#43362F] active:cursor-grabbing"
-        style={{
-          transform: `translateY(${thumb.top}px)`,
-          height: thumb.height,
-        }}
-        onPointerDown={onThumbPointerDown}
-      />
+      {overflowing ? (
+        <div
+          className="absolute top-0 left-0 w-full cursor-grab rounded-full bg-[#43362F] active:cursor-grabbing"
+          style={{
+            transform: `translateY(${thumb.top}px)`,
+            height: thumb.height,
+          }}
+          onPointerDown={onThumbPointerDown}
+        />
+      ) : null}
     </div>
   );
 }
@@ -416,6 +426,7 @@ function PortfolioOverviewBody({
                   alt={image.alt ?? image.description}
                   aspectRatio={image.aspectRatio}
                   unoptimized={image.unoptimized}
+                  tone={image.phoneFrameTone}
                 />
               ) : (
                 <ImagePlaceholder
@@ -430,6 +441,7 @@ function PortfolioOverviewBody({
                     image.roundedClassName ?? "rounded-[1.1rem]"
                   }
                   framed={image.framed ?? false}
+                  frameBorder={image.frameBorder}
                 />
               )}
             </div>
@@ -1018,6 +1030,7 @@ function CaseStudyMediaSlot({
         alt={slot.alt ?? slot.description}
         aspectRatio={slot.aspectRatio}
         unoptimized={slot.unoptimized}
+        tone={slot.phoneFrameTone}
       />
     );
   }
@@ -1207,6 +1220,7 @@ function CaseStudyMediaSlot({
       unoptimized={slot.unoptimized}
       objectFit={slot.objectFit}
       framed={slot.framed}
+      frameBorder={slot.frameBorder}
       roundedClassName={
         slot.roundedClassName ??
         (slot.framed === false ? "rounded-[1.1rem]" : undefined)
@@ -3069,13 +3083,12 @@ export function CaseStudyPopup({
               )}
             </div>
 
-            {overflowing ? (
-              <CaseStudyScrollRail
-                scrollRef={scrollRef}
-                thumb={thumb}
-                controlsId={scrollRegionId}
-              />
-            ) : null}
+            <CaseStudyScrollRail
+              scrollRef={scrollRef}
+              thumb={thumb}
+              controlsId={scrollRegionId}
+              overflowing={overflowing}
+            />
           </div>
         </div>
       </div>

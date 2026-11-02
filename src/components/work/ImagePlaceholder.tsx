@@ -19,6 +19,8 @@ type ImagePlaceholderProps = {
   roundedClassName?: string;
   /** Omit the frame border (e.g. phone assets with their own edge). */
   framed?: boolean;
+  /** Frame outline colour when framed. Default site ink. */
+  frameBorder?: "default" | "white";
 };
 
 /**
@@ -36,10 +38,15 @@ export function ImagePlaceholder({
   quality = 92,
   roundedClassName = "rounded-[1.1rem]",
   framed = true,
+  frameBorder = "default",
 }: ImagePlaceholderProps) {
   const ratio =
     typeof aspectRatio === "number" ? String(aspectRatio) : aspectRatio;
-  const frameBorder = framed ? "border border-[#43362F]" : "border-0";
+  const frameBorderClass = !framed
+    ? "border-0"
+    : frameBorder === "white"
+      ? "border border-white/10"
+      : "border border-[#43362F]";
 
   if (src) {
     const isAnimatedGif = /\.gif($|\?)/i.test(src);
@@ -56,7 +63,7 @@ export function ImagePlaceholder({
     return (
       <figure
         id={id}
-        className={`relative w-full overflow-hidden bg-[#211B18]/80 [transform:translateZ(0)] ${frameBorder} ${roundedClassName}`}
+        className={`relative w-full overflow-hidden bg-[#211B18]/80 [transform:translateZ(0)] ${frameBorderClass} ${roundedClassName}`}
         style={{ aspectRatio: ratio }}
       >
         {/* Native <img> keeps animated GIFs playing; next/image can freeze them. */}
