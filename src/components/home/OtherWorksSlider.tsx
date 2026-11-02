@@ -22,15 +22,17 @@ type OtherWorksSliderProps = {
 type DragState = {
   pointerId: number | null;
   startX: number;
+  startY: number;
   startScroll: number;
   lastX: number;
   lastTime: number;
   velocity: number;
+  pending: boolean;
   dragging: boolean;
   moved: boolean;
 };
 
-const DRAG_THRESHOLD = 6;
+const DRAG_THRESHOLD = 8;
 /** Match CaseStudyPopup close fade before opening a bridged study. */
 const WORK_MODAL_FADE_MS = 300;
 
@@ -88,10 +90,12 @@ function CategoryCardSlider({
   const dragRef = useRef<DragState>({
     pointerId: null,
     startX: 0,
+    startY: 0,
     startScroll: 0,
     lastX: 0,
     lastTime: 0,
     velocity: 0,
+    pending: false,
     dragging: false,
     moved: false,
   });
@@ -277,8 +281,18 @@ function CategoryCardSlider({
     const track = trackRef.current;
     if (!track || total <= 1) return;
 
+    const resetDrag = () => {
+      dragRef.current.pending = false;
+      dragRef.current.dragging = false;
+      dragRef.current.moved = false;
+      dragRef.current.pointerId = null;
+      track.classList.remove("is-dragging");
+      setIsDragging(false);
+    };
+
     const onPointerDown = (event: PointerEvent) => {
-      if (event.pointerType === "mouse" && event.button !== 0) return;
+      // Mouse/pen: no drag — it fights page scroll over the card. Touch swipes.
+      if (event.pointerType !== "touch") return;
 
       const target = event.target;
       if (
@@ -294,36 +308,57 @@ function CategoryCardSlider({
       dragRef.current = {
         pointerId: event.pointerId,
         startX: event.clientX,
+        startY: event.clientY,
         startScroll: track.scrollLeft,
         lastX: event.clientX,
         lastTime: now,
         velocity: 0,
-        dragging: true,
+        pending: true,
+        dragging: false,
         moved: false,
       };
-
-      track.setPointerCapture(event.pointerId);
-      setIsDragging(true);
     };
 
     const onPointerMove = (event: PointerEvent) => {
       const drag = dragRef.current;
-      if (!drag.dragging || drag.pointerId !== event.pointerId) return;
+      if (drag.pointerId !== event.pointerId) return;
+      if (!drag.pending && !drag.dragging) return;
 
-      const now = performance.now();
-      const totalDelta = event.clientX - drag.startX;
-      const frameDelta = event.clientX - drag.lastX;
-      const frameTime = Math.max(1, now - drag.lastTime);
+      const totalDx = event.clientX - drag.startX;
+      const totalDy = event.clientY - drag.startY;
 
-      if (!drag.moved && Math.abs(totalDelta) >= DRAG_THRESHOLD) {
+      if (drag.pending && !drag.dragging) {
+        if (Math.hypot(totalDx, totalDy) < DRAG_THRESHOLD) return;
+
+        if (Math.abs(totalDy) > Math.abs(totalDx)) {
+          resetDrag();
+          return;
+        }
+
+        drag.pending = false;
+        drag.dragging = true;
         drag.moved = true;
+        drag.startScroll = track.scrollLeft;
+        drag.startX = event.clientX;
+        drag.lastX = event.clientX;
+        try {
+          track.setPointerCapture(event.pointerId);
+        } catch {
+          // ignore
+        }
         track.classList.add("is-dragging");
+        setIsDragging(true);
       }
 
-      if (!drag.moved) return;
+      if (!drag.dragging) return;
+
+      const now = performance.now();
+      const frameDelta = event.clientX - drag.lastX;
+      const frameTime = Math.max(1, now - drag.lastTime);
+      const scrollDx = event.clientX - drag.startX;
 
       event.preventDefault();
-      track.scrollLeft = drag.startScroll - totalDelta;
+      track.scrollLeft = drag.startScroll - scrollDx;
       drag.velocity = (frameDelta / frameTime) * 16.67;
       drag.lastX = event.clientX;
       drag.lastTime = now;
@@ -331,41 +366,63 @@ function CategoryCardSlider({
 
     const onPointerUp = (event: PointerEvent) => {
       const drag = dragRef.current;
-      if (!drag.dragging || drag.pointerId !== event.pointerId) return;
+      if (drag.pointerId !== event.pointerId) return;
 
       const releaseVelocity = drag.velocity;
       const didMove = drag.moved;
 
       try {
-        track.releasePointerCapture(event.pointerId);
+        if (track.hasPointerCapture(event.pointerId)) {
+          track.releasePointerCapture(event.pointerId);
+        }
       } catch {
         // already released
       }
 
-      drag.dragging = false;
-      drag.pointerId = null;
-      track.classList.remove("is-dragging");
-      setIsDragging(false);
+      resetDrag();
 
       if (didMove) {
         startMomentum(releaseVelocity);
-      } else {
-        snapToNearest();
       }
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+      if (maxScroll <= 0) return;
+
+      const horizontal =
+        Math.abs(event.deltaX) > Math.abs(event.deltaY)
+          ? event.deltaX
+          : event.shiftKey
+            ? event.deltaY
+            : 0;
+      if (horizontal === 0) return;
+
+      const next = Math.min(
+        maxScroll,
+        Math.max(0, track.scrollLeft + horizontal),
+      );
+      if (next === track.scrollLeft) return;
+
+      event.preventDefault();
+      stopMomentum();
+      track.scrollLeft = next;
     };
 
     track.addEventListener("pointerdown", onPointerDown);
     track.addEventListener("pointermove", onPointerMove, { passive: false });
     track.addEventListener("pointerup", onPointerUp);
     track.addEventListener("pointercancel", onPointerUp);
+    track.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
       track.removeEventListener("pointerdown", onPointerDown);
       track.removeEventListener("pointermove", onPointerMove);
       track.removeEventListener("pointerup", onPointerUp);
       track.removeEventListener("pointercancel", onPointerUp);
+      track.removeEventListener("wheel", onWheel);
     };
-  }, [snapToNearest, startMomentum, stopMomentum, total]);
+  }, [startMomentum, stopMomentum, total]);
 
   if (!total || !activeWork) return null;
 
@@ -393,10 +450,10 @@ function CategoryCardSlider({
             ref={trackRef}
             className={`flex h-full overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
               isDragging
-                ? "cursor-grabbing snap-none scroll-auto select-none"
-                : "cursor-grab snap-x snap-mandatory scroll-smooth"
+                ? "snap-none scroll-auto select-none"
+                : "snap-x snap-mandatory scroll-smooth"
             }`}
-            style={{ touchAction: "pan-y" }}
+            style={{ touchAction: "pan-x pan-y" }}
             aria-label={`${category.label} works`}
             tabIndex={0}
             onKeyDown={(event) => {

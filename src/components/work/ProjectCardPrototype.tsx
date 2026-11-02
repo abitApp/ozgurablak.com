@@ -487,7 +487,9 @@ export function ProjectCardPrototype({
       <div
         id={stackScrollId}
         ref={scrollRef}
-        className="outcome-stack-scroll min-h-0 min-w-0 flex-1 overscroll-contain"
+        className={`outcome-stack-scroll min-h-0 min-w-0 flex-1 ${
+          overflowing ? "overflow-y-auto" : "overflow-y-hidden"
+        }`}
         role="tablist"
         aria-label={`${project.title} story layers`}
         onScroll={syncThumb}
@@ -637,17 +639,13 @@ export function ProjectCardPrototype({
               className={`relative z-10 flex min-h-0 flex-1 gap-[14px] ${
                 project.subtitle ? "mt-4 md:mt-5" : "mt-6"
               }`}
-              onPointerDown={(event) => {
-                event.stopPropagation();
-              }}
-              onWheel={(event) => {
-                event.stopPropagation();
-              }}
             >
               <div
                 id={mediaScrollId}
                 ref={mediaScrollRef}
-                className="project-media-scroll min-h-0 min-w-0 flex-1"
+                className={`project-media-scroll min-h-0 min-w-0 flex-1 ${
+                  mediaOverflowing ? "overflow-y-auto" : "overflow-y-hidden"
+                }`}
                 aria-label={`${project.title} visuals`}
                 onScroll={syncMediaThumb}
               >

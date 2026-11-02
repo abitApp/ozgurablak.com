@@ -7,15 +7,18 @@ import { ProjectCardPrototype } from "@/components/work/ProjectCardPrototype";
 type DragState = {
   pointerId: number | null;
   startX: number;
+  startY: number;
   startScroll: number;
   lastX: number;
   lastTime: number;
   velocity: number;
+  /** Pointer is down; horizontal claim not decided yet. */
+  pending: boolean;
   dragging: boolean;
   moved: boolean;
 };
 
-const DRAG_THRESHOLD = 6;
+const DRAG_THRESHOLD = 8;
 
 export function WorkCarousel() {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -23,10 +26,12 @@ export function WorkCarousel() {
   const dragRef = useRef<DragState>({
     pointerId: null,
     startX: 0,
+    startY: 0,
     startScroll: 0,
     lastX: 0,
     lastTime: 0,
     velocity: 0,
+    pending: false,
     dragging: false,
     moved: false,
   });
@@ -225,8 +230,19 @@ export function WorkCarousel() {
     const track = trackRef.current;
     if (!track) return;
 
+    const resetDrag = () => {
+      dragRef.current.pending = false;
+      dragRef.current.dragging = false;
+      dragRef.current.moved = false;
+      dragRef.current.pointerId = null;
+      track.classList.remove("is-dragging");
+      setIsDragging(false);
+    };
+
     const onPointerDown = (event: PointerEvent) => {
-      if (event.pointerType === "mouse" && event.button !== 0) return;
+      // Mouse/pen: no drag-to-scroll (it fights page scroll over text/media).
+      // Touch keeps swipe; desktop uses arrows / shift+wheel / trackpad X.
+      if (event.pointerType !== "touch") return;
 
       // Let buttons/links inside cards receive normal clicks — don't capture.
       const target = event.target;
@@ -245,36 +261,60 @@ export function WorkCarousel() {
       dragRef.current = {
         pointerId: event.pointerId,
         startX: event.clientX,
+        startY: event.clientY,
         startScroll: track.scrollLeft,
         lastX: event.clientX,
         lastTime: now,
         velocity: 0,
-        dragging: true,
+        pending: true,
+        dragging: false,
         moved: false,
       };
-
-      track.setPointerCapture(event.pointerId);
-      setIsDragging(true);
+      // Do NOT capture yet — vertical page scroll must keep working until we
+      // know the gesture is horizontal.
     };
 
     const onPointerMove = (event: PointerEvent) => {
       const drag = dragRef.current;
-      if (!drag.dragging || drag.pointerId !== event.pointerId) return;
+      if (drag.pointerId !== event.pointerId) return;
+      if (!drag.pending && !drag.dragging) return;
 
-      const now = performance.now();
-      const totalDelta = event.clientX - drag.startX;
-      const frameDelta = event.clientX - drag.lastX;
-      const frameTime = Math.max(1, now - drag.lastTime);
+      const totalDx = event.clientX - drag.startX;
+      const totalDy = event.clientY - drag.startY;
 
-      if (!drag.moved && Math.abs(totalDelta) >= DRAG_THRESHOLD) {
+      if (drag.pending && !drag.dragging) {
+        if (Math.hypot(totalDx, totalDy) < DRAG_THRESHOLD) return;
+
+        // Vertical intent → abandon; let the browser scroll the page.
+        if (Math.abs(totalDy) > Math.abs(totalDx)) {
+          resetDrag();
+          return;
+        }
+
+        drag.pending = false;
+        drag.dragging = true;
         drag.moved = true;
+        drag.startScroll = track.scrollLeft;
+        drag.startX = event.clientX;
+        drag.lastX = event.clientX;
+        try {
+          track.setPointerCapture(event.pointerId);
+        } catch {
+          // ignore
+        }
         track.classList.add("is-dragging");
+        setIsDragging(true);
       }
 
-      if (!drag.moved) return;
+      if (!drag.dragging) return;
+
+      const now = performance.now();
+      const frameDelta = event.clientX - drag.lastX;
+      const frameTime = Math.max(1, now - drag.lastTime);
+      const scrollDx = event.clientX - drag.startX;
 
       event.preventDefault();
-      track.scrollLeft = drag.startScroll - totalDelta;
+      track.scrollLeft = drag.startScroll - scrollDx;
       drag.velocity = (frameDelta / frameTime) * 16.67;
       drag.lastX = event.clientX;
       drag.lastTime = now;
@@ -282,41 +322,65 @@ export function WorkCarousel() {
 
     const onPointerUp = (event: PointerEvent) => {
       const drag = dragRef.current;
-      if (!drag.dragging || drag.pointerId !== event.pointerId) return;
+      if (drag.pointerId !== event.pointerId) return;
 
       const releaseVelocity = drag.velocity;
       const didMove = drag.moved;
 
       try {
-        track.releasePointerCapture(event.pointerId);
+        if (track.hasPointerCapture(event.pointerId)) {
+          track.releasePointerCapture(event.pointerId);
+        }
       } catch {
         // already released
       }
 
-      drag.dragging = false;
-      drag.pointerId = null;
-      track.classList.remove("is-dragging");
-      setIsDragging(false);
+      resetDrag();
 
       if (didMove) {
         startMomentum(releaseVelocity);
-      } else {
-        snapToNearest();
       }
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+      if (maxScroll <= 0) return;
+
+      // Only horizontal intent (trackpad swipe / shift+wheel). Never steal
+      // plain vertical page scrolling while the cursor is over the carousel.
+      const horizontal =
+        Math.abs(event.deltaX) > Math.abs(event.deltaY)
+          ? event.deltaX
+          : event.shiftKey
+            ? event.deltaY
+            : 0;
+      if (horizontal === 0) return;
+
+      const next = Math.min(
+        maxScroll,
+        Math.max(0, track.scrollLeft + horizontal),
+      );
+      if (next === track.scrollLeft) return;
+
+      event.preventDefault();
+      stopMomentum();
+      track.scrollLeft = next;
     };
 
     track.addEventListener("pointerdown", onPointerDown);
     track.addEventListener("pointermove", onPointerMove, { passive: false });
     track.addEventListener("pointerup", onPointerUp);
     track.addEventListener("pointercancel", onPointerUp);
+    track.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
       track.removeEventListener("pointerdown", onPointerDown);
       track.removeEventListener("pointermove", onPointerMove);
       track.removeEventListener("pointerup", onPointerUp);
       track.removeEventListener("pointercancel", onPointerUp);
+      track.removeEventListener("wheel", onWheel);
     };
-  }, [snapToNearest, startMomentum, stopMomentum]);
+  }, [startMomentum, stopMomentum]);
 
   const arrowClass =
     "h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-line bg-surface-elevated text-ink transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-35";
@@ -360,10 +424,10 @@ export function WorkCarousel() {
             ref={trackRef}
             className={`work-carousel-track flex gap-8 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
               isDragging
-                ? "cursor-grabbing snap-none scroll-auto select-none"
-                : "cursor-grab snap-x snap-mandatory scroll-smooth"
+                ? "snap-none scroll-auto select-none"
+                : "snap-x snap-mandatory scroll-smooth"
             }`}
-            style={{ touchAction: "pan-y" }}
+            style={{ touchAction: "pan-x pan-y" }}
             aria-label="Selected portfolio projects"
             tabIndex={0}
             onKeyDown={(event) => {

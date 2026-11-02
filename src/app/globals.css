@@ -140,10 +140,12 @@ a {
   filter: none !important;
 }
 
-/* Native scrollbar hidden — custom track sits outside the cards (Figma) */
+/* Native scrollbar hidden — custom track sits outside the cards (Figma).
+   overflow-y is toggled in JSX: `auto` only while content overflows.
+   Always-on overflow:auto traps wheel/trackpad even when nothing scrolls. */
 .outcome-stack-scroll {
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  overflow-x: hidden;
+  overscroll-behavior-y: auto;
   touch-action: pan-y;
   scrollbar-width: none;
 }
@@ -157,8 +159,7 @@ a {
 /* Left-panel project visuals — native bar fully hidden; only custom track shows */
 .project-media-scroll {
   overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior-y: auto;
   touch-action: pan-y;
   scrollbar-width: none;
   -ms-overflow-style: none;

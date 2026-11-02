@@ -13,10 +13,10 @@ export function Hero() {
     >
       <HeroMedia />
 
-      {/* Flat scrim — LOCKED at 0.45; never change unless Özgür sets a new value */}
+      {/* Flat scrim — LOCKED at 0.35; never change unless Özgür sets a new value */}
       <div
         className="absolute inset-0 z-[1]"
-        style={{ backgroundColor: "rgba(0, 0, 0, 0.45)" }}
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.35)" }}
         aria-hidden="true"
       />
       <div className="hero-overlay absolute inset-0 z-[1]" aria-hidden="true" />
