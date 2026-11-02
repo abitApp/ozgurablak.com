@@ -19,10 +19,10 @@ import type {
 } from "@/content/home";
 
 const EMPTY_MEDIA: ProjectMedia[] = [];
+import dynamic from "next/dynamic";
 import { AppRatingsChart } from "@/components/work/AppRatingsChart";
 import { PhoenixFeatureGrid } from "@/components/work/PhoenixFeatureGrid";
 import { RatingPromptDemo } from "@/components/work/RatingPromptDemo";
-import { CaseStudyPopup } from "@/components/work/CaseStudyPopup";
 import { ImagePlaceholder } from "@/components/work/ImagePlaceholder";
 import { MetroWaitStickers } from "@/components/work/MetroWaitStickers";
 import { DesignSystemSpecs } from "@/components/work/DesignSystemSpecs";
@@ -30,6 +30,12 @@ import { SahibindenImpactChart } from "@/components/work/SahibindenImpactChart";
 import { SahibindenPhone } from "@/components/work/SahibindenPhone";
 import { UeqNoveltyChart } from "@/components/work/UeqNoveltyChart";
 import { UeqNoveltyStatic } from "@/components/work/UeqNoveltyStatic";
+
+const CaseStudyPopup = dynamic(
+  () =>
+    import("@/components/work/CaseStudyPopup").then((mod) => mod.CaseStudyPopup),
+  { ssr: false },
+);
 
 function StaticMediaImage({
   item,
@@ -318,6 +324,18 @@ export function ProjectCardPrototype({
   const [mediaThumb, setMediaThumb] = useState({ top: 0, height: 48 });
   const [mediaVisible, setMediaVisible] = useState(true);
   const [caseStudyOpen, setCaseStudyOpen] = useState(false);
+  /** Keep popup mounted through close fade so the chunk can stay deferred until first open. */
+  const [caseStudyMounted, setCaseStudyMounted] = useState(false);
+
+  useEffect(() => {
+    if (caseStudyOpen) {
+      setCaseStudyMounted(true);
+      return;
+    }
+    if (!caseStudyMounted) return;
+    const timer = window.setTimeout(() => setCaseStudyMounted(false), 320);
+    return () => window.clearTimeout(timer);
+  }, [caseStudyOpen, caseStudyMounted]);
   const [displayedLayerId, setDisplayedLayerId] =
     useState<LayerId>(defaultLayerId);
 
@@ -771,11 +789,13 @@ export function ProjectCardPrototype({
         </div>
       </div>
 
-      <CaseStudyPopup
-        project={project}
-        open={caseStudyOpen}
-        onClose={() => setCaseStudyOpen(false)}
-      />
+      {caseStudyMounted ? (
+        <CaseStudyPopup
+          project={project}
+          open={caseStudyOpen}
+          onClose={() => setCaseStudyOpen(false)}
+        />
+      ) : null}
     </article>
   );
 }

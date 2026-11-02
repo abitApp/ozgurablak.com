@@ -6,6 +6,19 @@ type ImagePlaceholderProps = {
   aspectRatio: string | number;
   src?: string;
   alt?: string;
+  /** Skip Next optimizer — use for text-heavy specs so type stays sharp. */
+  unoptimized?: boolean;
+  /** Default cover; contain for documents; fill stretches to the frame. */
+  objectFit?: "cover" | "contain" | "fill";
+  /** Next/Image quality 1–100. Default 92 for case-study detail. */
+  quality?: number;
+  /**
+   * Frame corner radius. Use `rounded-none` when the asset already has its
+   * own curves so the shell does not clip them.
+   */
+  roundedClassName?: string;
+  /** Omit the frame border (e.g. phone assets with their own edge). */
+  framed?: boolean;
 };
 
 /**
@@ -18,29 +31,56 @@ export function ImagePlaceholder({
   aspectRatio,
   src,
   alt,
+  unoptimized = false,
+  objectFit = "cover",
+  quality = 92,
+  roundedClassName = "rounded-[1.1rem]",
+  framed = true,
 }: ImagePlaceholderProps) {
   const ratio =
     typeof aspectRatio === "number" ? String(aspectRatio) : aspectRatio;
+  const frameBorder = framed ? "border border-[#43362F]" : "border-0";
 
   if (src) {
     const isAnimatedGif = /\.gif($|\?)/i.test(src);
+    const skipOptimize = unoptimized || isAnimatedGif;
+    const fitClass =
+      objectFit === "contain"
+        ? "object-contain"
+        : objectFit === "fill"
+          ? "object-fill"
+          : "object-cover";
+    // Radius only on the figure — doubling it on the <img> makes corners look broken.
+    const mediaClass = `absolute inset-0 h-full w-full max-w-none select-none [-webkit-user-drag:none] ${fitClass}`;
 
     return (
       <figure
         id={id}
-        className="relative w-full overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-[#211B18]/80"
+        className={`relative w-full overflow-hidden bg-[#211B18]/80 [transform:translateZ(0)] ${frameBorder} ${roundedClassName}`}
         style={{ aspectRatio: ratio }}
       >
-        <Image
-          src={src}
-          alt={alt ?? description}
-          fill
-          unoptimized={isAnimatedGif}
-          draggable={false}
-          onDragStart={(event) => event.preventDefault()}
-          className="select-none object-cover [-webkit-user-drag:none]"
-          sizes="(max-width: 768px) 90vw, 40vw"
-        />
+        {/* Native <img> keeps animated GIFs playing; next/image can freeze them. */}
+        {isAnimatedGif ? (
+          <img
+            src={src}
+            alt={alt ?? description}
+            draggable={false}
+            onDragStart={(event) => event.preventDefault()}
+            className={mediaClass}
+          />
+        ) : (
+          <Image
+            src={src}
+            alt={alt ?? description}
+            fill
+            quality={skipOptimize ? undefined : quality}
+            unoptimized={skipOptimize}
+            draggable={false}
+            onDragStart={(event) => event.preventDefault()}
+            className={mediaClass}
+            sizes="(max-width: 768px) 92vw, min(68rem, 100vw)"
+          />
+        )}
       </figure>
     );
   }
@@ -48,7 +88,7 @@ export function ImagePlaceholder({
   return (
     <figure
       id={id}
-      className="flex w-full flex-col items-center justify-center gap-1.5 rounded-[1.1rem] border border-dashed border-[#43362F] bg-[#211B18]/80 px-4 py-8 text-center"
+      className={`flex w-full flex-col items-center justify-center gap-1.5 border border-dashed border-[#43362F] bg-[#211B18]/80 px-4 py-8 text-center ${roundedClassName}`}
       style={{ aspectRatio: ratio }}
       aria-label={`Image placeholder: ${description}`}
     >

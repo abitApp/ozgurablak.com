@@ -25,6 +25,11 @@ export const navItems: Array<{
   separator?: boolean;
 }> = [
   { label: "WORKS", href: "#work" },
+  {
+    label: "MY PRODUCTS",
+    href: "#my-products",
+    separator: true,
+  },
   { label: "ABOUT", href: "#about", separator: true },
   { label: "CONNECT", href: "#contact", separator: true },
 ];
@@ -43,7 +48,7 @@ export const hero = {
     height: 1081,
   },
   video: {
-    src: "/media/hero-loop.mp4?v=4k",
+    src: "/media/hero-loop.mp4?v=5",
   },
 };
 
@@ -168,7 +173,7 @@ export const projects: Project[] = [
         more: "Led the build of an atomic Figma system with native Android patterns, branching flows and designer sign-off in UAT.",
         media: [
           {
-            src: "/media/projects/design-system/atomic-design-v5.png",
+            src: "/media/projects/design-system/atomic-design-v5.webp",
             alt: "Atomic design hierarchy from atoms to molecules to organism for the Vodafone design system.",
             width: 1024,
             height: 671,
@@ -185,7 +190,7 @@ export const projects: Project[] = [
         more: "No visible flaws left. Developers ask very few questions and start building right away. Three tools became one: Figma.",
         media: [
           {
-            src: "/media/projects/design-system/tools-orbit-v7.png",
+            src: "/media/projects/design-system/tools-orbit-v7.webp",
             alt: "Figma logo with a glowing orbital ring — three tools becoming one system.",
             width: 1024,
             height: 960,
@@ -319,36 +324,22 @@ export const projects: Project[] = [
   },
 ];
 
-/** Standalone Faldium card under the Selected Project carousel (not in the track). */
+/** Standalone Faldium project — opens the Faldium case-study modal from My Products. */
 export const faldiumProject: Project = {
   slug: "faldium",
   title: "Faldium",
-  hideTitle: true,
-  role: "Founder & Product Designer",
+  subtitle: "AI fortune telling app · Google Play",
+  role: "Product owner, designer and developer",
   summary:
-    "An AI-powered self-discovery app for exploring dreams, relationships, personal insights, and community opinions.",
+    "An AI fortune-telling app designed, built and launched independently.",
   accent: "rgba(150, 90, 220, 0.32)",
   layers: [
     {
       id: "context",
-      label: "01 — Challenge",
+      label: "01 — Overview",
       detail:
-        "People want guidance on dreams, relationships, and the future — but most apps feel either gimmicky or cold.",
-      more: "People want guidance on dreams, relationships, and the future — but most apps feel either gimmicky or cold.",
-    },
-    {
-      id: "move",
-      label: "02 — Approach",
-      detail:
-        "A dark, mystical home built around Kahve Falı, dream reading, palmistry, numerology, and cosmic match — with AI narration.",
-      more: "A dark, mystical home built around Kahve Falı, dream reading, palmistry, numerology, and cosmic match — with AI narration.",
-    },
-    {
-      id: "outcome",
-      label: "03 — Impact",
-      detail:
-        "My own product: an AI-powered self-discovery app spanning dreams, relationships, personal insights, and community opinions.",
-      more: "My own product: an AI-powered self-discovery app spanning dreams, relationships, personal insights, and community opinions.",
+        "An AI fortune-telling app I designed, built and launched on my own.",
+      more: "An AI fortune-telling app I designed, built and launched on my own.",
     },
   ],
 };

@@ -322,31 +322,31 @@ const emptyStateAnimationsWork: OtherWork = {
     status: "Live in the app",
     media: {
       kind: "animation",
-      src: "/media/projects/ui-animation/empty-state-animations/empty-01-favorites.gif?v=3",
+      src: "/media/projects/ui-animation/empty-state-animations/empty-01-favorites.mp4?v=2",
       description: "Empty-state screens — six METRO humour states",
       items: [
         {
-          src: "/media/projects/ui-animation/empty-state-animations/empty-01-favorites.gif?v=3",
+          src: "/media/projects/ui-animation/empty-state-animations/empty-01-favorites.mp4?v=2",
           description: "Empty state — Favorites",
         },
         {
-          src: "/media/projects/ui-animation/empty-state-animations/empty-02-promotions.gif?v=3",
+          src: "/media/projects/ui-animation/empty-state-animations/empty-02-promotions.mp4?v=1",
           description: "Empty state — Promotions",
         },
         {
-          src: "/media/projects/ui-animation/empty-state-animations/empty-03-search-result.gif?v=3",
+          src: "/media/projects/ui-animation/empty-state-animations/empty-03-search-result.mp4?v=1",
           description: "Empty state — Search result",
         },
         {
-          src: "/media/projects/ui-animation/empty-state-animations/empty-04-invoices.gif?v=3",
+          src: "/media/projects/ui-animation/empty-state-animations/empty-04-invoices.mp4?v=1",
           description: "Empty state — Invoices",
         },
         {
-          src: "/media/projects/ui-animation/empty-state-animations/empty-05-no-internet.gif?v=3",
+          src: "/media/projects/ui-animation/empty-state-animations/empty-05-no-internet.mp4?v=1",
           description: "Empty state — No internet",
         },
         {
-          src: "/media/projects/ui-animation/empty-state-animations/empty-06-shopping-basket.gif?v=3",
+          src: "/media/projects/ui-animation/empty-state-animations/empty-06-shopping-basket.mp4?v=1",
           description: "Empty state — Shopping basket",
         },
       ],

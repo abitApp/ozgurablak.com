@@ -1,7 +1,24 @@
-import { AboutMe } from "@/components/home/AboutMe";
-import { Contact } from "@/components/home/Contact";
+import dynamic from "next/dynamic";
 import { Hero } from "@/components/home/Hero";
 import { SelectedWorkPreview } from "@/components/home/SelectedWorkPreview";
+
+const AboutMe = dynamic(
+  () => import("@/components/home/AboutMe").then((mod) => mod.AboutMe),
+  {
+    loading: () => (
+      <div className="min-h-[28rem] bg-surface" aria-hidden />
+    ),
+  },
+);
+
+const Contact = dynamic(
+  () => import("@/components/home/Contact").then((mod) => mod.Contact),
+  {
+    loading: () => (
+      <div className="min-h-[16rem] bg-surface" aria-hidden />
+    ),
+  },
+);
 
 export default function Home() {
   return (

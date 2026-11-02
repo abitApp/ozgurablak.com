@@ -1,13 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { ProjectCardPrototype } from "@/components/work/ProjectCardPrototype";
-import { CaseStudyPopup } from "@/components/work/CaseStudyPopup";
 import { faldiumProject, projects, type Project } from "@/content/home";
 import type {
   OtherWork,
   OtherWorksCategoryData,
 } from "@/content/otherWorks";
+
+const CaseStudyPopup = dynamic(
+  () =>
+    import("@/components/work/CaseStudyPopup").then((mod) => mod.CaseStudyPopup),
+  { ssr: false },
+);
 
 type OtherWorksSliderProps = {
   categories: OtherWorksCategoryData[];
@@ -95,12 +101,26 @@ function CategoryCardSlider({
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(total > 1);
   const [caseStudyOpen, setCaseStudyOpen] = useState(false);
+  const [caseStudyMounted, setCaseStudyMounted] = useState(false);
   const [modalWork, setModalWork] = useState<OtherWork | null>(null);
   const [bridgedStudy, setBridgedStudy] = useState<{
     slug: string;
     sectionId: string;
   } | null>(null);
   const bridgeTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (caseStudyOpen) {
+      setCaseStudyMounted(true);
+      return;
+    }
+    if (!caseStudyMounted) return;
+    const timer = window.setTimeout(
+      () => setCaseStudyMounted(false),
+      WORK_MODAL_FADE_MS + 20,
+    );
+    return () => window.clearTimeout(timer);
+  }, [caseStudyOpen, caseStudyMounted]);
 
   const activeWork = works[index] ?? works[0];
   const openWork = modalWork ?? activeWork;
@@ -465,23 +485,25 @@ function CategoryCardSlider({
         </div>
       </article>
 
-      <CaseStudyPopup
-        project={workToProject(openWork)}
-        work={openWork}
-        open={caseStudyOpen}
-        onClose={() => setCaseStudyOpen(false)}
-        hideNav
-        onNavigateWork={setModalWork}
-        onOpenCaseStudy={(target) => {
-          clearBridgeTimer();
-          setCaseStudyOpen(false);
-          // Wait for work-modal fade-out, then fade the case study in.
-          bridgeTimerRef.current = window.setTimeout(() => {
-            bridgeTimerRef.current = null;
-            setBridgedStudy(target);
-          }, WORK_MODAL_FADE_MS);
-        }}
-      />
+      {caseStudyMounted && openWork ? (
+        <CaseStudyPopup
+          project={workToProject(openWork)}
+          work={openWork}
+          open={caseStudyOpen}
+          onClose={() => setCaseStudyOpen(false)}
+          hideNav
+          onNavigateWork={setModalWork}
+          onOpenCaseStudy={(target) => {
+            clearBridgeTimer();
+            setCaseStudyOpen(false);
+            // Wait for work-modal fade-out, then fade the case study in.
+            bridgeTimerRef.current = window.setTimeout(() => {
+              bridgeTimerRef.current = null;
+              setBridgedStudy(target);
+            }, WORK_MODAL_FADE_MS);
+          }}
+        />
+      ) : null}
 
       {bridgedProject && bridgedStudy ? (
         <CaseStudyPopup

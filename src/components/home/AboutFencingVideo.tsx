@@ -3,14 +3,17 @@
 import { useEffect, useRef, useState } from "react";
 import { handwriting } from "@/lib/fonts";
 
-const VIDEO_SRC = "/media/about/fencing.mp4?v=5";
+const VIDEO_SRC = "/media/about/fencing.mp4?v=6";
 const POSTER_SRC = "/media/about/fencing-poster.jpg?v=5";
 const PLAYBACK_VOLUME = 1;
 
 const POLAROID_DATE = "31. October 2026";
 
 export function AboutFencingVideo() {
+  const figureRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const pendingPlayRef = useRef(false);
+  const [mediaSrc, setMediaSrc] = useState<string | undefined>(undefined);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -32,6 +35,23 @@ export function AboutFencingVideo() {
     };
   }, []);
 
+  // Load the heavy mp4 only when the polaroid nears the viewport.
+  useEffect(() => {
+    const root = figureRef.current;
+    if (!root || mediaSrc) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setMediaSrc(VIDEO_SRC);
+        observer.disconnect();
+      },
+      { rootMargin: "240px 0px" },
+    );
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, [mediaSrc]);
+
   useEffect(() => {
     const el = videoRef.current;
     if (!el) return;
@@ -39,7 +59,7 @@ export function AboutFencingVideo() {
     el.muted = muted;
   }, [muted]);
 
-  const play = async () => {
+  const tryPlay = async () => {
     const el = videoRef.current;
     if (!el) return;
     el.volume = PLAYBACK_VOLUME;
@@ -57,6 +77,15 @@ export function AboutFencingVideo() {
         setPlaying(false);
       }
     }
+  };
+
+  const play = () => {
+    if (!mediaSrc) {
+      pendingPlayRef.current = true;
+      setMediaSrc(VIDEO_SRC);
+      return;
+    }
+    void tryPlay();
   };
 
   const pause = () => {
@@ -83,6 +112,7 @@ export function AboutFencingVideo() {
 
   return (
     <figure
+      ref={figureRef}
       id="about-photo"
       className="relative mx-auto w-full origin-center rotate-[4deg]"
     >
@@ -100,11 +130,16 @@ export function AboutFencingVideo() {
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover object-center"
-            src={VIDEO_SRC}
+            src={mediaSrc}
             poster={POSTER_SRC}
             playsInline
             loop
-            preload="auto"
+            preload="none"
+            onLoadedData={() => {
+              if (!pendingPlayRef.current) return;
+              pendingPlayRef.current = false;
+              void tryPlay();
+            }}
             onPlay={() => setPlaying(true)}
             onPause={() => setPlaying(false)}
             aria-label="Fencing practice video"

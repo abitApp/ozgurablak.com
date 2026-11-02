@@ -4,7 +4,7 @@ export function AboutMe() {
   return (
     <section
       id="about"
-      className="scroll-mt-24 bg-surface px-5 py-20 text-ink md:scroll-mt-28 md:px-8 md:py-28"
+      className="scroll-mt-24 bg-surface px-5 pt-20 pb-0 text-ink md:scroll-mt-28 md:px-8 md:pt-28 md:pb-0"
       aria-labelledby="about-heading"
     >
       <div className="mx-auto max-w-[72rem]">

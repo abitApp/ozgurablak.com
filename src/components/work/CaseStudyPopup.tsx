@@ -9,6 +9,7 @@ import {
   useState,
   type MutableRefObject,
   type PointerEvent as ReactPointerEvent,
+  type ReactNode,
   type RefObject,
 } from "react";
 import {
@@ -29,6 +30,8 @@ import {
   type OtherWork,
   type OtherWorkMedia,
 } from "@/content/otherWorks";
+import Image from "next/image";
+import { AndroidPhoneFrame } from "@/components/work/AndroidPhoneFrame";
 import { ImagePlaceholder } from "@/components/work/ImagePlaceholder";
 
 type CaseStudyPopupProps = {
@@ -369,7 +372,7 @@ function PortfolioOverviewBody({
 
   return (
     <div>
-      <h3 className="max-w-[34rem] text-[clamp(1.55rem,2.8vw,2.35rem)] font-semibold leading-[1.18] tracking-tight text-[#F3EEE8]">
+      <h3 className="max-w-[34rem] whitespace-pre-line text-[clamp(1.55rem,2.8vw,2.35rem)] font-semibold leading-[1.18] tracking-tight text-[#F3EEE8]">
         {content.heading}
       </h3>
       {content.subline ? (
@@ -389,15 +392,66 @@ function PortfolioOverviewBody({
         ))}
       </dl>
 
-      <div className="mt-8">
-        <ImagePlaceholder
-          id={content.hero.id}
-          description={content.hero.description}
-          aspectRatio={content.hero.aspectRatio}
-          src={content.hero.src}
-          alt={content.hero.alt}
-        />
-      </div>
+      {content.heroImages?.length ? (
+        <div
+          className={`mt-8 gap-x-[28px] gap-y-[24px] ${
+            content.heroImagesLayout === "side-by-side"
+              ? content.heroImages.length >= 3
+                ? "grid grid-cols-1 sm:grid-cols-3"
+                : "grid grid-cols-1 sm:grid-cols-2"
+              : "flex flex-col"
+          }`}
+        >
+          {content.heroImages.map((image) => (
+            <div key={image.id} className="min-w-0">
+              {image.caption ? (
+                <p className="mb-2 text-[0.72rem] text-[#BDB0A5]">
+                  {image.caption}
+                </p>
+              ) : null}
+              {image.phoneFrame === "android" && image.src ? (
+                <AndroidPhoneFrame
+                  id={image.id}
+                  src={image.src}
+                  alt={image.alt ?? image.description}
+                  aspectRatio={image.aspectRatio}
+                  unoptimized={image.unoptimized}
+                />
+              ) : (
+                <ImagePlaceholder
+                  id={image.id}
+                  description={image.description}
+                  aspectRatio={image.aspectRatio}
+                  src={image.src}
+                  alt={image.alt}
+                  unoptimized={image.unoptimized}
+                  objectFit={image.objectFit}
+                  roundedClassName={
+                    image.roundedClassName ?? "rounded-none"
+                  }
+                  framed={image.framed ?? false}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      ) : content.hero ? (
+        <div className="mt-8">
+          <ImagePlaceholder
+            id={content.hero.id}
+            description={content.hero.description}
+            aspectRatio={content.hero.aspectRatio}
+            src={content.hero.src}
+            alt={content.hero.alt}
+            unoptimized={content.hero.unoptimized}
+            objectFit={content.hero.objectFit}
+            framed={content.hero.framed}
+            roundedClassName={
+              content.hero.framed === false ? "rounded-none" : undefined
+            }
+          />
+        </div>
+      ) : null}
 
       <div className="mt-5 space-y-3">
         {content.body ? (
@@ -411,6 +465,44 @@ function PortfolioOverviewBody({
         ) : null}
         {content.caption ? (
           <p className="text-[0.88rem] text-[#F3EEE8]">{content.caption}</p>
+        ) : null}
+        {content.storeLinks?.appStore || content.storeLinks?.googlePlay ? (
+          <div className="flex flex-wrap items-center gap-3 pt-1">
+            {content.storeLinks.appStore ? (
+              <StoreBadgeLink
+                href={content.storeLinks.appStore}
+                sublabel="Download on the"
+                label="App Store"
+                icon={
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.98 2.93 12.44 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z" />
+                  </svg>
+                }
+              />
+            ) : null}
+            {content.storeLinks.googlePlay ? (
+              <StoreBadgeLink
+                href={content.storeLinks.googlePlay}
+                sublabel="Get it on"
+                label="Google Play"
+                icon={
+                  <svg
+                    width="20"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M3.18 23.04c-.4-.2-.68-.6-.72-1.06V2.02c.04-.46.32-.86.72-1.06l10.9 11.04L3.18 23.04zm1.64.7 11.2-6.36-2.72-2.76-8.48 9.12zm12.48-7.08 2.92-1.66c.66-.38.66-1.36 0-1.74l-2.92-1.66-3.02 3.06 3.02 3zm-1.28-5.48L4.82.26l8.48 9.12 2.72-2.76z" />
+                  </svg>
+                }
+              />
+            ) : null}
+          </div>
         ) : null}
         <div className="flex flex-wrap gap-2">
           {content.chips.map((chip) => (
@@ -433,14 +525,18 @@ function PortfolioOverviewBody({
 
 function StorySegments({
   segments,
+  className = "mt-2.5",
 }: {
   segments: Extract<
     CaseStudySection["content"],
     { kind: "story" }
   >["blocks"][number]["segments"];
+  className?: string;
 }) {
   return (
-    <div className="mt-2.5 space-y-3 text-[0.88rem] leading-[1.65] text-[#F3EEE8]/90">
+    <div
+      className={`${className} space-y-3 text-[0.88rem] leading-[1.65] text-[#F3EEE8]/90`}
+    >
       {segments.map((segment, index) => {
         if (segment.type === "bold") {
           return (
@@ -479,33 +575,69 @@ function PortfolioStoryBody({
       </h3>
 
       <div className="mt-8 flex flex-col gap-4">
-        {content.blocks.map((block) => (
-          <article
-            key={block.id}
-            id={block.id}
-            className={`rounded-[1.1rem] border px-4 py-4 sm:px-5 sm:py-5 ${
-              block.highlight
-                ? "border-[#C89150]/35 bg-[#C89150]/14"
-                : "border-[#43362F] bg-[#211B18]/60"
-            }`}
-          >
-            <p className="text-[0.72rem] text-[#BDB0A5]">{block.label}</p>
-            {block.stat ? (
-              <div className="mt-3 rounded-[1.1rem] border border-[#C89150]/35 bg-[#C89150]/14 px-5 py-5 sm:px-6">
-                <p className="text-[clamp(2.1rem,4vw,2.75rem)] font-semibold leading-none tracking-tight text-[#F3EEE8]">
-                  {block.stat.value}
-                </p>
-                <p className="mt-2.5 max-w-[22rem] text-[0.82rem] leading-snug text-[#F3EEE8]/90">
-                  {block.stat.label}
-                </p>
-              </div>
-            ) : null}
-            <StorySegments segments={block.segments} />
-          </article>
-        ))}
+        {content.blocks.map((block) => {
+          const afterBlockImages = (content.images ?? []).filter(
+            (image) => image.afterBlockId === block.id,
+          );
+
+          return (
+            <div key={block.id} className="flex flex-col gap-4">
+              <article
+                id={block.id}
+                className={`rounded-[1.1rem] border px-4 py-4 sm:px-5 sm:py-5 ${
+                  block.highlight
+                    ? "border-[#C89150]/35 bg-[#C89150]/14"
+                    : "border-[#43362F] bg-[#211B18]/60"
+                }`}
+              >
+                <p className="text-[0.72rem] text-[#BDB0A5]">{block.label}</p>
+                {block.stat ? (
+                  <div className="mt-3 rounded-[1.1rem] border border-[#C89150]/35 bg-[#C89150]/14 px-5 py-5 sm:px-6">
+                    <p className="text-[clamp(2.1rem,4vw,2.75rem)] font-semibold leading-none tracking-tight text-[#F3EEE8]">
+                      {block.stat.value}
+                    </p>
+                    <p className="mt-2.5 max-w-[22rem] text-[0.82rem] leading-snug text-[#F3EEE8]/90">
+                      {block.stat.label}
+                    </p>
+                  </div>
+                ) : null}
+                {block.image ? (
+                  <div className="mt-2.5 flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-5">
+                    <div className="min-w-0 flex-1">
+                      <StorySegments
+                        segments={block.segments}
+                        className="mt-0"
+                      />
+                    </div>
+                    <div className="w-full shrink-0 sm:w-[16rem] md:w-[18rem]">
+                      <CaseStudyMediaSlot slot={block.image} />
+                    </div>
+                  </div>
+                ) : (
+                  <StorySegments segments={block.segments} />
+                )}
+              </article>
+              {afterBlockImages.length ? (
+                <div
+                  className={`gap-4 ${
+                    content.imagesLayout === "side-by-side"
+                      ? "grid grid-cols-1 sm:grid-cols-2"
+                      : "flex flex-col"
+                  }`}
+                >
+                  {afterBlockImages.map((image) => (
+                    <div key={image.id} className="min-w-0">
+                      <CaseStudyMediaSlot slot={image} />
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
       </div>
 
-      {content.images?.length ? (
+      {(content.images ?? []).some((image) => !image.afterBlockId) ? (
         <div
           className={`mt-8 gap-4 ${
             content.imagesLayout === "side-by-side"
@@ -513,16 +645,27 @@ function PortfolioStoryBody({
               : "flex flex-col"
           }`}
         >
-          {content.images.map((image) => (
-            <ImagePlaceholder
-              key={image.id}
-              id={image.id}
-              description={image.description}
-              aspectRatio={image.aspectRatio}
-              src={image.src}
-              alt={image.alt}
-            />
-          ))}
+          {(content.images ?? [])
+            .filter((image) => !image.afterBlockId)
+            .map((image, index) => (
+              <div
+                key={image.id}
+                className={
+                  // White framed media owns its own inner width — keep the outer full-bleed.
+                  image.frameFill === "white"
+                    ? "min-w-0"
+                    : image.widthClassName
+                      ? image.widthClassName
+                      : content.imagesLayout === "side-by-side"
+                        ? index === 0
+                          ? "mr-auto w-[calc(90%+10px)] min-w-0"
+                          : "ml-auto w-[calc(90%+10px)] min-w-0"
+                        : "min-w-0"
+                }
+              >
+                <CaseStudyMediaSlot slot={image} />
+              </div>
+            ))}
         </div>
       ) : null}
     </div>
@@ -566,29 +709,77 @@ function PortfolioResearchBody({
         </h3>
 
         <div className="mt-8 flex flex-col gap-4">
-          {study.blocks.map((block) => (
-            <article
-              key={block.id}
-              id={`${study.id}-${block.id}`}
-              className="rounded-[1.1rem] border border-[#43362F] bg-[#211B18]/60 px-4 py-4 sm:px-5 sm:py-5"
-            >
-              <p className="text-[0.72rem] text-[#BDB0A5]">{block.label}</p>
-              <p className="mt-2.5 text-[0.88rem] leading-[1.65] text-[#F3EEE8]/90">
-                {block.body}
-              </p>
-            </article>
-          ))}
+          {study.blocks.map((block) => {
+            const afterBlockImages = [
+              ...(study.inlineImages ?? [])
+                .filter((item) => item.afterBlockId === block.id)
+                .map((item) => item.slot),
+              ...(study.imageSlot && study.imageAfterBlockId === block.id
+                ? [study.imageSlot]
+                : []),
+            ];
+
+            return (
+              <div key={block.id} className="flex flex-col gap-4">
+                <article
+                  id={`${study.id}-${block.id}`}
+                  className="rounded-[1.1rem] border border-[#43362F] bg-[#211B18]/60 px-4 py-4 sm:px-5 sm:py-5"
+                >
+                  <p className="text-[0.72rem] text-[#BDB0A5]">{block.label}</p>
+                  <p className="mt-2.5 text-[0.88rem] leading-[1.65] text-[#F3EEE8]/90">
+                    {block.body}
+                  </p>
+                </article>
+                {afterBlockImages.length ? (
+                  <div
+                    className={
+                      afterBlockImages.length > 1
+                        ? "grid grid-cols-1 gap-4 sm:grid-cols-2"
+                        : "flex flex-col gap-4"
+                    }
+                  >
+                    {afterBlockImages.map((slot) => (
+                      <div
+                        key={slot.id}
+                        className={slot.widthClassName ?? "min-w-0"}
+                      >
+                        <CaseStudyMediaSlot slot={slot} />
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
 
-        <div className="mt-8">
-          <ImagePlaceholder
-            id={study.imageSlot.id}
-            description={study.imageSlot.description}
-            aspectRatio={study.imageSlot.aspectRatio}
-            src={study.imageSlot.src}
-            alt={study.imageSlot.alt}
-          />
-        </div>
+        {study.imageSlot && !study.imageAfterBlockId ? (
+          <div className="mt-8">
+            <div
+              className={
+                study.imageSlot.framed === false
+                  ? "mx-auto w-[90%]"
+                  : undefined
+              }
+            >
+              <ImagePlaceholder
+                id={study.imageSlot.id}
+                description={study.imageSlot.description}
+                aspectRatio={study.imageSlot.aspectRatio}
+                src={study.imageSlot.src}
+                alt={study.imageSlot.alt}
+                objectFit={study.imageSlot.objectFit}
+                unoptimized={study.imageSlot.unoptimized}
+                framed={study.imageSlot.framed}
+                roundedClassName={
+                  study.imageSlot.framed === false
+                    ? "rounded-[1.1rem]"
+                    : undefined
+                }
+              />
+            </div>
+          </div>
+        ) : null}
       </div>
     );
   }
@@ -605,40 +796,73 @@ function PortfolioResearchBody({
       ) : null}
 
       <div className="mt-8 flex flex-col gap-4">
-        {content.cards.map((card) => (
-          <article
-            key={card.id}
-            id={card.id}
-            className="rounded-[1.1rem] border border-[#43362F] bg-[#211B18]/60 px-4 py-4 sm:px-5 sm:py-5"
-          >
-            <h4 className="text-[0.95rem] font-semibold leading-snug text-[#F3EEE8]">
-              {card.title}
-            </h4>
-            <p className="mt-2.5 text-[0.88rem] leading-[1.65] text-[#F3EEE8]/90">
-              {card.body}
-            </p>
-            {card.link?.studyId ? (
-              <button
-                type="button"
-                ref={(el) => {
-                  linkButtonRefs.current[card.id] = el;
-                }}
-                onClick={() => {
-                  const link = card.link;
-                  if (!link?.studyId) return;
-                  onOpenStudy(link.studyId, card.id);
-                }}
-                className="mt-3 inline-block cursor-pointer text-[0.88rem] outline-none hover:underline focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus)]"
-                style={{ color: "#C89150" }}
+        {content.cards.map((card) => {
+          const showImagesAfterCard =
+            Boolean(content.images?.length) &&
+            content.imagesAfterCardId === card.id;
+
+          return (
+            <div key={card.id} className="flex flex-col gap-4">
+              <article
+                id={card.id}
+                className="rounded-[1.1rem] border border-[#43362F] bg-[#211B18]/60 px-4 py-4 sm:px-5 sm:py-5"
               >
-                {card.link.label}
-              </button>
-            ) : null}
-          </article>
-        ))}
+                <h4 className="text-[0.95rem] font-semibold leading-snug text-[#F3EEE8]">
+                  {card.title}
+                </h4>
+                <p className="mt-2.5 text-[0.88rem] leading-[1.65] text-[#F3EEE8]/90">
+                  {card.body}
+                </p>
+                {card.link?.studyId ? (
+                  <button
+                    type="button"
+                    ref={(el) => {
+                      linkButtonRefs.current[card.id] = el;
+                    }}
+                    onClick={() => {
+                      const link = card.link;
+                      if (!link?.studyId) return;
+                      onOpenStudy(link.studyId, card.id);
+                    }}
+                    className="mt-3 inline-block cursor-pointer text-[0.88rem] outline-none hover:underline focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus)]"
+                    style={{ color: "#C89150" }}
+                  >
+                    {card.link.label}
+                  </button>
+                ) : null}
+              </article>
+              {showImagesAfterCard ? (
+                <div
+                  className={`gap-4 ${
+                    content.imagesLayout === "side-by-side"
+                      ? "grid grid-cols-1 sm:grid-cols-2"
+                      : "flex flex-col"
+                  }`}
+                >
+                  {content.images!.map((image) => (
+                    <ImagePlaceholder
+                      key={image.id}
+                      id={image.id}
+                      description={image.description}
+                      aspectRatio={image.aspectRatio}
+                      src={image.src}
+                      alt={image.alt}
+                      objectFit={image.objectFit}
+                      unoptimized={image.unoptimized}
+                      framed={image.framed}
+                      roundedClassName={
+                        image.framed === false ? "rounded-[1.1rem]" : undefined
+                      }
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
       </div>
 
-      {content.images?.length ? (
+      {content.images?.length && !content.imagesAfterCardId ? (
         <div
           className={`mt-8 gap-4 ${
             content.imagesLayout === "side-by-side"
@@ -654,6 +878,12 @@ function PortfolioResearchBody({
               aspectRatio={image.aspectRatio}
               src={image.src}
               alt={image.alt}
+              objectFit={image.objectFit}
+              unoptimized={image.unoptimized}
+              framed={image.framed}
+              roundedClassName={
+                image.framed === false ? "rounded-[1.1rem]" : undefined
+              }
             />
           ))}
         </div>
@@ -690,15 +920,34 @@ function PortfolioProblemBody({
         </p>
       </div>
 
-      <div className="mt-8">
-        <ImagePlaceholder
-          id={content.image.id}
-          description={content.image.description}
-          aspectRatio={content.image.aspectRatio}
-          src={content.image.src}
-          alt={content.image.alt}
-        />
-      </div>
+      {content.images.length ? (
+        <div
+          className={`mt-8 gap-4 ${
+            content.imagesLayout === "side-by-side"
+              ? "grid grid-cols-1 sm:grid-cols-2"
+              : "flex flex-col"
+          }`}
+        >
+          {content.images.map((image) => (
+            <div key={image.id} className="min-w-0">
+              {image.caption ? (
+                <p className="mb-2 text-[0.72rem] text-[#BDB0A5]">
+                  {image.caption}
+                </p>
+              ) : null}
+              <ImagePlaceholder
+                id={image.id}
+                description={image.description}
+                aspectRatio={image.aspectRatio}
+                src={image.src}
+                alt={image.alt}
+                objectFit={image.objectFit}
+                unoptimized={image.unoptimized}
+              />
+            </div>
+          ))}
+        </div>
+      ) : null}
 
       <div className="mt-8 max-w-[38rem]">
         <p className="text-[0.72rem] text-[#BDB0A5]">{content.hypothesis.label}</p>
@@ -710,8 +959,15 @@ function PortfolioProblemBody({
   );
 }
 
-/** Muted looping Vimeo for case-study demos (same shell curves as image slots). */
-function vimeoDemoEmbedSrc(src: string) {
+/**
+ * Muted looping Vimeo for case-study demos.
+ * `background` (default) cover-fills the player — good for flat clips.
+ * Non-background keeps the full frame (phone curves stay visible).
+ */
+function vimeoDemoEmbedSrc(
+  src: string,
+  mode: "background" | "contain" | "standard" = "background",
+) {
   let url = src.trim();
   if (!url.includes("player.vimeo.com")) {
     const match = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
@@ -720,6 +976,14 @@ function vimeoDemoEmbedSrc(src: string) {
       : `https://player.vimeo.com/video/${url}`;
   }
   const base = url.split("?")[0] ?? url;
+  if (mode === "contain") {
+    // Keep controls as fallback when the browser blocks muted autoplay.
+    return `${base}?autoplay=1&loop=1&muted=1&title=0&byline=0&portrait=0&controls=1&background=0&dnt=1`;
+  }
+  // Standard player (no background=1) — more reliable on free Vimeo accounts.
+  if (mode === "standard") {
+    return `${base}?badge=0&autopause=0&autoplay=1&loop=1&muted=1&title=0&byline=0&portrait=0&dnt=1`;
+  }
   return `${base}?background=1&autoplay=1&loop=1&muted=1&title=0&byline=0&portrait=0&dnt=1`;
 }
 
@@ -746,31 +1010,189 @@ function CaseStudyMediaSlot({
 }: {
   slot: CaseStudyImageSlot;
 }) {
+  if (slot.phoneFrame === "android" && slot.src) {
+    return (
+      <AndroidPhoneFrame
+        id={slot.id}
+        src={slot.src}
+        alt={slot.alt ?? slot.description}
+        aspectRatio={slot.aspectRatio}
+        unoptimized={slot.unoptimized}
+      />
+    );
+  }
+
   if (slot.vimeoSrc) {
     const frameAspect = parseAspectRatio(slot.aspectRatio);
     // Intrinsic Vimeo size when known (1010171567 = 1544×1160); else assume frame match.
     const videoAspect = slot.vimeoAspectRatio
       ? parseAspectRatio(slot.vimeoAspectRatio, frameAspect)
       : frameAspect;
-    const coverScale = coverScaleForAspects(frameAspect, videoAspect) * 1.02;
+    const fit = slot.objectFit ?? "cover";
+    const framed = slot.framed !== false;
+    const whiteFrame = framed && slot.frameFill === "white";
+    // White-frame demos use the standard player — free Vimeo often blanks with background=1.
+    const embedMode =
+      fit === "contain" ? "contain" : whiteFrame ? "standard" : "background";
+    // Cover: grow to fill the figure. Unframed phone demos need a stronger
+    // bump so Vimeo letterboxing does not leave empty edges.
+    const coverScale =
+      fit === "contain" || whiteFrame
+        ? 1
+        : coverScaleForAspects(frameAspect, videoAspect) *
+          (framed ? 1.02 : 1.12);
+
+    const iframe = (
+      <iframe
+        title={slot.alt ?? slot.description}
+        src={vimeoDemoEmbedSrc(slot.vimeoSrc, embedMode)}
+        className={`absolute inset-0 h-full w-full border-0 ${
+          fit === "contain" || whiteFrame ? "" : "pointer-events-none"
+        }`}
+        style={
+          fit === "contain" || whiteFrame
+            ? undefined
+            : {
+                transform: `scale(${coverScale})`,
+                transformOrigin: "center center",
+              }
+        }
+        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
+        allowFullScreen
+      />
+    );
+
+    // Full-width white card (same as mp4 paperless/humour demos).
+    if (whiteFrame) {
+      return (
+        <figure
+          id={slot.id}
+          className="w-full overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-white [transform:translateZ(0)]"
+        >
+          <div
+            className={`relative ${slot.widthClassName ?? "w-full"}`}
+            style={{ aspectRatio: slot.aspectRatio }}
+          >
+            {iframe}
+          </div>
+        </figure>
+      );
+    }
 
     return (
       <figure
         id={slot.id}
-        className="relative w-full overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-[#211B18]/80 [transform:translateZ(0)]"
+        className={`relative w-full overflow-hidden [transform:translateZ(0)] ${
+          framed
+            ? "rounded-[1.1rem] border border-[#43362F] bg-[#211B18]/80"
+            : "rounded-[1.1rem] border-0 bg-[#211B18]"
+        }`}
         style={{ aspectRatio: slot.aspectRatio }}
       >
-        <iframe
-          title={slot.alt ?? slot.description}
-          src={vimeoDemoEmbedSrc(slot.vimeoSrc)}
-          className="pointer-events-none absolute inset-0 h-full w-full border-0"
-          style={{
-            transform: `scale(${coverScale})`,
-            transformOrigin: "center center",
-          }}
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowFullScreen
-        />
+        {iframe}
+      </figure>
+    );
+  }
+
+  if (slot.src && /\.(mp4|webm)($|\?)/i.test(slot.src)) {
+    const framed = slot.framed !== false;
+    const fit = slot.objectFit ?? "cover";
+    const video = (
+      <video
+        src={slot.src}
+        className={`absolute inset-0 h-full w-full ${
+          fit === "contain" ? "object-contain" : "object-cover"
+        }`}
+        muted
+        loop
+        playsInline
+        autoPlay
+        aria-label={slot.alt ?? slot.description}
+      />
+    );
+
+    // Full-width white card (same width/radius as story boxes); media can be narrower inside.
+    if (framed && slot.frameFill === "white") {
+      return (
+        <figure
+          id={slot.id}
+          className="w-full overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-white"
+        >
+          <div
+            className={`relative ${slot.widthClassName ?? "w-full"}`}
+            style={{ aspectRatio: slot.aspectRatio }}
+          >
+            {video}
+          </div>
+        </figure>
+      );
+    }
+
+    return (
+      <figure
+        id={slot.id}
+        className={`relative w-full overflow-hidden ${
+          framed
+            ? "rounded-[1.1rem] border border-[#43362F] bg-[#211B18]/80"
+            : "rounded-[1.1rem] border-0 bg-transparent"
+        }`}
+        style={{ aspectRatio: slot.aspectRatio }}
+      >
+        {video}
+      </figure>
+    );
+  }
+
+  const framed = slot.framed !== false;
+
+  // White card shell (same pattern as white-frame video demos).
+  if (framed && slot.frameFill === "white" && slot.src) {
+    const fit = slot.objectFit ?? "contain";
+    const rounded = slot.roundedClassName ?? "rounded-[1.1rem]";
+    const skipOptimize =
+      Boolean(slot.unoptimized) || /\.gif($|\?)/i.test(slot.src);
+    const frameBg = slot.frameColor ?? "#ffffff";
+
+    return (
+      <figure
+        id={slot.id}
+        className={`w-full overflow-hidden border border-[#43362F] ${rounded}`}
+        style={{ backgroundColor: frameBg }}
+      >
+        <div
+          className={`relative ${slot.widthClassName ?? "w-full"}`}
+          style={{ aspectRatio: slot.aspectRatio }}
+        >
+          {slot.ambientShadow ? (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute bottom-[4%] left-1/2 z-0 h-[1.1rem] w-[72%] -translate-x-1/2 rounded-[100%] bg-black/30 blur-[14px]"
+            />
+          ) : null}
+          <div
+            className={`absolute inset-0 z-[1] overflow-hidden${
+              slot.mediaClassName ? ` ${slot.mediaClassName}` : ""
+            }`}
+          >
+            <Image
+              src={slot.src}
+              alt={slot.alt ?? slot.description}
+              fill
+              unoptimized={skipOptimize}
+              draggable={false}
+              onDragStart={(event) => event.preventDefault()}
+              className={`absolute inset-0 h-full w-full max-w-none select-none [-webkit-user-drag:none] ${
+                fit === "contain"
+                  ? "object-contain"
+                  : fit === "fill"
+                    ? "object-fill"
+                    : "object-cover"
+              }`}
+              sizes="(max-width: 768px) 92vw, min(25rem, 40vw)"
+            />
+          </div>
+        </div>
       </figure>
     );
   }
@@ -782,6 +1204,13 @@ function CaseStudyMediaSlot({
       aspectRatio={slot.aspectRatio}
       src={slot.src}
       alt={slot.alt}
+      unoptimized={slot.unoptimized}
+      objectFit={slot.objectFit}
+      framed={slot.framed}
+      roundedClassName={
+        slot.roundedClassName ??
+        (slot.framed === false ? "rounded-[1.1rem]" : undefined)
+      }
     />
   );
 }
@@ -837,30 +1266,146 @@ function PortfolioWhatIDidBody({
   );
 }
 
+function StoreBadgeLink({
+  href,
+  label,
+  sublabel,
+  icon,
+}: {
+  href: string;
+  label: string;
+  sublabel: string;
+  icon: ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex min-h-11 items-center gap-2.5 rounded-[10px] border border-[#43362F] bg-[#14110F] px-3.5 py-2 outline-none transition-colors hover:border-[#C89150]/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus)]"
+    >
+      <span className="shrink-0 text-[#F3EEE8]/90" aria-hidden>
+        {icon}
+      </span>
+      <span className="flex min-w-0 flex-col leading-none">
+        <span className="text-[0.62rem] tracking-wide text-[#BDB0A5]">
+          {sublabel}
+        </span>
+        <span className="mt-1 text-[0.92rem] font-semibold text-[#F3EEE8]/90">
+          {label}
+        </span>
+      </span>
+    </a>
+  );
+}
+
 function PortfolioResultBody({
   content,
 }: {
   content: Extract<CaseStudySection["content"], { kind: "result" }>;
 }) {
+  const appStoreHref = content.storeLinks?.appStore;
+  const googlePlayHref = content.storeLinks?.googlePlay;
+
   return (
     <div>
       <h3 className="max-w-[34rem] text-[clamp(1.55rem,2.8vw,2.35rem)] font-semibold leading-[1.18] tracking-tight text-[#F3EEE8]">
         {content.heading}
       </h3>
+      {content.subline ? (
+        <p className="mt-3 max-w-[38rem] text-[0.95rem] leading-snug text-[#BDB0A5]">
+          {content.subline}
+        </p>
+      ) : null}
 
-      <p className="mt-7 max-w-[38rem] text-[0.95rem] leading-[1.65] text-[#F3EEE8]">
-        {content.body}
-      </p>
-
-      <div className="mt-8">
-        <ImagePlaceholder
-          id={content.image.id}
-          description={content.image.description}
-          aspectRatio={content.image.aspectRatio}
-          src={content.image.src}
-          alt={content.image.alt}
-        />
+      <div className="mt-7 max-w-[38rem] space-y-4 text-[0.95rem] leading-[1.65] text-[#F3EEE8]">
+        {content.body.split(/\n\n+/).map((paragraph, index) => (
+          <p key={index}>{paragraph}</p>
+        ))}
       </div>
+
+      {appStoreHref || googlePlayHref ? (
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          {appStoreHref ? (
+            <StoreBadgeLink
+              href={appStoreHref}
+              sublabel="Download on the"
+              label="App Store"
+              icon={
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.98 2.93 12.44 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z" />
+                </svg>
+              }
+            />
+          ) : null}
+          {googlePlayHref ? (
+            <StoreBadgeLink
+              href={googlePlayHref}
+              sublabel="Get it on"
+              label="Google Play"
+              icon={
+                <svg width="20" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3.18 23.04c-.4-.2-.68-.6-.72-1.06V2.02c.04-.46.32-.86.72-1.06l10.9 11.04L3.18 23.04zm1.64.7 11.2-6.36-2.72-2.76-8.48 9.12zm12.48-7.08 2.92-1.66c.66-.38.66-1.36 0-1.74l-2.92-1.66-3.02 3.06 3.02 3zm-1.28-5.48L4.82.26l8.48 9.12 2.72-2.76z" />
+                </svg>
+              }
+            />
+          ) : null}
+        </div>
+      ) : null}
+
+      {content.images.length ? (
+        <div
+          className={`mt-8 gap-x-[28px] gap-y-[24px] ${
+            content.imagesLayout === "side-by-side"
+              ? content.images.length === 3
+                ? "grid grid-cols-1 sm:grid-cols-3"
+                : "grid grid-cols-1 sm:grid-cols-2"
+              : "flex flex-col"
+          }`}
+        >
+          {content.images.map((image, index) => {
+            const isFullWidth =
+              Boolean(image.fullWidth) ||
+              (content.imagesLayout === "side-by-side" &&
+                content.images.length !== 3 &&
+                content.images.length % 2 === 1 &&
+                index === content.images.length - 1 &&
+                !image.phoneFrame);
+            const whiteFrame = image.frameFill === "white";
+            const colSpan =
+              isFullWidth && content.images.length === 3
+                ? "min-w-0 sm:col-span-3"
+                : isFullWidth
+                  ? "min-w-0 sm:col-span-2"
+                  : "min-w-0";
+
+            return (
+              <div
+                key={image.id}
+                className={`${colSpan}${
+                  image.wrapperClassName ? ` ${image.wrapperClassName}` : ""
+                }`}
+              >
+                {image.caption ? (
+                  <p className="mb-2 text-[0.72rem] text-[#BDB0A5]">
+                    {image.caption}
+                  </p>
+                ) : null}
+                <div
+                  className={
+                    whiteFrame
+                      ? "min-w-0"
+                      : (image.widthClassName ??
+                        (isFullWidth ? "w-full" : "mx-auto w-[90%]"))
+                  }
+                >
+                  <CaseStudyMediaSlot slot={image} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -1238,25 +1783,41 @@ function WorkMediaBlock({
         }
         aria-label={media.description}
       >
-        {gallery.map((item) => (
-          <li
-            key={item.src}
-            className="overflow-hidden rounded-[1rem] border border-[#43362F] bg-[#211B18]"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element -- animated GIF / still gallery */}
-            <img
-              src={item.src}
-              alt={item.description}
-              className={
-                isPhoneGrid
-                  ? "h-auto w-full object-contain"
-                  : isLandscapePairGrid
-                    ? "aspect-video h-auto w-full object-cover"
-                    : "aspect-square h-auto w-full object-contain"
-              }
-            />
-          </li>
-        ))}
+        {gallery.map((item) => {
+          const isVideo = /\.(mp4|webm)($|\?)/i.test(item.src ?? "");
+          const mediaClass = isPhoneGrid
+            ? "h-auto w-full object-contain"
+            : isLandscapePairGrid
+              ? "aspect-video h-auto w-full object-cover"
+              : "aspect-square h-auto w-full object-contain";
+
+          return (
+            <li
+              key={item.src}
+              className="overflow-hidden rounded-[1rem] border border-[#43362F] bg-[#211B18]"
+            >
+              {isVideo ? (
+                <video
+                  src={item.src}
+                  className={mediaClass}
+                  muted
+                  loop
+                  playsInline
+                  autoPlay={!reducedMotion}
+                  controls={reducedMotion}
+                  aria-label={item.description}
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element -- animated GIF / still gallery
+                <img
+                  src={item.src}
+                  alt={item.description}
+                  className={mediaClass}
+                />
+              )}
+            </li>
+          );
+        })}
       </ul>
     );
   }
@@ -1667,6 +2228,9 @@ export function CaseStudyPopup({
   const blinkScrollTimerRef = useRef<number | null>(null);
   const blinkClearTimerRef = useRef<number | null>(null);
   const blinkGenRef = useRef(0);
+  /** Ignore scrollspy while a menu click is programmatically scrolling. */
+  const spyPausedRef = useRef(false);
+  const spyResumeTimerRef = useRef<number | null>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -1756,6 +2320,58 @@ export function CaseStudyPopup({
     );
   }, []);
 
+  const pauseScrollSpy = useCallback((ms = 1000) => {
+    spyPausedRef.current = true;
+    if (spyResumeTimerRef.current !== null) {
+      window.clearTimeout(spyResumeTimerRef.current);
+    }
+    spyResumeTimerRef.current = window.setTimeout(() => {
+      spyPausedRef.current = false;
+      spyResumeTimerRef.current = null;
+    }, ms);
+  }, []);
+
+  const syncActiveChildFromScroll = useCallback(() => {
+    if (spyPausedRef.current) return;
+    const root = scrollRef.current;
+    if (!root) return;
+
+    const blocks = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-decision-block][id]"),
+    );
+    if (blocks.length === 0) return;
+
+    // Last block often never reaches its click landing — pin it at end.
+    const atBottom =
+      root.scrollTop + root.clientHeight >= root.scrollHeight - 2;
+    if (atBottom) {
+      const lastId = blocks[blocks.length - 1]!.id;
+      setActiveChildId((prev) => (prev === lastId ? prev : lastId));
+      return;
+    }
+
+    // Activate when scrollTop reaches the same place menu click would land
+    // (scrollIntoView block:"start" + the block's scroll-margin).
+    const rootTop = root.getBoundingClientRect().top;
+    const scrollTop = root.scrollTop;
+    const EPS = 1;
+
+    let currentId: string | null = null;
+    for (const block of blocks) {
+      const margin =
+        Number.parseFloat(getComputedStyle(block).scrollMarginTop) || 0;
+      const clickLandingTop =
+        scrollTop + (block.getBoundingClientRect().top - rootTop) - margin;
+      if (scrollTop + EPS >= clickLandingTop) {
+        currentId = block.id;
+      } else {
+        break;
+      }
+    }
+
+    setActiveChildId((prev) => (prev === currentId ? prev : currentId));
+  }, []);
+
   const scrollToDecisionAndBlink = useCallback(
     (anchorId: string) => {
       const root = scrollRef.current;
@@ -1764,6 +2380,7 @@ export function CaseStudyPopup({
       if (!target) return;
 
       clearBlockBlink();
+      pauseScrollSpy(1100);
       const gen = blinkGenRef.current;
       const scrollBefore = root.scrollTop;
 
@@ -1796,7 +2413,7 @@ export function CaseStudyPopup({
         blinkScrollTimerRef.current = window.setTimeout(finish, 900);
       }, 50);
     },
-    [blinkDecisionBlock, clearBlockBlink],
+    [blinkDecisionBlock, clearBlockBlink, pauseScrollSpy],
   );
 
   const syncThumb = useCallback(() => {
@@ -2187,18 +2804,24 @@ export function CaseStudyPopup({
     const el = scrollRef.current;
     if (!el) return;
 
-    const onScroll = () => syncThumb();
+    const onScroll = () => {
+      syncThumb();
+      syncActiveChildFromScroll();
+    };
     el.addEventListener("scroll", onScroll, { passive: true });
 
     const observer = new ResizeObserver(() => syncThumb());
     observer.observe(el);
     if (el.firstElementChild) observer.observe(el.firstElementChild);
 
+    // Sync once after section content paints (decision blocks may just have mounted).
+    window.requestAnimationFrame(() => syncActiveChildFromScroll());
+
     return () => {
       el.removeEventListener("scroll", onScroll);
       observer.disconnect();
     };
-  }, [mounted, displayedId, activeChildId, syncThumb]);
+  }, [mounted, displayedId, contentVisible, syncThumb, syncActiveChildFromScroll]);
 
   useEffect(() => {
     return () => {
@@ -2210,6 +2833,9 @@ export function CaseStudyPopup({
       }
       if (blinkClearTimerRef.current !== null) {
         window.clearTimeout(blinkClearTimerRef.current);
+      }
+      if (spyResumeTimerRef.current !== null) {
+        window.clearTimeout(spyResumeTimerRef.current);
       }
     };
   }, []);

@@ -24,7 +24,7 @@ const MIC_TILT =
 
 const VARIANTS = {
   challenge: {
-    src: "/media/projects/sahibinden/challenge-phone-rose.png",
+    src: "/media/projects/sahibinden/challenge-phone-rose.webp",
     alt: "sahibinden.com app on an angled rose-gold iPhone, showing search and the highlighted post-ad button in the tab bar.",
     label:
       "sahibinden.com app on an angled iPhone, with a tap highlight on the post-ad button",
@@ -32,7 +32,7 @@ const VARIANTS = {
     showMicWaves: false,
   },
   approach: {
-    src: "/media/projects/sahibinden/approach-phone-rose.png",
+    src: "/media/projects/sahibinden/approach-phone-rose.webp",
     alt: "sahibinden.com post-ad form on an angled rose-gold iPhone, with voice-to-text on title and description fields.",
     label:
       "sahibinden.com app on an angled iPhone, showing the post-ad form with voice-to-text",
@@ -272,8 +272,7 @@ export function SahibindenPhone({
           draggable={false}
           onDragStart={(event) => event.preventDefault()}
           className="select-none object-contain object-center [-webkit-user-drag:none]"
-          priority
-          unoptimized
+          loading="lazy"
           style={{ opacity: 0.9 }}
         />
 
