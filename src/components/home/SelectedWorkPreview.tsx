@@ -47,7 +47,8 @@ export function SelectedWorkPreview() {
 
   return (
     <section
-      className="bg-surface px-5 pt-20 pb-0 text-ink md:px-8 md:pt-28 md:pb-0"
+      id="work"
+      className="scroll-mt-24 bg-surface px-5 pt-20 pb-0 text-ink md:scroll-mt-28 md:px-8 md:pt-28 md:pb-0"
       aria-labelledby="work-heading"
     >
       <div className="mx-auto max-w-[72rem]">
@@ -56,19 +57,29 @@ export function SelectedWorkPreview() {
             id="work-heading"
             className="text-[clamp(calc(2rem-12pt),calc(4vw-12pt),calc(3.25rem-12pt))] font-semibold tracking-tight text-balance"
           >
-            Selected Project
+            Selected Works
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:text-lg">
             A selection of work from Vodafone, METRO Markets GmbH and
-            sahibinden.com, along with Faldium, my own project.
+            sahibinden.com, along with{" "}
+            <a
+              href="#my-products"
+              className="border-b border-current pb-px transition-colors hover:text-ink"
+              onClick={(event) => {
+                event.preventDefault();
+                document
+                  .getElementById("my-products")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              Faldium
+            </a>
+            , my own project.
           </p>
         </div>
       </div>
 
-      <div
-        id="work"
-        className="mx-auto w-full max-w-[calc(72rem+7rem)] scroll-mt-24 px-5 md:scroll-mt-28 md:px-8"
-      >
+      <div className="mx-auto w-full max-w-[calc(72rem+7rem)] px-5 md:px-8">
         <WorkCarousel />
       </div>
 

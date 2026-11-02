@@ -60,7 +60,7 @@ export function SiteHeader() {
   return (
     <>
       <header
-        className="fixed inset-x-0 top-0 z-50 text-white/90"
+        className="fixed inset-x-0 top-0 z-50"
         style={{
           backgroundColor: `rgba(0, 0, 0, ${backgroundOpacity})`,
           borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
@@ -71,7 +71,7 @@ export function SiteHeader() {
         <div className="mx-auto flex min-h-16 max-w-[72rem] items-center justify-between gap-6 px-5 py-3 md:min-h-20 md:px-8 md:py-4">
           <a
             href="#top"
-            className="shrink-0 cursor-pointer text-[clamp(calc(0.95rem+4pt),calc(2vw+4pt),calc(1.5rem+4pt))] font-light leading-none tracking-tight text-white"
+            className="shrink-0 cursor-pointer text-[clamp(calc(0.95rem+4pt),calc(2vw+4pt),calc(1.5rem+4pt))] font-light leading-none tracking-tight text-[#ffffff]"
             onClick={() => setMenuOpen(false)}
           >
             Özgür Ablak

@@ -146,7 +146,7 @@ export function UeqNoveltyStatic({ active = false }: UeqNoveltyStaticProps) {
 
   return (
     <figure
-      className="ueq-novelty-static relative flex h-full min-h-0 w-full shrink-0 flex-col overflow-hidden rounded-xl border border-white/10"
+      className="ueq-novelty-static relative flex h-full min-h-0 w-full shrink-0 flex-col overflow-hidden rounded-[1.1rem] border border-white/10"
       style={
         {
           containerType: "inline-size",

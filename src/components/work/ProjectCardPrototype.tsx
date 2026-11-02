@@ -60,7 +60,7 @@ function StaticMediaImage({
 
   return (
     <figure
-      className={`group/static-media relative rounded-xl ${
+      className={`group/static-media relative rounded-[1.1rem] ${
         fitTransparent
           ? `mx-auto flex min-h-0 items-center justify-center overflow-hidden bg-transparent ${
               scale === 1 ? "h-full w-full" : ""
@@ -521,7 +521,7 @@ export function ProjectCardPrototype({
   );
 
   const thumbnailBlock = thumbnail?.placeholder ? (
-    <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-xl">
+    <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-[1.1rem]">
       <ImagePlaceholder
         id={thumbnail.placeholder.id}
         description={thumbnail.placeholder.description}
@@ -534,7 +534,7 @@ export function ProjectCardPrototype({
     </div>
   ) : thumbnail?.src ? (
     <div
-      className={`relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-xl bg-[#0c0907] ${
+      className={`relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-[1.1rem] bg-[#0c0907] ${
         thumbnail.framed ? "border border-white/5" : ""
       }`}
     >

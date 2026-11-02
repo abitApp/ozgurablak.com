@@ -52,7 +52,7 @@ export function AppRatingsChart({ chartId }: AppRatingsChartProps) {
   const chart = phoenixCharts[chartId];
 
   return (
-    <figure className="flex w-full shrink-0 flex-col overflow-hidden rounded-xl border border-white/[0.12] bg-[#16110e]/50 text-ink shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
+    <figure className="flex w-full shrink-0 flex-col overflow-hidden rounded-[1.1rem] border border-white/[0.12] bg-[#16110e]/50 text-ink shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
       <div className="flex items-start justify-between gap-4 px-5 pt-5 pb-2 md:px-6 md:pt-6">
         <div className="self-start">
           <h4 className="mb-1 text-sm font-normal leading-none tracking-tight text-ink">

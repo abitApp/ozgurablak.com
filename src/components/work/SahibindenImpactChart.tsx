@@ -24,7 +24,7 @@ export function SahibindenImpactChart() {
   const chart = sahibindenImpactChart;
 
   return (
-    <figure className="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-xl border border-white/[0.12] bg-[#16110e]/50 text-ink shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
+    <figure className="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-[1.1rem] border border-white/[0.12] bg-[#16110e]/50 text-ink shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
       <div className="flex shrink-0 items-start justify-between gap-4 px-5 pt-4 pb-1 md:px-6 md:pt-5">
         <div className="self-start">
           <h4 className="mb-1 text-sm font-normal leading-none tracking-tight text-ink">

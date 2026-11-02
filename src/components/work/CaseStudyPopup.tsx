@@ -427,7 +427,7 @@ function PortfolioOverviewBody({
                   unoptimized={image.unoptimized}
                   objectFit={image.objectFit}
                   roundedClassName={
-                    image.roundedClassName ?? "rounded-none"
+                    image.roundedClassName ?? "rounded-[1.1rem]"
                   }
                   framed={image.framed ?? false}
                 />
@@ -447,7 +447,7 @@ function PortfolioOverviewBody({
             objectFit={content.hero.objectFit}
             framed={content.hero.framed}
             roundedClassName={
-              content.hero.framed === false ? "rounded-none" : undefined
+              content.hero.roundedClassName ?? "rounded-[1.1rem]"
             }
           />
         </div>
@@ -1357,27 +1357,27 @@ function PortfolioResultBody({
         <div
           className={`mt-8 gap-x-[28px] gap-y-[24px] ${
             content.imagesLayout === "side-by-side"
-              ? content.images.length === 3
+              ? content.images.length === 3 &&
+                !content.images.some((image) => image.fullWidth)
                 ? "grid grid-cols-1 sm:grid-cols-3"
                 : "grid grid-cols-1 sm:grid-cols-2"
               : "flex flex-col"
           }`}
         >
           {content.images.map((image, index) => {
+            const threeEqualPhones =
+              content.imagesLayout === "side-by-side" &&
+              content.images.length === 3 &&
+              !content.images.some((slot) => slot.fullWidth);
             const isFullWidth =
               Boolean(image.fullWidth) ||
               (content.imagesLayout === "side-by-side" &&
-                content.images.length !== 3 &&
+                !threeEqualPhones &&
                 content.images.length % 2 === 1 &&
                 index === content.images.length - 1 &&
                 !image.phoneFrame);
             const whiteFrame = image.frameFill === "white";
-            const colSpan =
-              isFullWidth && content.images.length === 3
-                ? "min-w-0 sm:col-span-3"
-                : isFullWidth
-                  ? "min-w-0 sm:col-span-2"
-                  : "min-w-0";
+            const colSpan = isFullWidth ? "min-w-0 sm:col-span-2" : "min-w-0";
 
             return (
               <div
@@ -1511,8 +1511,8 @@ function isCompactWorkModal(work?: OtherWork): boolean {
 
 function mediaFrameClass(aspectRatio?: string) {
   return aspectRatio
-    ? "relative w-full max-w-full min-w-0 overflow-hidden rounded-[1.15rem] border border-[#43362F] bg-[#211B18]"
-    : "relative aspect-video w-full max-w-full min-w-0 overflow-hidden rounded-[1.15rem] border border-[#43362F] bg-[#211B18]";
+    ? "relative w-full max-w-full min-w-0 overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-[#211B18]"
+    : "relative aspect-video w-full max-w-full min-w-0 overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-[#211B18]";
 }
 
 function VimeoWorkPlayer({
@@ -1794,7 +1794,7 @@ function WorkMediaBlock({
           return (
             <li
               key={item.src}
-              className="overflow-hidden rounded-[1rem] border border-[#43362F] bg-[#211B18]"
+              className="overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-[#211B18]"
             >
               {isVideo ? (
                 <video
@@ -1873,7 +1873,7 @@ function WorkMediaBlock({
         <img
           src={media.src}
           alt={media.description}
-          className="w-full rounded-[1.15rem] border border-[#43362F]"
+          className="w-full rounded-[1.1rem] border border-[#43362F]"
         />
       );
     }
@@ -1881,7 +1881,7 @@ function WorkMediaBlock({
       <video
         key={active ? "playing" : "idle"}
         src={media.src}
-        className="w-full rounded-[1.15rem] border border-[#43362F]"
+        className="w-full rounded-[1.1rem] border border-[#43362F]"
         muted
         loop
         playsInline
@@ -1897,7 +1897,7 @@ function WorkMediaBlock({
     <img
       src={media.src}
       alt={media.description}
-      className="h-auto w-full rounded-[1.15rem] border border-[#43362F]"
+      className="h-auto w-full rounded-[1.1rem] border border-[#43362F]"
     />
   );
 }
@@ -2049,7 +2049,7 @@ function WorkModalBody({
             .map((item) => (
               <div
                 key={item.src}
-                className="overflow-hidden rounded-[1.15rem] border border-[#43362F] bg-[#211B18]"
+                className="overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-[#211B18]"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- work still under video */}
                 <img
@@ -2128,7 +2128,7 @@ function DummySectionBody({
         ))}
       </dl>
 
-      <figure className="mt-8 overflow-hidden rounded-[1.15rem] border border-[#43362F] bg-[#29221E]">
+      <figure className="mt-8 overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-[#29221E]">
         <div className="bg-[#ece8e1] px-4 pt-5 pb-4 sm:px-6 sm:pt-6 sm:pb-5">
           <div className="mx-auto grid max-w-[34rem] grid-cols-3 gap-3 sm:gap-4">
             {[0, 1, 2].map((slot) => (

@@ -36,7 +36,7 @@ export type CaseStudyImageSlot = {
   objectFit?: "cover" | "contain" | "fill";
   /** Frame border + radius. Default true; false when the asset has its own curves. */
   framed?: boolean;
-  /** Override frame corner radius (e.g. "rounded-[12px]"). */
+  /** Override frame corner radius (e.g. "rounded-[1.1rem]"). */
   roundedClassName?: string;
   /** Frame fill when framed. Default dark; white = light card matching story boxes. */
   frameFill?: "dark" | "white";
@@ -1645,10 +1645,10 @@ export const caseStudies: Record<string, CaseStudy> = {
               unoptimized: true,
               frameFill: "white",
               frameColor: "#fee800",
-              roundedClassName: "rounded-[12px]",
+              roundedClassName: "rounded-[1.1rem]",
               widthClassName: "mx-auto w-[min(100%,15.5rem)]",
               mediaClassName:
-                "scale-90 origin-center rounded-[12px]",
+                "scale-90 origin-center rounded-[1.1rem]",
               ambientShadow: true,
             },
             {
@@ -1661,10 +1661,10 @@ export const caseStudies: Record<string, CaseStudy> = {
               objectFit: "contain",
               unoptimized: true,
               frameFill: "white",
-              roundedClassName: "rounded-[12px]",
+              roundedClassName: "rounded-[1.1rem]",
               widthClassName: "mx-auto w-[min(100%,15.5rem)]",
               mediaClassName:
-                "scale-[0.72] origin-center rounded-[12px]",
+                "scale-[0.72] origin-center rounded-[1.1rem]",
               ambientShadow: true,
             },
             {
@@ -1676,7 +1676,7 @@ export const caseStudies: Record<string, CaseStudy> = {
                 "Redesigned app screens on iOS and Android side by side.",
               objectFit: "cover",
               unoptimized: true,
-              roundedClassName: "rounded-[12px]",
+              roundedClassName: "rounded-[1.1rem]",
               widthClassName: "w-full",
               fullWidth: true,
             },
@@ -1693,9 +1693,9 @@ export const caseStudies: Record<string, CaseStudy> = {
               fullWidth: true,
               // Card chrome on the wrapper; 24px pad above/below the GIF inside.
               framed: false,
-              roundedClassName: "rounded-none",
+              roundedClassName: "rounded-[1.1rem]",
               wrapperClassName:
-                "overflow-hidden rounded-[12px] border border-[#43362F] bg-white py-[24px]",
+                "overflow-hidden rounded-[1.1rem] border border-[#43362F] bg-white py-[24px]",
             },
           ],
         },
@@ -1769,7 +1769,7 @@ export const caseStudies: Record<string, CaseStudy> = {
               objectFit: "contain",
               unoptimized: true,
               frameFill: "white",
-              roundedClassName: "rounded-[12px]",
+              roundedClassName: "rounded-[1.1rem]",
               // Cap near half of native 500px so Retina stays sharp.
               widthClassName: "mx-auto w-[min(100%,15.5rem)]",
               // Keep white card size; phone another 10% smaller (was scale-90).
@@ -1844,7 +1844,7 @@ export const caseStudies: Record<string, CaseStudy> = {
               objectFit: "contain",
               unoptimized: true,
               frameFill: "white",
-              roundedClassName: "rounded-[12px]",
+              roundedClassName: "rounded-[1.1rem]",
               // Full-width white card; phone at 80% of CleanShot 1× (306×0.8).
               widthClassName: "mx-auto w-[min(100%,245px)]",
             },
@@ -1910,6 +1910,7 @@ export const caseStudies: Record<string, CaseStudy> = {
               alt: "sahibinden.com team on stage with Gold Stevie Awards — nine awards graphic.",
               description: "Award photo 3",
               widthClassName: "w-full",
+              fullWidth: true,
             },
           ],
         },

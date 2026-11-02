@@ -24,7 +24,7 @@ export const navItems: Array<{
   /** Decorative separator shown before this item (desktop + mobile). */
   separator?: boolean;
 }> = [
-  { label: "WORKS", href: "#work" },
+  { label: "SELECTED WORKS", href: "#work" },
   {
     label: "MY PRODUCTS",
     href: "#my-products",
@@ -34,7 +34,7 @@ export const navItems: Array<{
   { label: "CONNECT", href: "#contact", separator: true },
 ];
 
-/** Header WORKS link: scroll to Selected Project and reset the carousel to the first card. */
+/** Header SELECTED WORKS link: scroll to Selected Works and reset the carousel to the first card. */
 export const WORKS_GO_START_EVENT = "works:go-start";
 
 export const hero = {

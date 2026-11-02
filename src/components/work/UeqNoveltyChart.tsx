@@ -438,7 +438,7 @@ export function UeqNoveltyChart({ active = false }: UeqNoveltyChartProps) {
   return (
     <figure
       ref={rootRef}
-      className="ueq-novelty flex h-full min-h-0 w-full overflow-hidden rounded-xl border border-white/10"
+      className="ueq-novelty flex h-full min-h-0 w-full overflow-hidden rounded-[1.1rem] border border-white/10"
       style={
         {
           containerType: "inline-size",
