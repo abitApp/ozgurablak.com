@@ -481,7 +481,7 @@ const vodafoneUltraHub7Work: OtherWork = {
   },
   modal: {
     type: "3D concept · video",
-    context: "Vodafone Marketing",
+    context: "Personal concept",
     tools: "Blender",
     status: "Concept",
     media: {
