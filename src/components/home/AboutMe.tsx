@@ -23,9 +23,7 @@ export function AboutMe() {
                 Senior Product Designer with 15+ years in UX/UI and design
                 systems. I ran my own design agency for six years and am at home
                 in agile teams. I believe a designer has to know when to follow
-                their instinct and when to follow users&apos; advice. As the old
-                saying goes: &quot;If I had asked people what they wanted, they
-                would have said faster horses.&quot;
+                their instinct and when to follow users&apos; advice.
               </p>
               <p>
                 I&apos;m now moving into AI product design. I launched Faldium, a

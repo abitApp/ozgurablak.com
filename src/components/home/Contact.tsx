@@ -33,7 +33,7 @@ export function Contact() {
           id="contact-heading"
           className="min-w-0 max-w-[22ch] shrink text-[clamp(1.65rem,4vw,3rem)] font-semibold leading-[1.28] tracking-tight text-ink text-balance"
         >
-          Hiring a senior or lead product designer?
+          Working on a product that needs a senior or lead designer?
           <br />
           <span style={{ color: CONTACT_BLUE }}>Say hello.</span>
         </h2>
