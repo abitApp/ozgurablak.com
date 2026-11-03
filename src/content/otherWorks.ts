@@ -232,7 +232,7 @@ const barcodeScanWork: OtherWork = {
   },
   modal: {
     type: "Prototype · video",
-    context: "Personal concept",
+    context: "METRO App",
     tools: "Framer",
     status: "Implemented in the app",
     media: {
@@ -417,7 +417,7 @@ const ufoWork: OtherWork = {
   },
   modal: {
     type: "UI animation · video",
-    context: "METRO app",
+    context: "Personal concept",
     tools: "Adobe After Effects · Adobe Illustrator · Lottie",
     status: "Not implemented in the app",
     media: {
