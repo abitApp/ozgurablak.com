@@ -59,6 +59,7 @@ export function AboutFencingVideo() {
     el.muted = muted;
     setEnded(false);
     try {
+      // With preload="none", play() is what starts the network fetch.
       await el.play();
       setPlaying(true);
     } catch {
@@ -72,6 +73,14 @@ export function AboutFencingVideo() {
       }
     }
   };
+
+  // First click only sets src; play once the attribute is committed.
+  useEffect(() => {
+    if (!mediaSrc || !pendingPlayRef.current) return;
+    pendingPlayRef.current = false;
+    void tryPlay();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only kick off after src mounts
+  }, [mediaSrc]);
 
   const play = () => {
     const el = videoRef.current;
@@ -145,11 +154,6 @@ export function AboutFencingVideo() {
             poster={POSTER_SRC}
             playsInline
             preload="none"
-            onLoadedData={() => {
-              if (!pendingPlayRef.current) return;
-              pendingPlayRef.current = false;
-              void tryPlay();
-            }}
             onPlay={() => {
               setPlaying(true);
               setEnded(false);
