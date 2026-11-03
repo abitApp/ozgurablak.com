@@ -181,7 +181,7 @@ const setupWithArWork: OtherWork = {
     type: "AR prototype · video",
     context: "Personal concept",
     tools: "Adobe After Effects",
-    status: "Prototype, presented to management",
+    status: "Concept, not a working feature",
     media: {
       kind: "video",
       provider: "vimeo",
@@ -279,7 +279,7 @@ const customPreloadersWork: OtherWork = {
     type: "UI animation · GIF",
     context: "METRO app",
     tools: "Adobe After Effects · Adobe Illustrator · Lottie",
-    status: "Live in the app",
+    status: "Implemented in the app",
     media: {
       kind: "animation",
       src: "/media/projects/ui-animation/custom-preloaders/preloader-02-cutting-board.gif",
@@ -335,7 +335,7 @@ const emptyStateAnimationsWork: OtherWork = {
     type: "UI animation · GIF",
     context: "METRO app",
     tools: "Adobe After Effects · Adobe Illustrator · Lottie",
-    status: "Live in the app",
+    status: "Implemented in the app",
     media: {
       kind: "animation",
       src: "/media/projects/ui-animation/empty-state-animations/empty-01-favorites.mp4?v=2",
