@@ -27,6 +27,16 @@ export type OtherWorkMedia = {
   description: string;
   /** CSS aspect-ratio value, e.g. "16 / 9" or "500 / 727". */
   aspectRatio?: string;
+  /**
+   * How the video fills the framed shell. `cover` scales the embed to fill
+   * (crops overflow); default leaves the player as-is inside the frame.
+   */
+  objectFit?: "cover" | "contain";
+  /**
+   * Intrinsic video aspect when `objectFit: "cover"` and it differs from
+   * `aspectRatio` (the visible frame).
+   */
+  videoAspectRatio?: string;
   /** Side-by-side assets (e.g. multiple preloader GIFs). */
   items?: OtherWorkMediaItem[];
   /** Framed stills under the primary media (same border rhythm as the video). */
@@ -237,10 +247,13 @@ const barcodeScanWork: OtherWork = {
     status: "Implemented in the app",
     media: {
       kind: "video",
-      provider: "youtube",
-      src: "https://www.youtube.com/embed/O7c5Y-lfJxg",
-      description: "Barcode Scan prototype video (YouTube).",
-      aspectRatio: "500 / 727",
+      provider: "vimeo",
+      src: "https://player.vimeo.com/video/1242732616",
+      description: "Barcode Scan prototype video (Vimeo).",
+      // Native Vimeo size 240×348 — frame matches; cover fills the shell.
+      aspectRatio: "240 / 348",
+      objectFit: "cover",
+      videoAspectRatio: "240 / 348",
     },
     caption:
       "I built this prototype to show developers how the scanning feature should work. Customers can add any item from the store shelf to their shopping list and adjust the quantity easily. The feature is now implemented in the app, and we are gathering feedback to improve it.",

@@ -1521,6 +1521,13 @@ function vimeoEmbedSrc(src: string) {
   if (!url.includes("api=")) {
     url = `${url}${url.includes("?") ? "&" : "?"}api=1`;
   }
+  // Drop Vimeo chrome so the picture can fill the framed shell.
+  for (const param of ["badge=0", "title=0", "byline=0", "portrait=0"] as const) {
+    const key = param.split("=")[0]!;
+    if (!url.includes(`${key}=`)) {
+      url = `${url}${url.includes("?") ? "&" : "?"}${param}`;
+    }
+  }
   return url;
 }
 
@@ -1549,12 +1556,26 @@ function VimeoWorkPlayer({
   src,
   title,
   aspectRatio,
+  objectFit,
+  videoAspectRatio,
 }: {
   src: string;
   title: string;
   aspectRatio?: string;
+  objectFit?: "cover" | "contain";
+  videoAspectRatio?: string;
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const fit = objectFit ?? "contain";
+  const frameAspect = parseAspectRatio(aspectRatio ?? "16 / 9");
+  const videoAspect = videoAspectRatio
+    ? parseAspectRatio(videoAspectRatio, frameAspect)
+    : frameAspect;
+  // Cover: scale the embed to fill the framed shell (same idea as case-study demos).
+  const coverScale =
+    fit === "cover"
+      ? coverScaleForAspects(frameAspect, videoAspect) * 1.02
+      : 1;
 
   useEffect(() => {
     const iframe = iframeRef.current;
@@ -1597,6 +1618,14 @@ function VimeoWorkPlayer({
         title={title}
         src={vimeoEmbedSrc(src)}
         className="absolute inset-0 h-full w-full max-w-full border-0"
+        style={
+          fit === "cover"
+            ? {
+                transform: `scale(${coverScale})`,
+                transformOrigin: "center center",
+              }
+            : undefined
+        }
         allow="picture-in-picture; fullscreen"
         allowFullScreen
       />
@@ -1869,6 +1898,8 @@ function WorkMediaBlock({
         src={media.src}
         title={title}
         aspectRatio={media.aspectRatio}
+        objectFit={media.objectFit}
+        videoAspectRatio={media.videoAspectRatio}
       />
     );
   }
