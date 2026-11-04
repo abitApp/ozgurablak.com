@@ -44,11 +44,11 @@ export const hero = {
     /** First frame of hero-loop.mp4 — shown until the video can play (and on mobile). */
     src: "/media/hero-poster.jpg",
     alt: "Özgür Ablak seated at a desk in a dark suit with a rabbit holding a lollipop on his lap, a Product Design nameplate in the foreground.",
-    width: 1920,
-    height: 1081,
+    width: 3408,
+    height: 1920,
   },
   video: {
-    src: "/media/hero-loop.mp4?v=5",
+    src: "/media/hero-loop.mp4?v=10",
   },
 };
 

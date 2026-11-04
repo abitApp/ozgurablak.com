@@ -21,24 +21,22 @@ export function Hero() {
       />
       <div className="hero-overlay absolute inset-0 z-[1]" aria-hidden="true" />
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[72rem] flex-col justify-end px-5 pb-20 pt-24 md:justify-center md:px-8 md:pb-28 md:pt-20 md:-translate-y-4">
-        <div className="max-w-[22.5rem] sm:max-w-[28rem] md:max-w-[38rem] lg:max-w-[44rem]">
-          <div className="-translate-y-[60px]">
-            <h1
-              id="hero-heading"
-              className={`${motto.className} text-[clamp(calc(2.6rem-2pt),calc(7vw-2pt),calc(3.75rem-2pt))] font-bold leading-[1.28] tracking-[-0.02em] text-white/90`}
-            >
-              The Man Who Changed
-              <br />
-              the Design World.
-            </h1>
+      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[72rem] flex-col justify-center px-5 pb-16 pt-28 md:px-8 md:pb-28 md:pt-20 md:-translate-y-4">
+        <div className="max-w-[22.5rem] -translate-y-6 sm:max-w-[28rem] sm:-translate-y-8 md:max-w-[38rem] md:-translate-y-[60px] lg:max-w-[44rem]">
+          <h1
+            id="hero-heading"
+            className={`${motto.className} text-[clamp(calc(2.35rem-2pt),calc(5.5vw+0.4rem),calc(3.75rem-2pt))] font-bold leading-[1.28] tracking-[-0.02em] text-white/90`}
+          >
+            The Man Who Changed
+            <br />
+            the Design World.
+          </h1>
 
-            <p className="mt-[10px] text-[clamp(1.2rem,2.6vw,1.75rem)] font-light italic leading-snug text-white/50 md:mt-[14px]">
-              Or at least{" "}
-              <span className="tried-wave font-medium text-white/90">tried</span>{" "}
-              to.
-            </p>
-          </div>
+          <p className="mt-[10px] text-[clamp(1.1rem,2.4vw,1.75rem)] font-light italic leading-snug text-white/50 md:mt-[14px]">
+            Or at least{" "}
+            <span className="tried-wave font-medium text-white/90">tried</span>{" "}
+            to.
+          </p>
 
           <a
             href="#work"
