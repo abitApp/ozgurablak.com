@@ -54,7 +54,7 @@ export const HERO_RABBIT_BUBBLE_DURATION = 3.2;
  */
 export const HERO_RABBIT_BUBBLE_SETTLE = HERO_RABBIT_BUBBLE_DURATION * 0.042;
 /** After enter settles, hero video pauses this long then auto-resumes. */
-export const HERO_RABBIT_BUBBLE_HOLD_MS = 5000;
+export const HERO_RABBIT_BUBBLE_HOLD_MS = 6000;
 /** TEMP preview: seek+pause at cue and keep bubble visible for layout check. */
 export const HERO_BUBBLE_PREVIEW = false;
 

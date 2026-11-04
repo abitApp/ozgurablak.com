@@ -403,12 +403,12 @@ a {
     transform: rotate(3deg) scale(1);
   }
   /* Hold */
-  72% {
+  86% {
     opacity: 1;
     transform: rotate(3deg) scale(1);
   }
-  /* Out — zoom in, then zoom out (readable length) */
-  84% {
+  /* Out — zoom in, then zoom out */
+  92% {
     opacity: 1;
     transform: rotate(3deg) scale(1.35);
   }

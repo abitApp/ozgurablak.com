@@ -143,7 +143,7 @@ export function HeroMedia() {
     setPlaying(false);
   };
 
-  /** After enter settles: pause 5s (like the pause button), then auto-play. */
+  /** After enter settles: pause (like the pause button), then auto-play. */
   const holdAfterSettle = () => {
     const el = videoRef.current;
     if (!el || userPausedRef.current || el.ended || bubbleHoldRef.current) return;
@@ -246,7 +246,7 @@ export function HeroMedia() {
           window.dispatchEvent(new Event(HERO_RABBIT_BUBBLE_EVENT));
         }
         dispatchBubbleSync({ elapsed, playing });
-        // Enter bounce settled → pause 5s (bubble stays), then resume.
+        // Enter bounce settled → pause (bubble stays), then resume.
         if (
           bubbleHoldArmedRef.current &&
           elapsed >= HERO_RABBIT_BUBBLE_SETTLE &&
