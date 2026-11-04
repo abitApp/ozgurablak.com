@@ -317,7 +317,7 @@ a {
   transform: rotate(3deg);
   pointer-events: none;
   opacity: 1;
-  animation: hero-rabbit-bubble-life 3.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: hero-rabbit-bubble-life 3.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .hero-rabbit-bubble.is-preview {
@@ -403,12 +403,12 @@ a {
     transform: rotate(3deg) scale(1);
   }
   /* Hold */
-  90.5% {
+  72% {
     opacity: 1;
     transform: rotate(3deg) scale(1);
   }
-  /* Out — same zoom-in → zoom-out */
-  94% {
+  /* Out — zoom in, then zoom out (readable length) */
+  84% {
     opacity: 1;
     transform: rotate(3deg) scale(1.35);
   }

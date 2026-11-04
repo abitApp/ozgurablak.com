@@ -47,7 +47,14 @@ export const HERO_RABBIT_BUBBLE_SYNC_EVENT = "hero:rabbit-bubble-sync";
 /** Seconds into hero-loop.mp4 when the rabbit bubble cue fires. */
 export const HERO_RABBIT_BUBBLE_AT = 5;
 /** Total on-screen life of the bubble (matches CSS animation duration). */
-export const HERO_RABBIT_BUBBLE_DURATION = 3.5;
+export const HERO_RABBIT_BUBBLE_DURATION = 3.2;
+/**
+ * Seconds after cue when the enter bounce settles (keyframes 4.2% of duration).
+ * Hero video pauses here for HERO_RABBIT_BUBBLE_HOLD_MS, then auto-resumes.
+ */
+export const HERO_RABBIT_BUBBLE_SETTLE = HERO_RABBIT_BUBBLE_DURATION * 0.042;
+/** After enter settles, hero video pauses this long then auto-resumes. */
+export const HERO_RABBIT_BUBBLE_HOLD_MS = 5000;
 /** TEMP preview: seek+pause at cue and keep bubble visible for layout check. */
 export const HERO_BUBBLE_PREVIEW = false;
 

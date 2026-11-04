@@ -7,6 +7,8 @@ import {
   HERO_RABBIT_BUBBLE_AT,
   HERO_RABBIT_BUBBLE_DURATION,
   HERO_RABBIT_BUBBLE_EVENT,
+  HERO_RABBIT_BUBBLE_HOLD_MS,
+  HERO_RABBIT_BUBBLE_SETTLE,
   HERO_RABBIT_BUBBLE_SYNC_EVENT,
   hero,
   type HeroRabbitBubbleSyncDetail,
@@ -51,6 +53,19 @@ export function HeroMedia() {
   const userPausedRef = useRef(false);
   const playTokenRef = useRef(0);
   const bubbleShowingRef = useRef(false);
+  /** Auto pause after enter settle; not a user pause — may auto-resume. */
+  const bubbleHoldRef = useRef(false);
+  /** Once per cue — hold after settle only. */
+  const bubbleHoldArmedRef = useRef(false);
+  const bubbleHoldTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearBubbleHold = () => {
+    if (bubbleHoldTimerRef.current !== null) {
+      clearTimeout(bubbleHoldTimerRef.current);
+      bubbleHoldTimerRef.current = null;
+    }
+    bubbleHoldRef.current = false;
+  };
 
   useEffect(() => {
     const media = window.matchMedia(
@@ -67,8 +82,10 @@ export function HeroMedia() {
         setProgress(0);
         userPausedRef.current = false;
         playTokenRef.current += 1;
+        clearBubbleHold();
         if (bubbleShowingRef.current) {
           bubbleShowingRef.current = false;
+          bubbleHoldArmedRef.current = false;
           dispatchBubbleSync({ elapsed: null });
         }
       }
@@ -76,13 +93,17 @@ export function HeroMedia() {
     sync();
 
     media.addEventListener("change", sync);
-    return () => media.removeEventListener("change", sync);
+    return () => {
+      media.removeEventListener("change", sync);
+      clearBubbleHold();
+    };
   }, []);
 
   const playVideo = async () => {
     const el = videoRef.current;
     if (!el || userPausedRef.current) return;
 
+    clearBubbleHold();
     const token = ++playTokenRef.current;
     el.muted = true;
 
@@ -94,6 +115,7 @@ export function HeroMedia() {
       }
       if (bubbleShowingRef.current) {
         bubbleShowingRef.current = false;
+        bubbleHoldArmedRef.current = false;
         dispatchBubbleSync({ elapsed: null });
       }
     }
@@ -115,9 +137,27 @@ export function HeroMedia() {
   const pauseVideo = () => {
     const el = videoRef.current;
     userPausedRef.current = true;
+    clearBubbleHold();
     playTokenRef.current += 1;
     if (el) hardStop(el);
     setPlaying(false);
+  };
+
+  /** After enter settles: pause 5s (like the pause button), then auto-play. */
+  const holdAfterSettle = () => {
+    const el = videoRef.current;
+    if (!el || userPausedRef.current || el.ended || bubbleHoldRef.current) return;
+    clearBubbleHold();
+    bubbleHoldRef.current = true;
+    playTokenRef.current += 1;
+    hardStop(el);
+    setPlaying(false);
+    bubbleHoldTimerRef.current = setTimeout(() => {
+      bubbleHoldTimerRef.current = null;
+      bubbleHoldRef.current = false;
+      if (userPausedRef.current) return;
+      void playVideo();
+    }, HERO_RABBIT_BUBBLE_HOLD_MS);
   };
 
   useEffect(() => {
@@ -202,24 +242,39 @@ export function HeroMedia() {
       if (elapsed >= 0 && elapsed < HERO_RABBIT_BUBBLE_DURATION) {
         if (!bubbleShowingRef.current) {
           bubbleShowingRef.current = true;
+          bubbleHoldArmedRef.current = true;
           window.dispatchEvent(new Event(HERO_RABBIT_BUBBLE_EVENT));
         }
         dispatchBubbleSync({ elapsed, playing });
+        // Enter bounce settled → pause 5s (bubble stays), then resume.
+        if (
+          bubbleHoldArmedRef.current &&
+          elapsed >= HERO_RABBIT_BUBBLE_SETTLE &&
+          !userPausedRef.current &&
+          !bubbleHoldRef.current
+        ) {
+          bubbleHoldArmedRef.current = false;
+          holdAfterSettle();
+        }
       } else if (bubbleShowingRef.current) {
         bubbleShowingRef.current = false;
+        bubbleHoldArmedRef.current = false;
         dispatchBubbleSync({ elapsed: null, playing: false });
       }
 
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearBubbleHold();
+    };
   }, [useVideo, videoReady]);
 
   const togglePlayback = () => {
     const el = videoRef.current;
     if (!el) return;
-    if (el.paused || el.ended || userPausedRef.current) {
+    if (el.paused || el.ended || userPausedRef.current || bubbleHoldRef.current) {
       userPausedRef.current = false;
       void playVideo();
     } else {
