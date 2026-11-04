@@ -5,7 +5,6 @@ import { handwriting } from "@/lib/fonts";
 
 const VIDEO_SRC = "/media/about/fencing.mp4?v=6";
 const POSTER_SRC = "/media/about/fencing-poster.jpg?v=5";
-const PLAYBACK_VOLUME = 1;
 
 const POLAROID_DATE = "31. October 2026";
 
@@ -23,16 +22,50 @@ export function AboutFencingVideo() {
   const pendingPlayRef = useRef(false);
   const [mediaSrc, setMediaSrc] = useState<string | undefined>(undefined);
   const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(true);
   const [progress, setProgress] = useState(0);
   const [ended, setEnded] = useState(false);
+  const [playBlink, setPlayBlink] = useState(false);
 
+  // When scroll enters About Me, wait 2s then blink the Play border four times.
   useEffect(() => {
-    const el = videoRef.current;
-    if (!el) return;
-    el.volume = PLAYBACK_VOLUME;
-    el.muted = muted;
-  }, [muted]);
+    const section = document.getElementById("about");
+    if (!section) return;
+
+    let wasInside = false;
+    let delayTimer: number | null = null;
+
+    const clearDelay = () => {
+      if (delayTimer !== null) {
+        window.clearTimeout(delayTimer);
+        delayTimer = null;
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const inside = Boolean(entry?.isIntersecting);
+        if (inside && !wasInside) {
+          clearDelay();
+          setPlayBlink(false);
+          delayTimer = window.setTimeout(() => {
+            delayTimer = null;
+            setPlayBlink(false);
+            requestAnimationFrame(() => setPlayBlink(true));
+          }, 2000);
+        } else if (!inside && wasInside) {
+          clearDelay();
+          setPlayBlink(false);
+        }
+        wasInside = inside;
+      },
+      { threshold: 0.35 },
+    );
+    observer.observe(section);
+    return () => {
+      clearDelay();
+      observer.disconnect();
+    };
+  }, []);
 
   // Drive the ring from the video clock once media is loaded and playing/paused mid-clip.
   useEffect(() => {
@@ -55,22 +88,13 @@ export function AboutFencingVideo() {
   const tryPlay = async () => {
     const el = videoRef.current;
     if (!el) return;
-    el.volume = PLAYBACK_VOLUME;
-    el.muted = muted;
+    el.muted = true;
     setEnded(false);
     try {
-      // With preload="none", play() is what starts the network fetch.
       await el.play();
       setPlaying(true);
     } catch {
-      el.muted = true;
-      setMuted(true);
-      try {
-        await el.play();
-        setPlaying(true);
-      } catch {
-        setPlaying(false);
-      }
+      setPlaying(false);
     }
   };
 
@@ -120,16 +144,6 @@ export function AboutFencingVideo() {
     setEnded(true);
   };
 
-  const toggleMute = () => {
-    const el = videoRef.current;
-    const next = !muted;
-    setMuted(next);
-    if (el) {
-      el.muted = next;
-      if (!next) el.volume = PLAYBACK_VOLUME;
-    }
-  };
-
   const dashOffset = RING_CIRCUMFERENCE * (1 - progress);
   const showProgressRing = Boolean(mediaSrc) && !ended && (playing || progress > 0);
 
@@ -152,6 +166,7 @@ export function AboutFencingVideo() {
             className="absolute inset-0 h-full w-full object-cover object-center"
             src={mediaSrc}
             poster={POSTER_SRC}
+            muted
             playsInline
             preload="none"
             onPlay={() => {
@@ -167,7 +182,10 @@ export function AboutFencingVideo() {
             <button
               type="button"
               onClick={toggle}
-              className={`absolute bottom-3 left-1/2 z-[3] h-9 -translate-x-1/2 gap-1.5 px-3.5 ${controlBtnClass}`}
+              onAnimationEnd={() => setPlayBlink(false)}
+              className={`absolute bottom-3 left-1/2 z-[3] h-9 -translate-x-1/2 gap-1.5 px-3.5 ${controlBtnClass}${
+                playBlink ? " about-play-border-blink" : ""
+              }`}
               aria-label="Play video"
             >
               <svg
@@ -186,7 +204,10 @@ export function AboutFencingVideo() {
             <button
               type="button"
               onClick={toggle}
-              className={`absolute bottom-3 left-1/2 z-[3] -translate-x-1/2 ${controlBtnClass}`}
+              onAnimationEnd={() => setPlayBlink(false)}
+              className={`absolute bottom-3 left-1/2 z-[3] -translate-x-1/2 ${controlBtnClass}${
+                playBlink ? " about-play-border-blink" : ""
+              }`}
               style={{ width: BTN_SIZE, height: BTN_SIZE }}
               aria-label={playing ? "Pause video" : "Play video"}
               aria-pressed={!playing}
@@ -241,48 +262,6 @@ export function AboutFencingVideo() {
               )}
             </button>
           )}
-
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleMute();
-            }}
-            className={`absolute right-3 bottom-3 z-[4] size-9 ${controlBtnClass}`}
-            aria-label={muted ? "Unmute video" : "Mute video"}
-            aria-pressed={muted}
-          >
-            {muted ? (
-              <svg
-                className="size-3.5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M11 5 6 9H3v6h3l5 4V5Z" />
-                <path d="m22 9-6 6M16 9l6 6" />
-              </svg>
-            ) : (
-              <svg
-                className="size-3.5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M11 5 6 9H3v6h3l5 4V5Z" />
-                <path d="M15.5 8.5a5 5 0 0 1 0 7" />
-                <path d="M18.5 5.5a9 9 0 0 1 0 13" />
-              </svg>
-            )}
-          </button>
         </div>
 
         <div className="px-1 pt-4 pb-3">

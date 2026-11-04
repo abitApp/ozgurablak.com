@@ -140,6 +140,22 @@ a {
   filter: none !important;
 }
 
+/* About fencing Play control — four border-color pulses (starts 2s after #about enters) */
+@keyframes about-play-border-blink {
+  0%,
+  100% {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  45% {
+    border-color: rgba(255, 255, 255, 0.9);
+  }
+}
+
+.about-play-border-blink {
+  transition: none !important;
+  animation: about-play-border-blink 300ms ease-in-out 4 both;
+}
+
 /* Native scrollbar hidden — custom track sits outside the cards (Figma).
    overflow-y is toggled in JSX: `auto` only while content overflows.
    Always-on overflow:auto traps wheel/trackpad even when nothing scrolls. */

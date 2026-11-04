@@ -5,24 +5,35 @@ import { useEffect, useRef, useState } from "react";
 import { hero } from "@/content/home";
 
 /**
- * Desktop: muted looping background video (only after media query match).
- * Mobile / reduced-motion / coarse pointer: static poster — video is never requested.
- * Poster (first frame) stays visible until the video can play, then video fades in.
- *
- * Frame bias: media is 50px taller than the viewport and top-aligned with
- * object-bottom, so the crop sits 50px lower in-frame (no empty gap).
+ * Desktop: background video (only after media query match). Plays once — no loop.
+ * Always muted; play/pause only. Mobile / reduced-motion / coarse pointer: static poster.
  */
 const BTN_SIZE = 44;
 const RING_STROKE = 1.5;
 const RING_RADIUS = (BTN_SIZE - RING_STROKE) / 2;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
+const controlBtnClass =
+  "inline-flex size-11 cursor-pointer items-center justify-center rounded-full bg-black/40 text-white/90 transition-colors hover:bg-black/55 md:bg-black/30 md:backdrop-blur-sm";
+
+function hardStop(el: HTMLVideoElement) {
+  el.pause();
+  try {
+    el.currentTime = el.currentTime;
+  } catch {
+    /* ignore */
+  }
+}
+
 export function HeroMedia() {
   const [useVideo, setUseVideo] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
-  const [playing, setPlaying] = useState(true);
+  const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+
   const videoRef = useRef<HTMLVideoElement>(null);
+  const userPausedRef = useRef(false);
+  const playTokenRef = useRef(0);
 
   useEffect(() => {
     const media = window.matchMedia(
@@ -32,9 +43,13 @@ export function HeroMedia() {
     const sync = () => {
       setUseVideo(media.matches);
       if (!media.matches) {
+        const el = videoRef.current;
+        if (el) hardStop(el);
         setVideoReady(false);
-        setPlaying(true);
+        setPlaying(false);
         setProgress(0);
+        userPausedRef.current = false;
+        playTokenRef.current += 1;
       }
     };
     sync();
@@ -43,30 +58,76 @@ export function HeroMedia() {
     return () => media.removeEventListener("change", sync);
   }, []);
 
+  const playVideo = async () => {
+    const el = videoRef.current;
+    if (!el || userPausedRef.current) return;
+
+    const token = ++playTokenRef.current;
+    el.muted = true;
+
+    if (el.ended || el.currentTime >= (el.duration || 0) - 0.05) {
+      try {
+        el.currentTime = 0;
+      } catch {
+        /* ignore */
+      }
+    }
+
+    try {
+      await el.play();
+      if (token !== playTokenRef.current || userPausedRef.current) {
+        hardStop(el);
+        setPlaying(false);
+        return;
+      }
+      setPlaying(true);
+    } catch {
+      if (token !== playTokenRef.current || userPausedRef.current) return;
+      setPlaying(false);
+    }
+  };
+
+  const pauseVideo = () => {
+    const el = videoRef.current;
+    userPausedRef.current = true;
+    playTokenRef.current += 1;
+    if (el) hardStop(el);
+    setPlaying(false);
+  };
+
   useEffect(() => {
     if (!useVideo) return;
     const el = videoRef.current;
     if (!el) return;
 
     const markReady = () => setVideoReady(true);
-    const onPlay = () => setPlaying(true);
-    const onPause = () => setPlaying(false);
+    const onEnded = () => {
+      setPlaying(false);
+      setProgress(1);
+    };
 
     if (el.readyState >= 3) markReady();
 
     el.addEventListener("canplay", markReady);
     el.addEventListener("loadeddata", markReady);
-    el.addEventListener("play", onPlay);
-    el.addEventListener("pause", onPause);
+    el.addEventListener("ended", onEnded);
+
     return () => {
+      playTokenRef.current += 1;
+      hardStop(el);
       el.removeEventListener("canplay", markReady);
       el.removeEventListener("loadeddata", markReady);
-      el.removeEventListener("play", onPlay);
-      el.removeEventListener("pause", onPause);
+      el.removeEventListener("ended", onEnded);
     };
   }, [useVideo]);
 
-  // Drive the ring from the video clock while the control is mounted.
+  useEffect(() => {
+    if (!useVideo || !videoReady) return;
+    if (userPausedRef.current) return;
+    void playVideo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useVideo, videoReady]);
+
   useEffect(() => {
     if (!useVideo || !videoReady) return;
     const el = videoRef.current;
@@ -74,10 +135,11 @@ export function HeroMedia() {
 
     let raf = 0;
     const tick = () => {
-      const duration = el.duration;
-      if (Number.isFinite(duration) && duration > 0) {
-        setProgress(Math.min(1, Math.max(0, el.currentTime / duration)));
+      const dur = el.duration;
+      if (Number.isFinite(dur) && dur > 0) {
+        setProgress(Math.min(1, Math.max(0, el.currentTime / dur)));
       }
+      setPlaying(!el.paused && !el.ended);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -87,10 +149,11 @@ export function HeroMedia() {
   const togglePlayback = () => {
     const el = videoRef.current;
     if (!el) return;
-    if (el.paused) {
-      void el.play().catch(() => setPlaying(false));
+    if (el.paused || el.ended || userPausedRef.current) {
+      userPausedRef.current = false;
+      void playVideo();
     } else {
-      el.pause();
+      pauseVideo();
     }
   };
 
@@ -115,83 +178,79 @@ export function HeroMedia() {
               className={`absolute inset-0 h-full w-full object-cover object-bottom transition-opacity duration-500 ease-out ${
                 videoReady ? "opacity-100" : "opacity-0"
               }`}
-              autoPlay
+              src={hero.video.src}
               muted
-              loop
               playsInline
-              preload="metadata"
+              preload="auto"
               aria-hidden="true"
-            >
-              <source src={hero.video.src} type="video/mp4" />
-            </video>
+            />
           ) : null}
         </div>
       </div>
 
-      {/* Sibling of hero scrims so the control stays clickable above them. */}
       {useVideo && videoReady ? (
-        <button
-          type="button"
-          onClick={togglePlayback}
-          className="absolute right-5 bottom-5 z-20 inline-flex size-11 cursor-pointer items-center justify-center rounded-full bg-black/40 text-white/90 transition-colors hover:bg-black/55 md:right-8 md:bottom-8 md:bg-black/30 md:backdrop-blur-sm"
-          style={{ width: BTN_SIZE, height: BTN_SIZE }}
-          aria-label={
-            playing ? "Pause background video" : "Play background video"
-          }
-          aria-pressed={!playing}
-        >
-          <svg
-            className="pointer-events-none absolute inset-0"
-            width={BTN_SIZE}
-            height={BTN_SIZE}
-            viewBox={`0 0 ${BTN_SIZE} ${BTN_SIZE}`}
-            aria-hidden="true"
+        <div className="absolute right-5 bottom-5 z-20 flex items-center gap-2 md:right-8 md:bottom-8">
+          <button
+            type="button"
+            onClick={togglePlayback}
+            className={`relative ${controlBtnClass}`}
+            style={{ width: BTN_SIZE, height: BTN_SIZE }}
+            aria-label={
+              playing ? "Pause background video" : "Play background video"
+            }
+            aria-pressed={!playing}
           >
-            {/* Track */}
-            <circle
-              cx={BTN_SIZE / 2}
-              cy={BTN_SIZE / 2}
-              r={RING_RADIUS}
-              fill="none"
-              stroke="rgba(255,255,255,0.28)"
-              strokeWidth={RING_STROKE}
-            />
-            {/* Progress — starts at 12 o'clock */}
-            <circle
-              cx={BTN_SIZE / 2}
-              cy={BTN_SIZE / 2}
-              r={RING_RADIUS}
-              fill="none"
-              stroke="rgba(255,255,255,0.9)"
-              strokeWidth={RING_STROKE}
-              strokeLinecap="round"
-              strokeDasharray={RING_CIRCUMFERENCE}
-              strokeDashoffset={dashOffset}
-              transform={`rotate(-90 ${BTN_SIZE / 2} ${BTN_SIZE / 2})`}
-            />
-          </svg>
+            <svg
+              className="pointer-events-none absolute inset-0"
+              width={BTN_SIZE}
+              height={BTN_SIZE}
+              viewBox={`0 0 ${BTN_SIZE} ${BTN_SIZE}`}
+              aria-hidden="true"
+            >
+              <circle
+                cx={BTN_SIZE / 2}
+                cy={BTN_SIZE / 2}
+                r={RING_RADIUS}
+                fill="none"
+                stroke="rgba(255,255,255,0.28)"
+                strokeWidth={RING_STROKE}
+              />
+              <circle
+                cx={BTN_SIZE / 2}
+                cy={BTN_SIZE / 2}
+                r={RING_RADIUS}
+                fill="none"
+                stroke="rgba(255,255,255,0.9)"
+                strokeWidth={RING_STROKE}
+                strokeLinecap="round"
+                strokeDasharray={RING_CIRCUMFERENCE}
+                strokeDashoffset={dashOffset}
+                transform={`rotate(-90 ${BTN_SIZE / 2} ${BTN_SIZE / 2})`}
+              />
+            </svg>
 
-          {playing ? (
-            <svg
-              className="relative size-4"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <rect x="6" y="5" width="4" height="14" rx="1" />
-              <rect x="14" y="5" width="4" height="14" rx="1" />
-            </svg>
-          ) : (
-            <svg
-              className="relative ml-px size-4"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.1-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14Z" />
-            </svg>
-          )}
-        </button>
+            {playing ? (
+              <svg
+                className="relative size-4"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <rect x="6" y="5" width="4" height="14" rx="1" />
+                <rect x="14" y="5" width="4" height="14" rx="1" />
+              </svg>
+            ) : (
+              <svg
+                className="relative ml-px size-4"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.1-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14Z" />
+              </svg>
+            )}
+          </button>
+        </div>
       ) : null}
     </>
   );
