@@ -37,6 +37,27 @@ export const navItems: Array<{
 /** Header SELECTED WORKS link: scroll to Selected Works and reset the carousel to the first card. */
 export const WORKS_GO_START_EVENT = "works:go-start";
 
+/** Hero video cue: rabbit speech bubble (HeroMedia → Hero). */
+export const HERO_RABBIT_BUBBLE_EVENT = "hero:rabbit-bubble";
+/**
+ * Video-clock sync for the rabbit bubble (play/pause/seek).
+ * `elapsed` = seconds since cue; `null` = hide.
+ */
+export const HERO_RABBIT_BUBBLE_SYNC_EVENT = "hero:rabbit-bubble-sync";
+/** Seconds into hero-loop.mp4 when the rabbit bubble cue fires. */
+export const HERO_RABBIT_BUBBLE_AT = 5;
+/** Total on-screen life of the bubble (matches CSS animation duration). */
+export const HERO_RABBIT_BUBBLE_DURATION = 3.5;
+/** TEMP preview: seek+pause at cue and keep bubble visible for layout check. */
+export const HERO_BUBBLE_PREVIEW = false;
+
+export type HeroRabbitBubbleSyncDetail = {
+  /** Seconds since cue while the bubble should be on screen; null hides it. */
+  elapsed: number | null;
+  /** False while the hero video is paused — freeze the bubble animation. */
+  playing?: boolean;
+};
+
 export const hero = {
   headline: "The Man Who Changed the Design World.",
   supporting: "Or at least tried to.",

@@ -1,10 +1,56 @@
 "use client";
 
-import { motto } from "@/lib/fonts";
+import { useEffect, useState } from "react";
+import { motto, sans } from "@/lib/fonts";
 import { HeroMedia } from "@/components/home/HeroMedia";
-import { WORKS_GO_START_EVENT } from "@/content/home";
+import {
+  HERO_BUBBLE_PREVIEW,
+  HERO_RABBIT_BUBBLE_EVENT,
+  HERO_RABBIT_BUBBLE_SYNC_EVENT,
+  WORKS_GO_START_EVENT,
+  type HeroRabbitBubbleSyncDetail,
+} from "@/content/home";
 
 export function Hero() {
+  const [rabbitBubble, setRabbitBubble] = useState(HERO_BUBBLE_PREVIEW);
+  const [bubblePaused, setBubblePaused] = useState(false);
+  const [bubbleGen, setBubbleGen] = useState(0);
+
+  useEffect(() => {
+    if (HERO_BUBBLE_PREVIEW) {
+      setRabbitBubble(true);
+      return;
+    }
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const onCue = () => {
+      if (reduced.matches) return;
+      setBubblePaused(false);
+      setBubbleGen((n) => n + 1);
+      setRabbitBubble(true);
+    };
+
+    const onSync = (event: Event) => {
+      const detail = (event as CustomEvent<HeroRabbitBubbleSyncDetail>).detail;
+      if (!detail) return;
+      if (detail.elapsed === null) {
+        setRabbitBubble(false);
+        setBubblePaused(false);
+        return;
+      }
+      if (reduced.matches) return;
+      setRabbitBubble(true);
+      setBubblePaused(detail.playing === false);
+    };
+
+    window.addEventListener(HERO_RABBIT_BUBBLE_EVENT, onCue);
+    window.addEventListener(HERO_RABBIT_BUBBLE_SYNC_EVENT, onSync);
+    return () => {
+      window.removeEventListener(HERO_RABBIT_BUBBLE_EVENT, onCue);
+      window.removeEventListener(HERO_RABBIT_BUBBLE_SYNC_EVENT, onSync);
+    };
+  }, []);
+
   return (
     <section
       id="top"
@@ -20,6 +66,40 @@ export function Hero() {
         aria-hidden="true"
       />
       <div className="hero-overlay absolute inset-0 z-[1]" aria-hidden="true" />
+
+      {rabbitBubble ? (
+        <>
+          <div
+            key={bubbleGen}
+            className={`hero-rabbit-bubble${HERO_BUBBLE_PREVIEW ? " is-preview" : ""}${bubblePaused ? " is-paused" : ""}`}
+            aria-hidden="true"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="hero-rabbit-bubble-shape"
+              src="/media/hero/speech.svg?v=15"
+              alt=""
+              width={301}
+              height={158}
+              draggable={false}
+            />
+            <span className={`${sans.className} hero-rabbit-bubble-text`}>
+              Whoever put your design revolution
+              <br />
+              in the backlog, Özgür… he was the{" "}
+              <span className="tried-wave">traitor</span>.
+            </span>
+          </div>
+          <a
+            className={`${sans.className} hero-rabbit-bubble-link`}
+            href="https://youtu.be/QMnCnT3Rmco?t=197"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Watch the original scene ↗
+          </a>
+        </>
+      ) : null}
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[72rem] flex-col justify-center px-5 pb-16 pt-28 md:px-8 md:pb-28 md:pt-20 md:-translate-y-4">
         <div className="max-w-[22.5rem] -translate-y-6 sm:max-w-[28rem] sm:-translate-y-8 md:max-w-[38rem] md:-translate-y-[60px] lg:max-w-[44rem]">

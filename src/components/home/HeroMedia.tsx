@@ -2,7 +2,23 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { hero } from "@/content/home";
+import {
+  HERO_BUBBLE_PREVIEW,
+  HERO_RABBIT_BUBBLE_AT,
+  HERO_RABBIT_BUBBLE_DURATION,
+  HERO_RABBIT_BUBBLE_EVENT,
+  HERO_RABBIT_BUBBLE_SYNC_EVENT,
+  hero,
+  type HeroRabbitBubbleSyncDetail,
+} from "@/content/home";
+
+function dispatchBubbleSync(detail: HeroRabbitBubbleSyncDetail) {
+  window.dispatchEvent(
+    new CustomEvent<HeroRabbitBubbleSyncDetail>(HERO_RABBIT_BUBBLE_SYNC_EVENT, {
+      detail,
+    }),
+  );
+}
 
 /**
  * Desktop: background video (only after media query match). Plays once — no loop.
@@ -34,6 +50,7 @@ export function HeroMedia() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const userPausedRef = useRef(false);
   const playTokenRef = useRef(0);
+  const bubbleShowingRef = useRef(false);
 
   useEffect(() => {
     const media = window.matchMedia(
@@ -50,6 +67,10 @@ export function HeroMedia() {
         setProgress(0);
         userPausedRef.current = false;
         playTokenRef.current += 1;
+        if (bubbleShowingRef.current) {
+          bubbleShowingRef.current = false;
+          dispatchBubbleSync({ elapsed: null });
+        }
       }
     };
     sync();
@@ -70,6 +91,10 @@ export function HeroMedia() {
         el.currentTime = 0;
       } catch {
         /* ignore */
+      }
+      if (bubbleShowingRef.current) {
+        bubbleShowingRef.current = false;
+        dispatchBubbleSync({ elapsed: null });
       }
     }
 
@@ -123,6 +148,34 @@ export function HeroMedia() {
 
   useEffect(() => {
     if (!useVideo || !videoReady) return;
+    const el = videoRef.current;
+    if (!el) return;
+
+    // TEMP preview: jump to cue frame, pause, show bubble for layout check.
+    if (HERO_BUBBLE_PREVIEW) {
+      userPausedRef.current = true;
+      playTokenRef.current += 1;
+      const freeze = () => {
+        try {
+          el.currentTime = HERO_RABBIT_BUBBLE_AT;
+        } catch {
+          /* ignore */
+        }
+        hardStop(el);
+        setPlaying(false);
+        const dur = el.duration;
+        if (Number.isFinite(dur) && dur > 0) {
+          setProgress(Math.min(1, Math.max(0, HERO_RABBIT_BUBBLE_AT / dur)));
+        }
+        bubbleShowingRef.current = true;
+        window.dispatchEvent(new Event(HERO_RABBIT_BUBBLE_EVENT));
+        dispatchBubbleSync({ elapsed: 0 });
+      };
+      if (el.readyState >= 1) freeze();
+      else el.addEventListener("loadedmetadata", freeze, { once: true });
+      return;
+    }
+
     if (userPausedRef.current) return;
     void playVideo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -130,16 +183,33 @@ export function HeroMedia() {
 
   useEffect(() => {
     if (!useVideo || !videoReady) return;
+    if (HERO_BUBBLE_PREVIEW) return;
     const el = videoRef.current;
     if (!el) return;
 
     let raf = 0;
     const tick = () => {
+      const t = el.currentTime;
       const dur = el.duration;
       if (Number.isFinite(dur) && dur > 0) {
-        setProgress(Math.min(1, Math.max(0, el.currentTime / dur)));
+        setProgress(Math.min(1, Math.max(0, t / dur)));
       }
       setPlaying(!el.paused && !el.ended);
+
+      // Drive bubble from the video clock so pause freezes the exact frame.
+      const elapsed = t - HERO_RABBIT_BUBBLE_AT;
+      const playing = !el.paused && !el.ended;
+      if (elapsed >= 0 && elapsed < HERO_RABBIT_BUBBLE_DURATION) {
+        if (!bubbleShowingRef.current) {
+          bubbleShowingRef.current = true;
+          window.dispatchEvent(new Event(HERO_RABBIT_BUBBLE_EVENT));
+        }
+        dispatchBubbleSync({ elapsed, playing });
+      } else if (bubbleShowingRef.current) {
+        bubbleShowingRef.current = false;
+        dispatchBubbleSync({ elapsed: null, playing: false });
+      }
+
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
