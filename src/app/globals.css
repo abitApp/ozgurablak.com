@@ -305,12 +305,12 @@ a {
   right: calc(8% + 60px);
   /* Mounted only when JS layout gate passes — always visible in the DOM */
   display: flex;
-  width: clamp(18rem, 25vw, 23rem);
+  width: clamp(19.44rem, 27vw, 24.84rem);
   aspect-ratio: 301 / 158;
   padding: 0;
   border: none;
   background: transparent;
-  font-size: clamp(1.45rem, 2.05vw, 1.85rem);
+  font-size: clamp(1.566rem, 2.214vw, 1.998rem);
   filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35))
     drop-shadow(0 3px 6px rgba(0, 0, 0, 0.22));
   transform-origin: 12% 92%;
@@ -364,16 +364,16 @@ a {
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* Outside bubble, 8px below; same 3deg as the copy */
+/* Outside bubble; width + type track the bubble scale */
 .hero-rabbit-bubble-link {
   position: absolute;
   z-index: 15;
-  top: calc(36% - 40px + clamp(18rem, 25vw, 23rem) * 158 / 301 + 8px);
+  top: calc(36% - 40px + clamp(19.44rem, 27vw, 24.84rem) * 158 / 301 + 8.64px);
   right: calc(8% + 60px);
   display: block;
-  width: clamp(18rem, 25vw, 23rem);
+  width: clamp(19.44rem, 27vw, 24.84rem);
   margin: 0;
-  font-size: 11px;
+  font-size: clamp(0.7425rem, 1.053vw, 0.945rem);
   font-weight: 400;
   line-height: 1.3;
   color: rgba(243, 235, 226, 0.6);
