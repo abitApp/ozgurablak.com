@@ -74,15 +74,24 @@ export function Hero() {
             className={`hero-rabbit-bubble${HERO_BUBBLE_PREVIEW ? " is-preview" : ""}${bubblePaused ? " is-paused" : ""}`}
             aria-hidden="true"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            {/* Inline SVG — avoids late network paint where copy showed before the shape. */}
+            <svg
               className="hero-rabbit-bubble-shape"
-              src="/media/hero/speech.svg?v=15"
-              alt=""
+              viewBox="0 0 301 158"
               width={301}
               height={158}
-              draggable={false}
-            />
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M150.5 2C232.514 2 299 32.4446 299 70C299 107.555 232.514 138 150.5 138C126.844 138 104.479 135.466 84.6299 130.96L33.0293 155.114C31.4671 155.845 29.7737 154.388 30.2637 152.734L41.1465 116.005C16.8404 103.897 2 87.7428 2 70C2 32.4446 68.4857 2 150.5 2Z"
+                fill="#542A17"
+                fillOpacity="0.5"
+                stroke="#623D2D"
+                strokeWidth="1"
+              />
+            </svg>
             <span className={`${sans.className} hero-rabbit-bubble-text`}>
               Whoever put your design revolution
               <br />
