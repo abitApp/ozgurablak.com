@@ -7,6 +7,9 @@ import {
   HERO_BUBBLE_PREVIEW,
   HERO_RABBIT_BUBBLE_EVENT,
   HERO_RABBIT_BUBBLE_SYNC_EVENT,
+  HERO_SUPPORT_EMPHASIS,
+  HERO_SUPPORT_MUTED,
+  HERO_SUPPORT_TEXT_CLASS,
   WORKS_GO_START_EVENT,
   type HeroRabbitBubbleSyncDetail,
 } from "@/content/home";
@@ -92,13 +95,21 @@ export function Hero() {
                 strokeWidth="1"
               />
             </svg>
-            <span className={`${sans.className} hero-rabbit-bubble-text`}>
-              Whoever put your design revolution
-              <br />
-              in the backlog, Özgür… he was the{" "}
-              <span className="tried-wave">traitor</span>.
+            <span
+              className={`${sans.className} hero-rabbit-bubble-text ${HERO_SUPPORT_TEXT_CLASS}`}
+              style={{ color: HERO_SUPPORT_MUTED }}
+            >
+              Can we move the logo{" "}
+              <span
+                className="tried-wave font-medium"
+                style={{ color: HERO_SUPPORT_EMPHASIS }}
+              >
+                1px
+              </span>{" "}
+              to the top?
             </span>
           </div>
+          {/* Kept for later — YouTube scene link under the bubble
           <a
             className={`${sans.className} hero-rabbit-bubble-link`}
             href="https://youtu.be/QMnCnT3Rmco?t=197"
@@ -107,6 +118,7 @@ export function Hero() {
           >
             Watch the original scene ↗
           </a>
+          */}
         </>
       ) : null}
 
@@ -121,9 +133,17 @@ export function Hero() {
             the Design World.
           </h1>
 
-          <p className="mt-[10px] text-[clamp(1.1rem,2.4vw,1.75rem)] font-light italic leading-snug text-white/50 md:mt-[14px]">
+          <p
+            className={`mt-[10px] ${HERO_SUPPORT_TEXT_CLASS} md:mt-[14px]`}
+            style={{ color: HERO_SUPPORT_MUTED }}
+          >
             Or at least{" "}
-            <span className="tried-wave font-medium text-white/90">tried</span>{" "}
+            <span
+              className="tried-wave font-medium"
+              style={{ color: HERO_SUPPORT_EMPHASIS }}
+            >
+              tried
+            </span>{" "}
             to.
           </p>
 

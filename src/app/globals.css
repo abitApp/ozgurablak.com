@@ -311,8 +311,6 @@ a {
   border: none;
   background: transparent;
   font-size: clamp(1.566rem, 2.214vw, 1.998rem);
-  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35))
-    drop-shadow(0 3px 6px rgba(0, 0, 0, 0.22));
   transform-origin: 12% 92%;
   transform: rotate(3deg);
   pointer-events: none;
@@ -340,6 +338,9 @@ a {
   pointer-events: none;
   user-select: none;
   overflow: visible;
+  /* Shadow on the shape only — filter on the parent was washing out text alpha */
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35))
+    drop-shadow(0 3px 6px rgba(0, 0, 0, 0.22));
 }
 
 .hero-rabbit-bubble-text {
@@ -350,18 +351,13 @@ a {
   transform: translate(-50%, -50%);
   margin: 0;
   width: 88%;
-  font-size: 0.58em;
-  font-weight: 300;
-  font-style: italic;
-  line-height: 1.35;
-  color: rgba(255, 255, 255, 0.9);
+  /* Color/size set in Hero via HERO_SUPPORT_* (synced with “Or at least”) */
   text-align: center;
   pointer-events: none;
 }
 
 .hero-rabbit-bubble-text .tried-wave {
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Outside bubble; width + type track the bubble scale */

@@ -58,6 +58,15 @@ export const HERO_RABBIT_BUBBLE_HOLD_MS = 5000;
 /** TEMP preview: seek+pause at cue and keep bubble visible for layout check. */
 export const HERO_BUBBLE_PREVIEW = false;
 
+/**
+ * Shared type for “Or at least tried to.” and the rabbit bubble copy —
+ * keep muted / emphasis in sync when either changes.
+ */
+export const HERO_SUPPORT_MUTED = "rgba(255, 255, 255, 0.7)";
+export const HERO_SUPPORT_EMPHASIS = "rgba(255, 255, 255, 0.9)";
+export const HERO_SUPPORT_TEXT_CLASS =
+  "text-[clamp(1.1rem,2.4vw,1.75rem)] font-light italic leading-snug";
+
 export type HeroRabbitBubbleSyncDetail = {
   /** Seconds since cue while the bubble should be on screen; null hides it. */
   elapsed: number | null;
