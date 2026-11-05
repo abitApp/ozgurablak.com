@@ -418,6 +418,29 @@ a {
   }
 }
 
+/* Mobile: park the bubble on the rabbit side so it doesn’t cover the headline. */
+@media (max-width: 767px) {
+  .hero-rabbit-bubble {
+    top: auto;
+    bottom: 26%;
+    right: 3%;
+    left: auto;
+    width: min(86vw, 16.75rem);
+    font-size: clamp(1.12rem, 4.1vw, 1.32rem);
+  }
+
+  .hero-rabbit-bubble-link {
+    top: auto;
+    /* Align to bubble bottom, then push fully below with an 8px gap */
+    bottom: 26%;
+    right: 3%;
+    left: auto;
+    width: min(86vw, 16.75rem);
+    font-size: clamp(0.68rem, 2.8vw, 0.78rem);
+    transform: rotate(3deg) translateY(calc(100% + 8px));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-rabbit-bubble:not(.is-preview) {
     animation: none;

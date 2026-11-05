@@ -23,8 +23,8 @@ function dispatchBubbleSync(detail: HeroRabbitBubbleSyncDetail) {
 }
 
 /**
- * Desktop: background video (only after media query match). Plays once — no loop.
- * Always muted; play/pause only. Mobile / reduced-motion / coarse pointer: static poster.
+ * Background video on all viewports (incl. mobile). Plays once — no loop.
+ * Always muted for autoplay; play/pause only. Reduced-motion: static poster.
  */
 const BTN_SIZE = 44;
 const RING_STROKE = 1.5;
@@ -69,7 +69,7 @@ export function HeroMedia() {
 
   useEffect(() => {
     const media = window.matchMedia(
-      "(min-width: 768px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+      "(prefers-reduced-motion: no-preference)",
     );
 
     const sync = () => {
