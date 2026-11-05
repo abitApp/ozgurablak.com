@@ -161,6 +161,7 @@ function StackCard({
   ariaExpanded,
 }: StackCardProps) {
   const showFullBody = isActive || forceExpanded;
+  const expanded = ariaExpanded ?? isActive;
 
   return (
     <button
@@ -168,7 +169,7 @@ function StackCard({
       data-stack-key={stackKey}
       role={role}
       aria-selected={ariaSelected}
-      aria-expanded={ariaExpanded}
+      aria-expanded={expanded}
       tabIndex={forceExpanded ? -1 : undefined}
       className={`relative w-full shrink-0 rounded-xl px-4 text-left transition-[background-color,border-color,color,padding] duration-300 ease-out ${
         forceExpanded ? "cursor-inherit touch-pan-y" : "cursor-pointer"
@@ -179,6 +180,8 @@ function StackCard({
       }`}
       onClick={(event) => {
         if (forceExpanded) return;
+        // Exclusive accordion: clicking the open card does not collapse it.
+        if (isActive) return;
         event.stopPropagation();
         onActivate();
       }}
@@ -189,12 +192,34 @@ function StackCard({
         }
       }}
     >
-      <span
-        className={`block min-w-0 max-w-full break-words text-[0.65rem] tracking-[0.14em] uppercase transition-colors duration-300 ease-out ${
-          isActive ? "text-[#0c0907]/70" : "text-accent/85"
-        }`}
-      >
-        {label}
+      <span className="flex items-start justify-between gap-3">
+        <span
+          className={`min-w-0 flex-1 break-words text-[0.65rem] tracking-[0.14em] uppercase transition-colors duration-300 ease-out ${
+            isActive ? "text-[#0c0907]/70" : "text-accent/85"
+          }`}
+        >
+          {label}
+        </span>
+        {!forceExpanded ? (
+          <svg
+            className={`mt-0.5 size-3.5 shrink-0 transition-[transform,color] duration-300 ease-out ${
+              isActive
+                ? "rotate-180 text-[#0c0907]/70"
+                : "rotate-0 text-accent/85"
+            }`}
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M3.5 6.25 8 10.75l4.5-4.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        ) : null}
       </span>
       <span
         className={`mt-1 text-sm leading-snug transition-opacity duration-300 ease-out ${
@@ -476,6 +501,7 @@ export function ProjectCardPrototype({
       forceExpanded: stackInactiveExpanded,
       role: "tab" as const,
       ariaSelected: isActive,
+      ariaExpanded: isActive,
       onActivate: () => {
         if (stackInactiveExpanded) return;
         selectLayer(layer.id);
@@ -508,6 +534,7 @@ export function ProjectCardPrototype({
               forceExpanded={item.forceExpanded}
               role={item.role}
               ariaSelected={item.ariaSelected}
+              ariaExpanded={item.ariaExpanded}
               onActivate={item.onActivate}
             />
           ))}
