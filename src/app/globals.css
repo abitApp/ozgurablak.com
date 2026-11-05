@@ -418,6 +418,21 @@ a {
   }
 }
 
+/* Tablet: drop the bubble toward the mouth so it doesn’t sit on the eye. */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .hero-rabbit-bubble {
+    top: calc(46% - 24px);
+    right: calc(6% + 40px);
+  }
+
+  .hero-rabbit-bubble-link {
+    top: calc(
+      46% - 24px + clamp(19.44rem, 27vw, 24.84rem) * 158 / 301 + 8.64px
+    );
+    right: calc(6% + 40px);
+  }
+}
+
 /* Mobile: park the bubble on the rabbit side so it doesn’t cover the headline. */
 @media (max-width: 767px) {
   .hero-rabbit-bubble {
