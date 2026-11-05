@@ -129,7 +129,11 @@ export function Hero() {
 
           <a
             href="#work"
-            className="mt-12 inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full border border-white/40 bg-transparent px-6 text-sm tracking-[0.14em] text-white/85 uppercase transition-colors hover:border-white/70 hover:bg-white/10 hover:text-white/90 md:mt-14 md:text-xs md:tracking-[0.16em]"
+            className={`mt-12 inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full border border-white/40 bg-transparent px-6 text-sm tracking-[0.14em] text-white/85 uppercase transition-[colors,opacity,visibility] duration-300 hover:border-white/70 hover:bg-white/10 hover:text-white/90 md:mt-14 md:text-xs md:tracking-[0.16em]${
+              rabbitBubble
+                ? " max-md:pointer-events-none max-md:invisible max-md:opacity-0"
+                : ""
+            }`}
             onClick={(event) => {
               event.preventDefault();
               window.dispatchEvent(new Event(WORKS_GO_START_EVENT));
