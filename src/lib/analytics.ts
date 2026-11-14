@@ -1,4 +1,5 @@
 import { sendGAEvent } from "@next/third-parties/google";
+import { isInternalTraffic } from "@/lib/internal-traffic";
 
 export type ModalAnalyticsPayload = {
   modal_type: "case_study" | "work";
@@ -10,6 +11,9 @@ function sendAnalyticsEvent(
   eventName: string,
   payload: ModalAnalyticsPayload,
 ) {
+  // Internal visits (?internal=1): send nothing, not even a dataLayer push.
+  if (isInternalTraffic()) return;
+
   if (typeof window !== "undefined" && typeof window.gtag === "function") {
     window.gtag("event", eventName, payload);
     return;
