@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SiteAnalytics } from "@/components/analytics/SiteAnalytics";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { ViewportRefresh } from "@/components/layout/ViewportRefresh";
 import { motto, sans } from "@/lib/fonts";
 import "./globals.css";
 
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteHeader />
         {children}
         <SiteAnalytics />
+        <ViewportRefresh />
       </body>
     </html>
   );
