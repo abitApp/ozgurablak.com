@@ -71,7 +71,7 @@ export function Hero() {
       <div className="hero-overlay absolute inset-0 z-[1]" aria-hidden="true" />
 
       {rabbitBubble ? (
-        <>
+        <div className="hero-bubble-stage" aria-hidden="true">
           <div
             key={bubbleGen}
             className={`hero-rabbit-bubble${HERO_BUBBLE_PREVIEW ? " is-preview" : ""}${bubblePaused ? " is-paused" : ""}`}
@@ -119,7 +119,7 @@ export function Hero() {
             Watch the original scene ↗
           </a>
           */}
-        </>
+        </div>
       ) : null}
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[72rem] flex-col justify-center px-5 pb-16 pt-28 md:px-8 md:pb-28 md:pt-20 md:-translate-y-4">

@@ -298,14 +298,64 @@ a {
  * Hero cue: SVG speech bubble + text. CSS animation runs on mount;
  * pause freezes via .is-paused. Link sits outside with the same 3° tilt.
  */
+/*
+ * Stage = same box as the hero video (top 0, +50px taller than the hero,
+ * object-fit: cover, object-position: center bottom). The bubble tail tip is
+ * pinned to a fixed point of the 16:9 video frame (--bubble-u / --bubble-v,
+ * 0–1 from the video's top-left), so it follows the rabbit in portrait,
+ * landscape and every size in between. The bubble is only nudged left when it
+ * would leave the screen. Mobile (≤767px) keeps its own parked position.
+ */
+.hero-bubble-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(100% + 50px);
+  z-index: 15;
+  pointer-events: none;
+  container-type: size;
+
+  /* Where the tail tip points, as a fraction of the video frame (tune here) */
+  --bubble-u: 0.6;
+  --bubble-v: 0.6;
+
+  /* object-fit: cover geometry of a 16:9 video inside this box */
+  --cover-w: max(100cqw, calc(100cqh * 16 / 9));
+  --cover-h: max(100cqh, calc(100cqw * 9 / 16));
+
+  --bubble-w: clamp(19.44rem, 27vw, 24.84rem);
+  --bubble-h: calc(var(--bubble-w) * 158 / 301);
+
+  /* Tail tip in stage coordinates (video is centred horizontally, bottom-aligned) */
+  --tip-x: calc(
+    (100cqw - var(--cover-w)) / 2 + var(--cover-w) * var(--bubble-u)
+  );
+  --tip-y: calc(100cqh - var(--cover-h) + var(--cover-h) * var(--bubble-v));
+
+  /* The SVG tail tip sits ~10.4% / 98.4% into the bubble box */
+  --bubble-left: min(
+    calc(var(--tip-x) - var(--bubble-w) * 0.104),
+    calc(100cqw - var(--bubble-w) - 1.25rem)
+  );
+  --bubble-top: calc(var(--tip-y) - var(--bubble-h) * 0.984);
+}
+
+@media (max-width: 767px) {
+  /* Mobile positions are % of the hero itself — keep the stage equal to it */
+  .hero-bubble-stage {
+    height: 100%;
+  }
+}
+
 .hero-rabbit-bubble {
   position: absolute;
   z-index: 15;
-  top: calc(36% - 40px);
-  right: calc(8% + 60px);
+  top: var(--bubble-top);
+  left: var(--bubble-left);
   /* Mounted only when JS layout gate passes — always visible in the DOM */
   display: flex;
-  width: clamp(19.44rem, 27vw, 24.84rem);
+  width: var(--bubble-w);
   aspect-ratio: 301 / 158;
   padding: 0;
   border: none;
@@ -364,10 +414,10 @@ a {
 .hero-rabbit-bubble-link {
   position: absolute;
   z-index: 15;
-  top: calc(36% - 40px + clamp(19.44rem, 27vw, 24.84rem) * 158 / 301 + 8.64px);
-  right: calc(8% + 60px);
+  top: calc(var(--bubble-top) + var(--bubble-h) + 8.64px);
+  left: var(--bubble-left);
   display: block;
-  width: clamp(19.44rem, 27vw, 24.84rem);
+  width: var(--bubble-w);
   margin: 0;
   font-size: clamp(0.7425rem, 1.053vw, 0.945rem);
   font-weight: 400;
@@ -414,18 +464,18 @@ a {
   }
 }
 
-/* Tablet: drop the bubble toward the mouth so it doesn’t sit on the eye. */
-@media (min-width: 768px) and (max-width: 1024px) {
+/* Very old browsers without container query units: previous fixed placement. */
+@supports not (container-type: size) {
   .hero-rabbit-bubble {
-    top: calc(46% - 24px);
-    right: calc(6% + 40px);
+    top: calc(36% - 40px);
+    left: auto;
+    right: calc(8% + 60px);
   }
 
   .hero-rabbit-bubble-link {
-    top: calc(
-      46% - 24px + clamp(19.44rem, 27vw, 24.84rem) * 158 / 301 + 8.64px
-    );
-    right: calc(6% + 40px);
+    top: calc(36% - 40px + var(--bubble-w) * 158 / 301 + 8.64px);
+    left: auto;
+    right: calc(8% + 60px);
   }
 }
 
