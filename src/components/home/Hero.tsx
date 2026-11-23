@@ -1,59 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motto, sans } from "@/lib/fonts";
+import { motto } from "@/lib/fonts";
 import { HeroMedia } from "@/components/home/HeroMedia";
 import {
-  HERO_BUBBLE_PREVIEW,
-  HERO_RABBIT_BUBBLE_EVENT,
-  HERO_RABBIT_BUBBLE_SYNC_EVENT,
   HERO_SUPPORT_EMPHASIS,
   HERO_SUPPORT_MUTED,
   HERO_SUPPORT_TEXT_CLASS,
   WORKS_GO_START_EVENT,
-  type HeroRabbitBubbleSyncDetail,
 } from "@/content/home";
 
 export function Hero() {
-  const [rabbitBubble, setRabbitBubble] = useState(HERO_BUBBLE_PREVIEW);
-  const [bubblePaused, setBubblePaused] = useState(false);
-  const [bubbleGen, setBubbleGen] = useState(0);
-
-  useEffect(() => {
-    if (HERO_BUBBLE_PREVIEW) {
-      setRabbitBubble(true);
-      return;
-    }
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-    const onCue = () => {
-      if (reduced.matches) return;
-      setBubblePaused(false);
-      setBubbleGen((n) => n + 1);
-      setRabbitBubble(true);
-    };
-
-    const onSync = (event: Event) => {
-      const detail = (event as CustomEvent<HeroRabbitBubbleSyncDetail>).detail;
-      if (!detail) return;
-      if (detail.elapsed === null) {
-        setRabbitBubble(false);
-        setBubblePaused(false);
-        return;
-      }
-      if (reduced.matches) return;
-      setRabbitBubble(true);
-      setBubblePaused(detail.playing === false);
-    };
-
-    window.addEventListener(HERO_RABBIT_BUBBLE_EVENT, onCue);
-    window.addEventListener(HERO_RABBIT_BUBBLE_SYNC_EVENT, onSync);
-    return () => {
-      window.removeEventListener(HERO_RABBIT_BUBBLE_EVENT, onCue);
-      window.removeEventListener(HERO_RABBIT_BUBBLE_SYNC_EVENT, onSync);
-    };
-  }, []);
-
   return (
     <section
       id="top"
@@ -70,57 +26,9 @@ export function Hero() {
       />
       <div className="hero-overlay absolute inset-0 z-[1]" aria-hidden="true" />
 
-      {rabbitBubble ? (
-        <div className="hero-bubble-stage" aria-hidden="true">
-          <div
-            key={bubbleGen}
-            className={`hero-rabbit-bubble${HERO_BUBBLE_PREVIEW ? " is-preview" : ""}${bubblePaused ? " is-paused" : ""}`}
-            aria-hidden="true"
-          >
-            {/* Inline SVG — avoids late network paint where copy showed before the shape. */}
-            <svg
-              className="hero-rabbit-bubble-shape"
-              viewBox="0 0 301 158"
-              width={301}
-              height={158}
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                d="M150.5 2C232.514 2 299 32.4446 299 70C299 107.555 232.514 138 150.5 138C126.844 138 104.479 135.466 84.6299 130.96L33.0293 155.114C31.4671 155.845 29.7737 154.388 30.2637 152.734L41.1465 116.005C16.8404 103.897 2 87.7428 2 70C2 32.4446 68.4857 2 150.5 2Z"
-                fill="#542A17"
-                fillOpacity="0.5"
-                stroke="#623D2D"
-                strokeWidth="1"
-              />
-            </svg>
-            <span
-              className={`${sans.className} hero-rabbit-bubble-text ${HERO_SUPPORT_TEXT_CLASS}`}
-              style={{ color: HERO_SUPPORT_MUTED }}
-            >
-              Can we move the logo{" "}
-              <span
-                className="tried-wave font-medium"
-                style={{ color: HERO_SUPPORT_EMPHASIS }}
-              >
-                1px
-              </span>{" "}
-              to the top?
-            </span>
-          </div>
-          {/* Kept for later — YouTube scene link under the bubble
-          <a
-            className={`${sans.className} hero-rabbit-bubble-link`}
-            href="https://youtu.be/QMnCnT3Rmco?t=197"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Watch the original scene ↗
-          </a>
-          */}
-        </div>
-      ) : null}
+      {/* Rabbit speech bubble removed (markup + styles in git history, commit def887b).
+          Kept for later — YouTube scene link:
+          https://youtu.be/QMnCnT3Rmco?t=197 ("Watch the original scene ↗") */}
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[72rem] flex-col justify-center px-5 pb-16 pt-28 md:px-8 md:pb-28 md:pt-20 md:-translate-y-4">
         <div className="max-w-[22.5rem] -translate-y-6 sm:max-w-[28rem] sm:-translate-y-8 md:max-w-[38rem] md:-translate-y-[60px] lg:max-w-[44rem]">
@@ -149,11 +57,7 @@ export function Hero() {
 
           <a
             href="#work"
-            className={`mt-12 inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full border border-white/40 bg-transparent px-6 text-sm tracking-[0.14em] text-white/85 uppercase transition-[colors,opacity,visibility] duration-300 hover:border-white/70 hover:bg-white/10 hover:text-white/90 md:mt-14 md:text-xs md:tracking-[0.16em]${
-              rabbitBubble
-                ? " max-md:pointer-events-none max-md:invisible max-md:opacity-0"
-                : ""
-            }`}
+            className="mt-12 inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full border border-white/40 bg-transparent px-6 text-sm tracking-[0.14em] text-white/85 uppercase transition-[colors,opacity,visibility] duration-300 hover:border-white/70 hover:bg-white/10 hover:text-white/90 md:mt-14 md:text-xs md:tracking-[0.16em]"
             onClick={(event) => {
               event.preventDefault();
               window.dispatchEvent(new Event(WORKS_GO_START_EVENT));
