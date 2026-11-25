@@ -58,7 +58,7 @@ export function SiteHeader() {
     <>
       {/* Mobile: solid scrim (no backdrop-filter). Desktop: light + blur. */}
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08] bg-black/55 md:bg-black/10 md:backdrop-blur-[8px]">
-        <div className="mx-auto flex min-h-16 max-w-[72rem] items-center justify-between gap-6 px-5 py-3 md:min-h-20 md:px-8 md:py-4">
+        <div className="mx-auto flex min-h-16 w-[calc(100%-2.5rem)] max-w-[72rem] items-center justify-between gap-6 py-3 md:min-h-20 md:w-[calc(100%-4rem)] md:py-4">
           <a
             href="#top"
             className="flex min-w-0 shrink-0 cursor-pointer flex-col gap-1.5"

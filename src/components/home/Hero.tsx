@@ -29,7 +29,7 @@ export function Hero() {
           Kept for later — YouTube scene link:
           https://youtu.be/QMnCnT3Rmco?t=197 ("Watch the original scene ↗") */}
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[72rem] flex-col justify-center px-5 pb-16 pt-28 md:px-8 md:pb-28 md:pt-20 md:-translate-y-4">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-[calc(100%-2.5rem)] max-w-[72rem] flex-col justify-center pb-16 pt-28 md:w-[calc(100%-4rem)] md:pb-28 md:pt-20 md:-translate-y-4">
         <div className="max-w-[22.5rem] -translate-y-6 sm:max-w-[28rem] sm:-translate-y-8 md:max-w-[38rem] md:-translate-y-[60px] lg:max-w-[44rem]">
           <h1
             id="hero-heading"
