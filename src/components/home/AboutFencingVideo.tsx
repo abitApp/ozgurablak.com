@@ -7,8 +7,6 @@ const VIDEO_SRC = "/media/about/fencing.mp4?v=8";
 const POSTER_SRC = "/media/about/fencing-poster.jpg?v=8";
 const PLAYBACK_VOLUME = 1;
 
-const POLAROID_DATE = "31. October 2026";
-
 /** Same ring math as HeroMedia play/pause control. */
 const BTN_SIZE = 36;
 const RING_STROKE = 1.5;
@@ -406,7 +404,7 @@ export function AboutFencingVideo() {
           <figcaption
             className={`${handwriting.className} text-center text-[clamp(1.15rem,3.6vw,1.4rem)] leading-snug text-[#6B4A32]/75`}
           >
-            Fencing practice with my coach, {POLAROID_DATE}
+            Fencing practice with my coach
           </figcaption>
         </div>
       </div>
