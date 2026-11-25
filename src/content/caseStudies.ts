@@ -1923,7 +1923,7 @@ export const caseStudies: Record<string, CaseStudy> = {
   },
   faldium: {
     title: "Faldium",
-    subtitle: "AI fortune telling app · Google Play",
+    subtitle: "AI companion · Google Play",
     footerNote: "Designed, built and launched on my own.",
     menu: [
       { id: "overview", number: "01", label: "Overview" },
@@ -1957,7 +1957,7 @@ export const caseStudies: Record<string, CaseStudy> = {
         content: {
           kind: "overview",
           heading:
-            "An AI fortune-telling app\nI designed, built and launched on my own.",
+            "An AI companion app\nI designed, built and launched on my own.",
           meta: [
             {
               label: "Context",
@@ -2009,7 +2009,7 @@ export const caseStudies: Record<string, CaseStudy> = {
             },
           ],
           body: {
-            text: "Faldium started as a Turkish coffee reading app and has grown into a small fortune-telling suite. It is live on Google Play, in Turkish, with nearly 5,000 downloads and a 4.6 rating (23 ratings).",
+            text: "Faldium started as a Turkish coffee reading app and has grown into an AI companion app for self-reflection and community. It is live on Google Play, in Turkish: ~5,000 downloads · 4.6★ (23 ratings) · users in 20+ countries.",
           },
           storeLinks: {
             googlePlay:
@@ -2058,7 +2058,7 @@ export const caseStudies: Record<string, CaseStudy> = {
               id: "faldium-reading-2",
               aspectRatio: "390/844",
               src: "/media/projects/faldium/faldium-reading-2.png",
-              alt: "Faldium reading detail — coffee cup photo with voice narration and fortune text.",
+              alt: "Faldium reading detail — coffee cup photo with voice narration and reading text.",
               description: "Reading with voice",
               caption: "Reading with voice",
               objectFit: "cover",

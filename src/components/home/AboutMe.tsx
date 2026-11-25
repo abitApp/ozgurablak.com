@@ -26,8 +26,8 @@ export function AboutMe() {
                 their instinct and when to follow users&apos; advice.
               </p>
               <p>
-                I&apos;m now moving into AI product design. I launched Faldium, a
-                companion and fortune-telling app that is live in 20+
+                I&apos;m now moving into AI product design. I launched Faldium,
+                an AI companion for self-reflection and community, live in 20+
                 countries, and I keep improving it by analysing how people use
                 it. So far it has a 4.6 average from 23 ratings.
               </p>

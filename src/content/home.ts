@@ -362,22 +362,73 @@ export const projects: Project[] = [
   },
 ];
 
+export type FaldiumCardBullet = { lead: string; text: string };
+
+/** Faldium card copy in "My Products". */
+export const faldiumCard = {
+  subtitle: "AI-powered companion for personal insights & community",
+  metrics: [
+    { value: "~5K", label: "Downloads" },
+    { value: "4.6 ★", label: "Google Play rating" },
+    { value: "20+", label: "Countries" },
+  ],
+  whatIDesigned: [
+    {
+      lead: "AI experiences:",
+      text: "Personalized insights through image, voice and text.",
+    },
+    {
+      lead: "Prompt engineering:",
+      text: "Context-aware workflows and a consistent AI persona.",
+    },
+    {
+      lead: "Community:",
+      text: "Discussions, reactions and interactive polls.",
+    },
+    {
+      lead: "Trust & safety:",
+      text: "AI moderation, reporting and blocking.",
+    },
+    {
+      lead: "Growth & engagement:",
+      text: "Onboarding, conversion funnels and notifications.",
+    },
+  ] satisfies FaldiumCardBullet[],
+  role: "Independently designed, built and launched the product, owning strategy, UX/UI, AI experiences, development, backend and user acquisition.",
+  builtWith:
+    "FlutterFlow, Supabase, Firebase, Google Analytics, Google Ads and AI prompt workflows.",
+  statusLabel: "Live on Google Play",
+  statusNote:
+    "Continuously evolving through real user behaviour and product analytics.",
+  tags: [
+    "Product Strategy",
+    "UX/UI Design",
+    "AI Experience Design",
+    "Prompt Engineering",
+    "Product Development",
+    "Product Analytics",
+    "Growth",
+    "User Acquisition",
+    "Trust & Safety",
+  ],
+};
+
 /** Standalone Faldium project — opens the Faldium case-study modal from My Products. */
 export const faldiumProject: Project = {
   slug: "faldium",
   title: "Faldium",
-  subtitle: "AI fortune telling app · Google Play",
+  subtitle: "AI companion for self-reflection & community",
   role: "Product owner, designer and developer",
   summary:
-    "An AI fortune-telling app designed, built and launched independently.",
+    "An AI companion app designed, built and launched independently.",
   accent: "rgba(150, 90, 220, 0.32)",
   layers: [
     {
       id: "context",
       label: "01 — Overview",
       detail:
-        "An AI fortune-telling app I designed, built and launched on my own.",
-      more: "An AI fortune-telling app I designed, built and launched on my own.",
+        "An AI companion app I designed, built and launched on my own.",
+      more: "An AI companion app I designed, built and launched on my own.",
     },
   ],
 };

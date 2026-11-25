@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { ImagePlaceholder } from "@/components/work/ImagePlaceholder";
 import { WorkCarousel } from "@/components/work/WorkCarousel";
-import { faldiumProject } from "@/content/home";
+import { faldiumCard, faldiumProject } from "@/content/home";
 import { otherWorksCategories } from "@/content/otherWorks";
 import { useCaseStudyDeepLink } from "@/hooks/useCaseStudyDeepLink";
 
@@ -105,52 +105,76 @@ export function SelectedWorkPreview() {
         </div>
 
         <article className="overflow-hidden rounded-[1.25rem] border border-line bg-surface shadow-[0_28px_70px_rgba(0,0,0,0.35)]">
-          <div className="grid grid-cols-1 gap-8 p-6 pb-0 md:grid-cols-[1.2fr_0.8fr] md:gap-10 md:p-8 md:pb-0 md:pr-0">
-            <div className="flex min-w-0 flex-col pb-6 md:pb-8">
-              <h3 className="text-[clamp(1.35rem,2.4vw,1.85rem)] font-semibold tracking-tight text-ink">
-                Faldium
-              </h3>
-              <p className="mt-1.5 text-[0.95rem] leading-snug text-ink-muted">
-                AI companion & fortune telling app
-              </p>
+          <div className="p-6 md:p-8">
+            <h3 className="text-[clamp(1.35rem,2.4vw,1.85rem)] font-semibold tracking-tight text-ink">
+              Faldium
+            </h3>
+            <p className="mt-1.5 text-base leading-snug text-ink-muted">
+              {faldiumCard.subtitle}
+            </p>
 
-              <dl className="mt-6 space-y-3 text-[0.88rem] leading-snug">
-                <div>
-                  <dt className="text-ink-muted">My role</dt>
-                  <dd className="mt-1 text-ink/90">
-                    End to end, from strategy and UX/UI to development, AI
-                    experience design, backend and launch, plus the Google Ads
-                    campaigns I set up and run.
+            <dl className="mt-6 grid grid-cols-3 gap-x-4 border-y border-line py-6 md:mt-8 md:grid-cols-4 md:py-7">
+              {faldiumCard.metrics.map((metric) => (
+                <div
+                  key={metric.label}
+                  className="flex flex-col items-center justify-between gap-2 text-center"
+                >
+                  <dt className="order-2 text-[0.8125rem] leading-snug text-ink-muted md:text-sm">
+                    {metric.label}
+                  </dt>
+                  <dd className="order-1 text-[clamp(1.5rem,3.2vw,2rem)] font-medium leading-none tracking-tight text-ink">
+                    {metric.value}
                   </dd>
                 </div>
+              ))}
+              <div className="col-span-3 mt-5 flex flex-col items-center justify-between gap-2 text-center md:col-span-1 md:mt-0">
+                <dt className="text-[clamp(1.5rem,3.2vw,2rem)] font-medium leading-none tracking-tight text-ink">
+                  Status
+                </dt>
+                <dd className="flex items-center justify-center gap-2 text-[0.8125rem] leading-snug text-ink-muted md:text-sm">
+                  <span
+                    className="size-1.5 shrink-0 rounded-full bg-emerald-400/70"
+                    aria-hidden="true"
+                  />
+                  {faldiumCard.statusLabel}
+                </dd>
+              </div>
+            </dl>
+
+            <div className="mt-6 grid grid-cols-1 items-start gap-8 text-[0.9375rem] leading-[1.55] md:mt-8 md:grid-cols-2 md:gap-x-12 lg:grid-cols-[1fr_1fr_0.97fr]">
+              <div>
+                <h4 className="text-base font-normal text-ink-muted">
+                  What I designed
+                </h4>
+                <ul className="mt-3 space-y-4 text-ink/90">
+                  {faldiumCard.whatIDesigned.map((item) => (
+                    <li key={item.lead}>
+                      <strong className="font-medium text-ink">
+                        {item.lead}
+                      </strong>{" "}
+                      {item.text}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <dl className="space-y-5">
                 <div>
-                  <dt className="text-ink-muted">Built with</dt>
-                  <dd className="mt-1 text-ink/90">
-                    FlutterFlow, Supabase, Firebase, Google Analytics and AI
-                    prompt workflows.
-                  </dd>
+                  <dt className="text-base text-ink-muted">My role</dt>
+                  <dd className="mt-3 text-ink/90">{faldiumCard.role}</dd>
                 </div>
                 <div>
-                  <dt className="text-ink-muted">Status</dt>
-                  <dd className="mt-1 text-ink/90">
-                    Live on Google Play, in Turkish. Nearly 5,000 downloads, 4.6
-                    rating (23 ratings), users in 20+ countries.
-                  </dd>
+                  <dt className="text-base text-ink-muted">Built with</dt>
+                  <dd className="mt-3 text-ink/90">{faldiumCard.builtWith}</dd>
+                </div>
+                <div>
+                  <dt className="text-base text-ink-muted">Status</dt>
+                  <dd className="mt-3 text-ink/90">{faldiumCard.statusNote}</dd>
                 </div>
               </dl>
 
-              <button
-                type="button"
-                onClick={() => setFaldiumOpen(true)}
-                className="mt-7 inline-flex min-h-11 w-fit cursor-pointer items-center gap-2 rounded-full border border-ink/40 px-5 text-sm font-medium tracking-wide text-ink transition-colors hover:border-accent hover:bg-accent hover:text-[#0c0907]"
-              >
-                View project
-                <span aria-hidden="true">→</span>
-              </button>
-            </div>
-
-            <div className="min-w-0 self-end">
-              <div className="ml-auto w-[85%] opacity-70 md:-translate-x-10">
+              {/* Phone: 3rd column from lg; hidden on smaller screens */}
+              <div className="hidden min-w-0 opacity-70 lg:block lg:self-end">
                 <ImagePlaceholder
                   id="faldium-card"
                   description="Faldium app screens"
@@ -164,6 +188,31 @@ export function SelectedWorkPreview() {
                   backgroundClassName="bg-transparent"
                 />
               </div>
+            </div>
+
+            <div className="mt-6 flex flex-col gap-6 border-t border-line pt-6 md:mt-8 md:flex-row md:items-center md:justify-between md:gap-10 md:pt-7 lg:grid lg:grid-cols-[1fr_1fr_0.97fr] lg:justify-normal lg:gap-x-12">
+              <ul
+                className="flex min-w-0 flex-wrap gap-2 lg:col-span-2"
+                aria-label="Skills"
+              >
+                {faldiumCard.tags.map((tag) => (
+                  <li
+                    key={tag}
+                    className="rounded-full border border-ink/20 px-3 py-1.5 text-xs leading-none text-ink-muted"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                type="button"
+                onClick={() => setFaldiumOpen(true)}
+                className="inline-flex min-h-11 w-fit shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full border border-ink/40 px-5 text-sm font-medium tracking-wide text-ink transition-colors hover:border-accent hover:bg-accent hover:text-[#0c0907] lg:justify-self-center"
+              >
+                View project
+                <span aria-hidden="true">→</span>
+              </button>
             </div>
           </div>
         </article>

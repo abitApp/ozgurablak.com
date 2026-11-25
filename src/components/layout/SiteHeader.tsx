@@ -67,7 +67,7 @@ export function SiteHeader() {
             <span className="text-[clamp(calc(0.95rem+4pt),calc(2vw+4pt),calc(1.5rem+4pt))] font-light leading-none tracking-tight text-[#ffffff]">
               Özgür Ablak
             </span>
-            <span className="mt-1 max-w-[16rem] text-[10px] font-normal leading-snug tracking-[0.1px] text-[#BFB7B0] sm:max-w-none">
+            <span className="mt-1 max-w-[16rem] text-[13px] font-normal leading-snug tracking-[0.1px] text-[#BFB7B0] sm:max-w-none">
               Senior Product Designer · AI Products
             </span>
           </a>
