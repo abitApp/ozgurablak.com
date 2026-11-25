@@ -45,14 +45,14 @@ export function Hero() {
             className={`mt-[10px] ${HERO_SUPPORT_TEXT_CLASS} md:mt-[14px]`}
             style={{ color: HERO_SUPPORT_MUTED }}
           >
-            Or at least{" "}
+            According to the{" "}
             <span
               className="tried-wave font-medium"
               style={{ color: HERO_SUPPORT_EMPHASIS }}
             >
-              tried
-            </span>{" "}
-            to.
+              rabbit
+            </span>
+            .
           </p>
 
           <a
