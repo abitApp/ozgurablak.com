@@ -141,7 +141,7 @@ export function SelectedWorkPreview() {
               </div>
             </dl>
 
-            <div className="mt-6 grid grid-cols-1 items-start gap-8 text-[0.9375rem] leading-[1.55] md:mt-8 md:grid-cols-2 md:gap-x-12 lg:grid-cols-[1fr_1fr_0.97fr]">
+            <div className="mt-6 grid grid-cols-1 items-start gap-8 text-[0.9375rem] leading-[1.55] md:mt-8 md:grid-cols-2 md:gap-x-10 lg:grid-cols-[1fr_1fr_0.97fr]">
               <div>
                 <h4 className="text-base font-normal text-ink-muted">
                   What I designed
@@ -190,7 +190,7 @@ export function SelectedWorkPreview() {
               </div>
             </div>
 
-            <div className="mt-6 flex flex-col gap-6 border-t border-line pt-6 md:mt-8 md:flex-row md:items-center md:justify-between md:gap-10 md:pt-7 lg:grid lg:grid-cols-[1fr_1fr_0.97fr] lg:justify-normal lg:gap-x-12">
+            <div className="mt-6 flex flex-col gap-6 border-t border-line pt-6 md:mt-8 lg:mt-0 md:flex-row md:items-center md:justify-between md:gap-10 md:pt-7 lg:grid lg:grid-cols-[1fr_1fr_0.97fr] lg:justify-normal lg:gap-x-10">
               <ul
                 className="flex min-w-0 flex-wrap gap-2 lg:col-span-2"
                 aria-label="Skills"

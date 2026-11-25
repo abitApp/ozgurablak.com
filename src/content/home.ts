@@ -394,7 +394,7 @@ export const faldiumCard = {
       text: "Onboarding, conversion funnels and notifications.",
     },
   ] satisfies FaldiumCardBullet[],
-  role: "Independently designed, built and launched the product, owning strategy, UX/UI, AI experiences, development, backend and user acquisition.",
+  role: "Designed, built and launched it solo: strategy, UX/UI, AI experiences, development, backend and user acquisition.",
   builtWith:
     "FlutterFlow, Supabase, Firebase, Google Analytics, Google Ads and AI prompt workflows.",
   statusLabel: "Live on Google Play",
