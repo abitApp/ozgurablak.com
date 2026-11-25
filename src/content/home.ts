@@ -401,15 +401,12 @@ export const faldiumCard = {
   statusNote:
     "Continuously evolving through real user behaviour and product analytics.",
   tags: [
-    "Product Strategy",
-    "UX/UI Design",
-    "AI Experience Design",
+    "AI Design",
+    "Human-AI Interaction",
+    "GenAI",
     "Prompt Engineering",
-    "Product Development",
-    "Product Analytics",
-    "Growth",
-    "User Acquisition",
-    "Trust & Safety",
+    "Voice AI",
+    "Data-Driven Design",
   ],
 };
 

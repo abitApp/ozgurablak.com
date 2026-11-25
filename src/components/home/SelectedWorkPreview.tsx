@@ -10,7 +10,9 @@ import { useCaseStudyDeepLink } from "@/hooks/useCaseStudyDeepLink";
 
 const OtherWorksSlider = dynamic(
   () =>
-    import("@/components/home/OtherWorksSlider").then((mod) => mod.OtherWorksSlider),
+    import("@/components/home/OtherWorksSlider").then(
+      (mod) => mod.OtherWorksSlider,
+    ),
   {
     loading: () => (
       <div
@@ -23,7 +25,9 @@ const OtherWorksSlider = dynamic(
 
 const CaseStudyPopup = dynamic(
   () =>
-    import("@/components/work/CaseStudyPopup").then((mod) => mod.CaseStudyPopup),
+    import("@/components/work/CaseStudyPopup").then(
+      (mod) => mod.CaseStudyPopup,
+    ),
   { ssr: false },
 );
 
@@ -106,40 +110,44 @@ export function SelectedWorkPreview() {
 
         <article className="overflow-hidden rounded-[1.25rem] border border-line bg-surface shadow-[0_28px_70px_rgba(0,0,0,0.35)]">
           <div className="p-6 md:p-8">
-            <h3 className="text-[clamp(1.35rem,2.4vw,1.85rem)] font-semibold tracking-tight text-ink">
-              Faldium
-            </h3>
-            <p className="mt-1.5 text-base leading-snug text-ink-muted">
-              {faldiumCard.subtitle}
-            </p>
+            <div className="lg:flex lg:items-center lg:gap-10 lg:border-b lg:border-line lg:pb-7">
+              <div className="lg:w-[17rem] lg:shrink-0">
+                <h3 className="text-[clamp(1.35rem,2.4vw,1.85rem)] font-semibold tracking-tight text-ink lg:text-[1.5rem]">
+                  Faldium
+                </h3>
+                <p className="mt-1.5 text-base leading-snug text-ink-muted lg:text-sm">
+                  {faldiumCard.subtitle}
+                </p>
+              </div>
 
-            <dl className="mt-6 grid grid-cols-3 gap-x-4 border-y border-line py-6 md:mt-8 md:grid-cols-4 md:py-7">
-              {faldiumCard.metrics.map((metric) => (
-                <div
-                  key={metric.label}
-                  className="flex flex-col items-center justify-between gap-2 text-center"
-                >
-                  <dt className="order-2 text-[0.8125rem] leading-snug text-ink-muted md:text-sm">
-                    {metric.label}
+              <dl className="mt-6 grid grid-cols-3 gap-x-4 border-y border-line py-6 md:mt-8 md:grid-cols-4 md:py-7 lg:mt-0 lg:min-w-0 lg:flex-1 lg:border-y-0 lg:py-0">
+                {faldiumCard.metrics.map((metric) => (
+                  <div
+                    key={metric.label}
+                    className="flex flex-col items-center justify-between gap-2 text-center"
+                  >
+                    <dt className="order-2 text-[0.8125rem] leading-snug text-ink-muted md:text-sm">
+                      {metric.label}
+                    </dt>
+                    <dd className="order-1 text-[clamp(1.5rem,3.2vw,2rem)] font-medium leading-none tracking-tight text-ink lg:text-[calc(1.5rem-2pt)]">
+                      {metric.value}
+                    </dd>
+                  </div>
+                ))}
+                <div className="col-span-3 mt-5 flex flex-col items-center justify-between gap-2 text-center md:col-span-1 md:mt-0">
+                  <dt className="text-[clamp(1.5rem,3.2vw,2rem)] font-medium leading-none tracking-tight text-ink lg:text-[calc(1.5rem-2pt)]">
+                    Status
                   </dt>
-                  <dd className="order-1 text-[clamp(1.5rem,3.2vw,2rem)] font-medium leading-none tracking-tight text-ink">
-                    {metric.value}
+                  <dd className="flex items-center justify-center gap-2 text-[0.8125rem] leading-snug text-ink-muted md:text-sm">
+                    <span
+                      className="size-1.5 shrink-0 rounded-full bg-emerald-400/70"
+                      aria-hidden="true"
+                    />
+                    {faldiumCard.statusLabel}
                   </dd>
                 </div>
-              ))}
-              <div className="col-span-3 mt-5 flex flex-col items-center justify-between gap-2 text-center md:col-span-1 md:mt-0">
-                <dt className="text-[clamp(1.5rem,3.2vw,2rem)] font-medium leading-none tracking-tight text-ink">
-                  Status
-                </dt>
-                <dd className="flex items-center justify-center gap-2 text-[0.8125rem] leading-snug text-ink-muted md:text-sm">
-                  <span
-                    className="size-1.5 shrink-0 rounded-full bg-emerald-400/70"
-                    aria-hidden="true"
-                  />
-                  {faldiumCard.statusLabel}
-                </dd>
-              </div>
-            </dl>
+              </dl>
+            </div>
 
             <div className="mt-6 grid grid-cols-1 items-start gap-8 text-[0.9375rem] leading-[1.55] md:mt-8 md:grid-cols-2 md:gap-x-10 lg:grid-cols-[1fr_1fr_0.97fr]">
               <div>
@@ -227,8 +235,8 @@ export function SelectedWorkPreview() {
             Other Works
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted md:text-lg">
-            Product concepts, UI animations and 3D work that sit outside the case
-            studies. Each card holds a small collection: use the arrows to
+            Product concepts, UI animations and 3D work that sit outside the
+            case studies. Each card holds a small collection: use the arrows to
             browse.
           </p>
         </div>
