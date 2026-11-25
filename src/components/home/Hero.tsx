@@ -6,7 +6,6 @@ import {
   HERO_SUPPORT_EMPHASIS,
   HERO_SUPPORT_MUTED,
   HERO_SUPPORT_TEXT_CLASS,
-  WORKS_GO_START_EVENT,
 } from "@/content/home";
 
 export function Hero() {
@@ -55,35 +54,14 @@ export function Hero() {
             .
           </p>
 
-          <a
-            href="#work"
-            className="mt-12 inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full border border-white/40 bg-transparent px-6 text-sm tracking-[0.14em] text-white/85 uppercase transition-[colors,opacity,visibility] duration-300 hover:border-white/70 hover:bg-white/10 hover:text-white/90 md:mt-14 md:text-xs md:tracking-[0.16em]"
-            onClick={(event) => {
-              event.preventDefault();
-              window.dispatchEvent(new Event(WORKS_GO_START_EVENT));
-              const target = document.getElementById("work");
-              if (target) {
-                target.scrollIntoView({ behavior: "smooth" });
-                window.history.pushState(null, "", "#work");
-              }
-            }}
+          <p
+            className="mt-[30px] text-sm tracking-[0.14em] uppercase md:text-xs md:tracking-[0.16em]"
+            style={{ color: "rgba(255, 255, 255, 0.65)" }}
           >
-            Selected works
-            <svg
-              className="size-3.5 shrink-0"
-              viewBox="0 0 16 16"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M3.5 6.25 8 10.75l4.5-4.5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
+            Previously at Vodafone ·{" "}
+            <br className="md:hidden" />
+            METRO&nbsp;·&nbsp;sahibinden.com
+          </p>
         </div>
       </div>
     </section>
