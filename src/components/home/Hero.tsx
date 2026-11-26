@@ -55,7 +55,7 @@ export function Hero() {
           </p>
 
           <p
-            className="mt-[30px] text-sm tracking-[0.14em] uppercase md:text-xs md:tracking-[0.16em]"
+            className="hidden mt-[30px] text-sm tracking-[0.14em] uppercase md:text-xs md:tracking-[0.16em]"
             style={{ color: "rgba(255, 255, 255, 0.65)" }}
           >
             Previously at Vodafone ·{" "}
