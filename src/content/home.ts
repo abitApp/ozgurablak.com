@@ -325,7 +325,7 @@ export const projects: Project[] = [
     slug: "sahibinden",
     title: "sahibinden.com",
     subtitle:
-      "iOS & Android · 50M+ downloads on Google Play\nTurkey’s leading classifieds and e-commerce platform with 64M monthly users.",
+      "iOS & Android · 50M+ downloads on Google Play\nTurkey’s #1 classifieds & e-commerce platform · 64 million monthly users",
     role: "Product Designer",
     summary:
       "Improving high-traffic classifieds journeys across browse, list, and convert moments.",
